@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.icgc.dcc</groupId>
+    <artifactId>dcc-parent</artifactId>
+    <version>1</version>
+  </parent>
+
+  <artifactId>dcc-common</artifactId>
+  <version>3.5.11-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>${project.artifactId}</name>
+  <description>${project.name}</description>
+
+  <url>https://github.com/icgc-dcc/dcc</url>
+  <organization>
+    <name>ICGC DCC</name>
+    <url>http://dcc.icgc.org</url>
+  </organization>
+  <inceptionYear>2012</inceptionYear>
+
+  <modules>
+    <module>dcc-common-core</module>
+    <module>dcc-common-client</module>
+    <module>dcc-common-hadoop</module>
+  </modules>
+
+  <scm>
+    <connection>${github.url}</connection>
+    <developerConnection>${github.url}</developerConnection>
+    <url>${github.url}</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://jira.oicr.on.ca/browse/DCC</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>http://dcc-jenkins1.oicr.on.ca:8080/</url>
+  </ciManagement>
+
+  <licenses>
+    <license>
+      <name>GNU Public License v3.0</name>
+      <url>http://www.gnu.org/licenses</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>OICR</name>
+      <organization>OICR</organization>
+    </developer>
+  </developers>
+
+  <repositories>
+    <repository>
+      <id>dcc-releases</id>
+      <url>http://seqwaremaven.oicr.on.ca/artifactory/dcc-release</url>
+    </repository>
+  </repositories>
+
+</project>
