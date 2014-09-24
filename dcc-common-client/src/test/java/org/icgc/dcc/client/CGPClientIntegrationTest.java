@@ -42,14 +42,14 @@ import org.junit.rules.ExpectedException;
 public class CGPClientIntegrationTest {
 
   private static final String NO_API_URL = "http://***REMOVED***/ud_oauth/1/searc";
-  private static final String SERVICE_URL = "http://***REMOVED***/ud_oauth/1/search";
-  private static final String CONSUMER_KEY = "54CJyoWZc6LZ7prsrDAm5UeCmEE2VbDr_ck";
+  private static final String SERVICE_URL = "https://***REMOVED***/ud_oauth/1/search";
+  private static final String CONSUMER_KEY = "***REMOVED***";
   private static final String WRONG_CONSUMER_KEY = "***REMOVED***";
-  private static final String CONSUMER_SECRET = "C4umNCcesMRT6cmGYGYHEsNu5QNYGfok_cs";
+  private static final String CONSUMER_SECRET = "***REMOVED***";
   private static final String WRONG_CONSUMER_SECRET = "***REMOVED***";
-  private static final String ACCESS_TOKEN = "PzrnixjR6rNcTiZeB5ZPBDEoDqidqL2D_at";
+  private static final String ACCESS_TOKEN = "***REMOVED***";
   private static final String WRONG_ACCESS_TOKEN = "***REMOVED***";
-  private static final String ACCESS_SECRET = "9Lj5hf37irQ5RzSfruNrv3wt4QQqrfCr_as";
+  private static final String ACCESS_SECRET = "***REMOVED***";
 
   private CGPClient client;
 
@@ -65,11 +65,14 @@ public class CGPClientIntegrationTest {
         .accessToken(ACCESS_TOKEN)
         .accessSecret(ACCESS_SECRET)
         .requestLoggingEnabled(true)
+        .strictSSLCertificates(false)
         .build();
     client = ICGCClient.create(config).cgp();
   }
 
   @Test
+  @Ignore
+  // Ignored because it loops thought all the projects
   public void consistencyTest() {
     val projects = client.getCancerGenomeProjects();
 

@@ -42,9 +42,9 @@ public class CUDClientIntegrationTest {
   private static final String WRONG_SERVICE_URL = "https://***REMOVED***/ud_res";
   private static final String CUD_SERVICE_URL = "https://***REMOVED***/ud_rest/1";
   private static final String APP_ID = System.getProperty("app_id");
-  private static final String CUD_USER = "vs@o.ca";
+  private static final String CUD_USER = "***REMOVED***";
   private static final String CUD_USER_2 = "someuser@o.ca";
-  private static final String CUD_PASSWD = "P@ssw0rd";
+  private static final String CUD_PASSWD = "***REMOVED***";
   private static final String WRONG_TOKEN = "~";
   private static final String INVALID_KEY_MESSAGE = "{\"message\":\"Invalid key\"}";
   private static final String INVALID_TOKEN_MESSAGE = "{\"message\":\"Invalid token\"}";

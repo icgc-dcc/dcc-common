@@ -36,13 +36,13 @@ public class ShortUrlClientIntegrationTest {
 
   private static final String NO_API_URL = "http://***REMOVED***/ud_oauth/1/searc";
   private static final String SERVICE_URL = "https://***REMOVED***/short/api/1/shorten";
-  private static final String CONSUMER_KEY = "vX4UdjmMFZPEJpwiMRcyqkQaZKvhWAJn_ck";
+  private static final String CONSUMER_KEY = "***REMOVED***";
   private static final String WRONG_CONSUMER_KEY = "***REMOVED***";
-  private static final String CONSUMER_SECRET = "xsiC5Ci5Zgb8KCWPLAw4Ff7KCA9YFbkW_cs";
+  private static final String CONSUMER_SECRET = "***REMOVED***";
   private static final String WRONG_CONSUMER_SECRET = "***REMOVED***";
-  private static final String ACCESS_TOKEN = "UwaTQrV7QdTmvrpNRvLZrtyenEg3PeUQ_at";
+  private static final String ACCESS_TOKEN = "***REMOVED***";
   private static final String WRONG_ACCESS_TOKEN = "***REMOVED***";
-  private static final String ACCESS_SECRET = "xTijYFgdzAzFbMA7hARsxMVihtLtbPWP_as";
+  private static final String ACCESS_SECRET = "***REMOVED***";
   private static final String SAMPLE_URL = "http://docs.oracle.com/javase/7/docs/api/";
   private static final String URL_REGEX = "^(https?://)?([\\da-z\\.-]+)\\.([a-z\\.]{2,4})/[a-zA-Z]{3,}$";
 
@@ -102,6 +102,7 @@ public class ShortUrlClientIntegrationTest {
         .consumerSecret(CONSUMER_SECRET)
         .accessToken(ACCESS_TOKEN)
         .accessSecret(ACCESS_SECRET)
+        .strictSSLCertificates(false)
         .requestLoggingEnabled(true)
         .build();
     val client = ICGCClient.create(config).shortUrl();
@@ -118,6 +119,7 @@ public class ShortUrlClientIntegrationTest {
         .consumerSecret(WRONG_CONSUMER_SECRET)
         .accessToken(ACCESS_TOKEN)
         .accessSecret(ACCESS_SECRET)
+        .strictSSLCertificates(false)
         .requestLoggingEnabled(true)
         .build();
     val client = ICGCClient.create(config).shortUrl();
@@ -134,6 +136,7 @@ public class ShortUrlClientIntegrationTest {
         .consumerSecret(CONSUMER_SECRET)
         .accessToken(WRONG_ACCESS_TOKEN)
         .accessSecret(ACCESS_SECRET)
+        .strictSSLCertificates(false)
         .requestLoggingEnabled(true)
         .build();
     val client = ICGCClient.create(config).shortUrl();

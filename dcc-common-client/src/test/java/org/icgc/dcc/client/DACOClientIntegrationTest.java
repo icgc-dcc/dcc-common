@@ -37,11 +37,11 @@ public class DACOClientIntegrationTest {
   private static final String EMAIL_REGEX = "\\w+[\\w\\.]*@\\w*\\.\\w{2,4}";
   private static final String NOT_FOUND_MESSAGE = "An entity with such ID was not found";
   private static final String VALID_OPENID = "Jorgereisfilho01@gmail.com";
-  private static final String SERVICE_URL = "http://***REMOVED***/ud_oauth/1/search";
-  private static final String CONSUMER_KEY = "54CJyoWZc6LZ7prsrDAm5UeCmEE2VbDr_ck";
-  private static final String CONSUMER_SECRET = "C4umNCcesMRT6cmGYGYHEsNu5QNYGfok_cs";
-  private static final String ACCESS_TOKEN = "PzrnixjR6rNcTiZeB5ZPBDEoDqidqL2D_at";
-  private static final String ACCESS_SECRET = "9Lj5hf37irQ5RzSfruNrv3wt4QQqrfCr_as";
+  private static final String SERVICE_URL = "https://***REMOVED***/ud_oauth/1/search";
+  private static final String CONSUMER_KEY = "***REMOVED***";
+  private static final String CONSUMER_SECRET = "***REMOVED***";
+  private static final String ACCESS_TOKEN = "***REMOVED***";
+  private static final String ACCESS_SECRET = "***REMOVED***";
 
   private DACOClient client;
 
@@ -54,6 +54,7 @@ public class DACOClientIntegrationTest {
         .accessToken(ACCESS_TOKEN)
         .accessSecret(ACCESS_SECRET)
         .requestLoggingEnabled(true)
+        .strictSSLCertificates(false)
         .build();
     client = ICGCClient.create(config).daco();
   }
