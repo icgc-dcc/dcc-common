@@ -28,7 +28,7 @@ import lombok.val;
 import org.icgc.dcc.icgc.client.api.ICGCClient;
 import org.icgc.dcc.icgc.client.api.ICGCClientConfig;
 import org.icgc.dcc.icgc.client.api.daco.DACOClient;
-import org.icgc.dcc.icgc.client.api.daco.DACOClient.FilterType;
+import org.icgc.dcc.icgc.client.api.daco.DACOClient.UserType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,22 +78,22 @@ public class DACOClientIntegrationTest {
 
   @Test
   public void getFilteredUsersTest() {
-    client.getFilteredUsers(FilterType.OPENID, VALID_OPENID);
+    client.getUsersByType(UserType.OPENID, VALID_OPENID);
 
-    catchException(client).getFilteredUsers(FilterType.OPENID, "fake");
+    catchException(client).getUsersByType(UserType.OPENID, "fake");
     assertNoSuchElementException(caughtException());
 
-    catchException(client).getFilteredUsers(FilterType.USERNAME, "fake");
+    catchException(client).getUsersByType(UserType.USERNAME, "fake");
     assertNoSuchElementException(caughtException());
     // TODO find username that matches
   }
 
   @Test
   public void hasDacoAccessTest() {
-    assertThat(client.hasDacoAccess(VALID_OPENID, FilterType.OPENID)).isTrue();
-    assertThat(client.hasDacoAccess("SomeInvalidOpenId@gmail.com", FilterType.OPENID)).isFalse();
-    assertThat(client.hasDacoAccess("***REMOVED***", FilterType.USERNAME)).isTrue();
-    assertThat(client.hasDacoAccess("someAccountWithoutDacoAccess", FilterType.USERNAME)).isFalse();
+    assertThat(client.hasDacoAccess(VALID_OPENID, UserType.OPENID)).isTrue();
+    assertThat(client.hasDacoAccess("SomeInvalidOpenId@gmail.com", UserType.OPENID)).isFalse();
+    assertThat(client.hasDacoAccess("***REMOVED***", UserType.USERNAME)).isTrue();
+    assertThat(client.hasDacoAccess("someAccountWithoutDacoAccess", UserType.USERNAME)).isFalse();
   }
 
   private static void assertNoSuchElementException(Exception e) {

@@ -18,8 +18,8 @@
 package org.icgc.dcc.icgc.client.impl.daco;
 
 import static java.lang.String.format;
-import static org.icgc.dcc.icgc.client.api.daco.DACOClient.FilterType.OPENID;
-import static org.icgc.dcc.icgc.client.api.daco.DACOClient.FilterType.USERNAME;
+import static org.icgc.dcc.icgc.client.api.daco.DACOClient.UserType.OPENID;
+import static org.icgc.dcc.icgc.client.api.daco.DACOClient.UserType.USERNAME;
 
 import java.util.Collections;
 import java.util.List;
@@ -71,10 +71,10 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
   }
 
   @Override
-  public List<User> getUser(String id) {
-    checkStringArguments(id);
+  public List<User> getUser(String openId) {
+    checkStringArguments(openId);
     val clientResponse = resourse
-        .queryParam(ENTITY_ID_PARAM_NAME, id)
+        .queryParam(ENTITY_ID_PARAM_NAME, openId)
         .get(ClientResponse.class);
 
     return convert(clientResponse.getEntity(UserContainer.class));
@@ -95,20 +95,20 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
   }
 
   @Override
-  public List<User> getFilteredUsers(@NonNull FilterType filterType, String filterValue) {
-    checkStringArguments(filterValue);
+  public List<User> getUsersByType(@NonNull UserType userType, String userValue) {
+    checkStringArguments(userValue);
     val clientResponse = resourse
-        .queryParam(ENTITY_FILTER_PARAM_NAME, getFilter(filterType, filterValue))
+        .queryParam(ENTITY_FILTER_PARAM_NAME, getFilter(userType, userValue))
         .get(ClientResponse.class);
 
     return convert(clientResponse.getEntity(new GenericType<List<ResponseUser>>() {}));
   }
 
   @Override
-  public boolean hasDacoAccess(String id, @NonNull FilterType idType) {
-    checkStringArguments(id);
+  public boolean hasDacoAccess(String userId, @NonNull UserType userType) {
+    checkStringArguments(userId);
 
-    return idType == OPENID ? hasDacoAccessByOpenid(id) : hasDacoAccessByUsername(id);
+    return userType == OPENID ? hasDacoAccessByOpenid(userId) : hasDacoAccessByUsername(userId);
   }
 
   private boolean hasDacoAccessByOpenid(String openId) {
@@ -121,10 +121,10 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
     return false;
   }
 
-  private boolean hasDacoAccessByUsername(String username) {
+  private boolean hasDacoAccessByUsername(String userName) {
     List<User> result = Collections.emptyList();
     try {
-      result = getFilteredUsers(USERNAME, username);
+      result = getUsersByType(USERNAME, userName);
     } catch (NoSuchElementException e) {
       // BaseOAuthICGCClient throws NoSuchElementException if receives 204 "No Content" response from the ICGC API.
     }
@@ -132,8 +132,8 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
     return result.isEmpty() ? false : true;
   }
 
-  private static String getFilter(FilterType filterType, String filterValue) {
-    return format(FILTER_TEMPLATE, filterType, filterValue);
+  private static String getFilter(UserType userType, String userValue) {
+    return format(FILTER_TEMPLATE, userType, userValue);
   }
 
 }

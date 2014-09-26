@@ -31,11 +31,11 @@ import java.util.NoSuchElementException;
  */
 public interface DACOClient {
 
-  public enum FilterType {
+  public enum UserType {
     OPENID("openid"),
     USERNAME("username");
 
-    FilterType(String value) {
+    UserType(String value) {
       this.value = value;
     }
 
@@ -68,21 +68,21 @@ public interface DACOClient {
   /**
    * Returns filtered approved DACO users.
    * 
-   * @param filterType - type of search (by OpenID or by username)
-   * @param filterValue - OpenID or username being searched
+   * @param userType - type of search (by OpenID or by username)
+   * @param userValue - OpenID or username being searched
    * @throws NoSuchElementException
    * @see <a href="https://wiki.oicr.on.ca/pages/viewpage.action?pageId=57773222">Search - One DACO Approved Users by
    * entity-filter (v2.0)</a>
    */
-  List<User> getFilteredUsers(FilterType filterType, String filterValue);
+  List<User> getUsersByType(UserType userType, String userValue);
 
   /**
    * Checks if {@code id} is in the list of the approved DACO users. The {@code id} may be either an openId or a
    * username.
    * 
-   * @param id to be checked
+   * @param userId to be checked
    * @return <b>true</b> if the {@code openId} is approved, otherwise - <b>false</b>
    */
-  boolean hasDacoAccess(String id, FilterType idType);
+  boolean hasDacoAccess(String userId, UserType userType);
 
 }
