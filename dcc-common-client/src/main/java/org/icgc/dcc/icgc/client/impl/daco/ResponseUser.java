@@ -47,14 +47,17 @@ public class ResponseUser {
   }
 
   String openid;
+  String openidEmail;
   List<Userinfo> userinfo;
 
   @JsonCreator
   public ResponseUser(
       @JsonProperty("openid") String openid,
+      @JsonProperty("email") String openidEmail,
       @JsonProperty("userinfo") List<Userinfo> userinfo)
   {
     this.openid = openid;
+    this.openidEmail = openidEmail;
     this.userinfo = userinfo;
   }
 
