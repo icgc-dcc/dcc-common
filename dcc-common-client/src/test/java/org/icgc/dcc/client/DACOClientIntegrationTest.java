@@ -70,7 +70,7 @@ public class DACOClientIntegrationTest {
       assertThat(user.getOpenid()).isNotEmpty();
       assertThat(user.getEmail()).matches(EMAIL_REGEX);
       assertThat(user.getName()).isNotEmpty();
-      assertThat(user.getUid()).matches("\\d+");
+      assertThat(user.getUsername()).matches("\\d+");
     }
     catchException(client).getUser("fake");
     assertNoSuchElementException(caughtException());
@@ -90,8 +90,10 @@ public class DACOClientIntegrationTest {
 
   @Test
   public void hasDacoAccessTest() {
-    assertThat(client.hasDacoAccess(VALID_OPENID)).isTrue();
-    assertThat(client.hasDacoAccess("SomeInvalidOpenId@gmail.com")).isFalse();
+    assertThat(client.hasDacoAccess(VALID_OPENID, FilterType.OPENID)).isTrue();
+    assertThat(client.hasDacoAccess("SomeInvalidOpenId@gmail.com", FilterType.OPENID)).isFalse();
+    assertThat(client.hasDacoAccess("***REMOVED***", FilterType.USERNAME)).isTrue();
+    assertThat(client.hasDacoAccess("someAccountWithoutDacoAccess", FilterType.USERNAME)).isFalse();
   }
 
   private static void assertNoSuchElementException(Exception e) {

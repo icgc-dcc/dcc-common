@@ -30,7 +30,7 @@ import lombok.experimental.Builder;
 public class User {
 
   String openid;
-  String uid;
+  String username;
   String name;
   String email;
 

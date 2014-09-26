@@ -77,11 +77,12 @@ public interface DACOClient {
   List<User> getFilteredUsers(FilterType filterType, String filterValue);
 
   /**
-   * Checks if {@code openId} is in the list of the approved DACO users.
+   * Checks if {@code id} is in the list of the approved DACO users. The {@code id} may be either an openId or a
+   * username.
    * 
-   * @param openId to be checked
+   * @param id to be checked
    * @return <b>true</b> if the {@code openId} is approved, otherwise - <b>false</b>
    */
-  boolean hasDacoAccess(String openId);
+  boolean hasDacoAccess(String id, FilterType idType);
 
 }
