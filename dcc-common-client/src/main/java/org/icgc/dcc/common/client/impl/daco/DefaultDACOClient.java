@@ -18,8 +18,8 @@
 package org.icgc.dcc.common.client.impl.daco;
 
 import static java.lang.String.format;
-import static org.icgc.dcc.common.client.api.daco.DACOClient.UserType.OPENID;
 import static org.icgc.dcc.common.client.api.daco.DACOClient.UserType.CUD;
+import static org.icgc.dcc.common.client.api.daco.DACOClient.UserType.OPENID;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +37,8 @@ import com.google.common.collect.ImmutableList;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.uri.UriComponent;
+import com.sun.jersey.api.uri.UriComponent.Type;
 
 public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient {
 
@@ -133,7 +135,7 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
   }
 
   private static String getFilter(UserType userType, String userValue) {
-    return format(FILTER_TEMPLATE, userType, userValue);
+    return UriComponent.encode(format(FILTER_TEMPLATE, userType, userValue), Type.QUERY_PARAM);
   }
 
 }
