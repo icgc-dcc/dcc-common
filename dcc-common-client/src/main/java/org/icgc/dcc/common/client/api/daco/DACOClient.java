@@ -71,8 +71,8 @@ public interface DACOClient {
   /**
    * Returns filtered approved DACO users.
    * 
-   * @param userType - type of search (by OpenID or by CUD)
-   * @param userValue - OpenID or CUD being searched
+   * @param userType - type of search (by OpenID or by CUD username)
+   * @param userValue - OpenID or CUD username being searched
    * @throws NoSuchElementException
    * @see <a href="https://wiki.oicr.on.ca/pages/viewpage.action?pageId=57773222">Search - One DACO Approved Users by
    * entity-filter (v2.0)</a>
@@ -84,7 +84,7 @@ public interface DACOClient {
    * {@code OPENID} or a {@code CUD}.
    * 
    * @param userId to be checked. The user should pass user's {@code username} if the method is invoked for {@code CUD}
-   * or user's openID in case of {@code OPENID}
+   * {@code UserType} or user's openID in case of {@code OPENID UserType}
    * @return <b>true</b> if the {@code userId} is approved, otherwise - <b>false</b>
    */
   boolean hasDacoAccess(String userId, UserType userType);
