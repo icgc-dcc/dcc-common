@@ -50,6 +50,7 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileContext;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.compress.CompressionCodecFactory;
 import org.icgc.dcc.core.util.Separators;
@@ -224,6 +225,33 @@ public class HadoopUtils {
       FileContext.getFileContext(fileSystem.getUri()).createSymlink(origin, destination, false);
     } catch (IOException e) {
       throw new HdfsException(e);
+    }
+  }
+
+  public static void cp(@NonNull final FileSystem fileSystem, @NonNull final String source, @NonNull final String target) {
+    cp(fileSystem, new Path(source), new Path(target));
+  }
+
+  /**
+   * This method is required because {@link FileUtil#copy} seems to be broken for directories.
+   */
+  @SneakyThrows
+  public static void cp(@NonNull final FileSystem fileSystem, @NonNull final Path source, @NonNull final Path target) {
+    if (isDirectory(fileSystem, source)) {
+      if (!isDirectory(fileSystem, target)) {
+        log.info("Creating directory '{}'...", target);
+        mkdirs(fileSystem, target);
+      }
+
+      for (val sourcePath : lsAll(fileSystem, source)) {
+        val targetPath = new Path(target, sourcePath.getName());
+
+        cp(fileSystem, sourcePath, targetPath);
+      }
+    } else {
+      val deleteSource = false;
+      log.info("Copying '{}' to '{}'...", source, target);
+      FileUtil.copy(fileSystem, source, fileSystem, target, deleteSource, fileSystem.getConf());
     }
   }
 
