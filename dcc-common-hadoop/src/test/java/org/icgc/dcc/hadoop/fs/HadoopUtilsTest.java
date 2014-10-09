@@ -38,7 +38,12 @@ public class HadoopUtilsTest {
   public void testCopy() throws IOException {
     val sourceDir = new File(root, "source");
     val targetDir = new File(root, "target");
+
     copyDirectory(TEST_DIR, sourceDir);
+
+    // Need to do this because git cannot check-in empty dirs and .gitkeep would not make it empty
+    val dir2 = new File(new File(sourceDir, "dir1"), "dir2");
+    dir2.mkdir();
 
     HadoopUtils.cp(fileSystem, new Path(sourceDir.getAbsolutePath()), new Path(targetDir.getAbsolutePath()));
 
