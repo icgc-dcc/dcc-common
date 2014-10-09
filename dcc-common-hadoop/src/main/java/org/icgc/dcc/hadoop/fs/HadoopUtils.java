@@ -19,6 +19,7 @@ package org.icgc.dcc.hadoop.fs;
 
 import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.toArray;
 import static com.google.common.collect.Lists.newArrayList;
@@ -238,10 +239,10 @@ public class HadoopUtils {
   @SneakyThrows
   public static void cp(@NonNull final FileSystem fileSystem, @NonNull final Path source, @NonNull final Path target) {
     if (isDirectory(fileSystem, source)) {
-      if (!isDirectory(fileSystem, target)) {
-        log.info("Creating directory '{}'...", target);
-        mkdirs(fileSystem, target);
-      }
+      checkState(!exists(fileSystem, target));
+
+      log.info("Creating directory '{}'...", target);
+      mkdirs(fileSystem, target);
 
       for (val sourcePath : lsAll(fileSystem, source)) {
         val targetPath = new Path(target, sourcePath.getName());

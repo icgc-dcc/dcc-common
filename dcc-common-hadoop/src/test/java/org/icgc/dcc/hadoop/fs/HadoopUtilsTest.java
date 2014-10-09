@@ -46,15 +46,17 @@ public class HadoopUtilsTest {
     assertDir(targetDir);
   }
 
-  private static void assertDir(File dir) {
-    val dir1 = new File(dir, "dir1");
-    val file1 = new File(dir, "file1.txt");
+  private static void assertDir(File root) {
+    val dir1 = new File(root, "dir1");
+    val file1 = new File(root, "file1.txt");
+    val dotfile1 = new File(root, ".dotfile1.txt");
     val dir2 = new File(dir1, "dir2");
     val file2 = new File(dir1, "file2.txt");
 
-    assertThat(dir).exists().isDirectory();
+    assertThat(root).exists().isDirectory();
     assertThat(dir1).exists().isDirectory();
     assertThat(file1).exists().isFile();
+    assertThat(dotfile1).exists().isFile().hasContent(dotfile1.getName());
     assertThat(dir2).exists().isDirectory();
     assertThat(file2).exists().isFile();
   }
