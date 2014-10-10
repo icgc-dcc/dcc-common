@@ -1,7 +1,7 @@
 package org.icgc.dcc.common.hadoop.fs;
 
 import static org.apache.commons.io.FileUtils.copyDirectory;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;

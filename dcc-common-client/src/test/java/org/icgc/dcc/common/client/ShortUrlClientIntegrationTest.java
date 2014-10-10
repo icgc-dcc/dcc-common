@@ -17,7 +17,7 @@
  */
 package org.icgc.dcc.common.client;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 

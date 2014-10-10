@@ -17,7 +17,7 @@
  */
 package org.icgc.dcc.common.core.util;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.icgc.dcc.common.core.util.Functions2.castIntegerToString;
 
 import org.icgc.dcc.common.core.util.Optionals;

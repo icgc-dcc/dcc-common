@@ -19,7 +19,7 @@ package org.icgc.dcc.common.core.model;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.BIOMARKER_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.DONOR_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.META_SUBTYPE;

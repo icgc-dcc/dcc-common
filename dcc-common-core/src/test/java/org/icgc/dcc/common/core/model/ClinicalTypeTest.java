@@ -17,7 +17,7 @@
  */
 package org.icgc.dcc.common.core.model;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.icgc.dcc.common.core.model.ClinicalType;
 import org.junit.Test;

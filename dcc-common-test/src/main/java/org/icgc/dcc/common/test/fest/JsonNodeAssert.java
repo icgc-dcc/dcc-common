@@ -20,7 +20,7 @@ package org.icgc.dcc.common.test.fest;
 import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 import lombok.SneakyThrows;
 
-import org.fest.assertions.api.AbstractAssert;
+import org.assertj.core.api.AbstractAssert;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,13 +40,14 @@ public class JsonNodeAssert extends AbstractAssert<JsonNodeAssert, JsonNode> {
 
   @Override
   @SneakyThrows
-  public JsonNodeAssert isEqualTo(JsonNode expected) {
-    String expectedJson = toString(expected);
+  public JsonNodeAssert isEqualTo(Object expected) {
+    String expectedJson = toString((JsonNode)expected);
     String actualJson = toString(actual);
     JSONAssert.assertEquals(expectedJson, actualJson, false);
 
     return this;
   }
+  
 
   @SneakyThrows
   String toString(JsonNode jsonNode) {

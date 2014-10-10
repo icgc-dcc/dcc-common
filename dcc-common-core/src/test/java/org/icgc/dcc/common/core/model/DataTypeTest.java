@@ -17,7 +17,7 @@
  */
 package org.icgc.dcc.common.core.model;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.icgc.dcc.common.core.model.ClinicalType.CLINICAL_CORE_TYPE;
 import static org.icgc.dcc.common.core.model.DataType.DataTypes.from;
 import static org.icgc.dcc.common.core.model.DataType.DataTypes.isAggregatedType;
