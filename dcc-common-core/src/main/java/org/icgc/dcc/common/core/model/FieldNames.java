@@ -49,6 +49,7 @@ public final class FieldNames {
     public static final String SUBMISSION_GENE_AFFECTED = "gene_affected";
     public static final String SUBMISSION_TRANSCRIPT_AFFECTED = "transcript_affected";
     public static final String SUBMISSION_DIGITAL_IMAGE_OF_STAINED_SECTION = "digital_image_of_stained_section";
+    public static final String SUBMISSION_MUTATION = "mutation";
 
     public static final String SUBMISSION_OBSERVATION_ANALYSIS_ID = "analysis_id";
     public static final String SUBMISSION_OBSERVATION_ANALYZED_SAMPLE_ID = SUBMISSION_ANALYZED_SAMPLE_ID;
@@ -65,6 +66,7 @@ public final class FieldNames {
     public static final String SUBMISSION_OBSERVATION_CONTROL_GENOTYPE = "control_genotype";
     public static final String SUBMISSION_OBSERVATION_TUMOUR_GENOTYPE = "tumour_genotype";
     public static final String SUBMISSION_OBSERVATION_REFERENCE_GENOME_ALLELE = "reference_genome_allele";
+    public static final String SUBMISSION_OBSERVATION_VARIANT_ALLELE = "variant_allele";
 
     public static final String SUBMISSION_OBSERVATION_MUTATED_FROM_ALLELE = "mutated_from_allele";
     public static final String SUBMISSION_OBSERVATION_MUTATED_TO_ALLELE = "mutated_to_allele";
@@ -94,6 +96,24 @@ public final class FieldNames {
      * Formerly in the submission files.
      */
     public static final String NORMALIZER_MUTATION = "mutation";
+  }
+
+  /**
+   * Field names used in the annotator component.
+   */
+  public static class AnnotatorFieldNames {
+
+    private AnnotatorFieldNames() {
+    }
+
+    // Represent some of the SSM_S and SGV_S headers
+    public static final String ANNOTATOR_AMINO_ACID_CHANGE = "aa_change";
+    public static final String ANNOTATOR_CDS_CHANGE = "cds_change";
+    public static final String ANNOTATOR_CDS_MUTATION = "cds_mutation";
+    public static final String ANNOTATOR_PROTEIN_DOMAIN_AFFECTED = "protein_domain_affected";
+    public static final String ANNOTATOR_GENE_BUILD_VERSION = "gene_build_version";
+    public static final String ANNOTATOR_NOTE = "note";
+
   }
 
   /**
