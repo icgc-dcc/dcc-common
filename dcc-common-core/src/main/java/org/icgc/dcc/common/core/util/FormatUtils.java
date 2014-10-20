@@ -31,6 +31,7 @@ import org.joda.time.Duration;
 import org.joda.time.Period;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Iterables;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class FormatUtils {
@@ -51,6 +52,14 @@ public final class FormatUtils {
     String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
 
     return format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+  }
+
+  public static String formatCount(Iterable<?> iterable) {
+    return formatCount(Iterables.size(iterable));
+  }
+
+  public static String formatCount(Object[] array) {
+    return formatCount(array.length);
   }
 
   public static String formatCount(int count) {
