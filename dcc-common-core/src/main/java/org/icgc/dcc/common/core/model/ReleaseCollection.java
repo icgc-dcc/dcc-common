@@ -21,9 +21,17 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
+import static org.icgc.dcc.common.core.model.FieldNames.GENE_SET_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.MONGO_INTERNAL_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.PATHWAY_REACTOME_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.RELEASE_ID;
+import static org.icgc.dcc.common.core.model.FieldNames.IdentifierFieldNames.SURROGATE_DONOR_ID;
+import static org.icgc.dcc.common.core.model.FieldNames.IdentifierFieldNames.SURROGATE_MUTATION_ID;
+import static org.icgc.dcc.common.core.model.FieldNames.LoaderFieldNames.GENE_ID;
+import static org.icgc.dcc.common.core.model.FieldNames.LoaderFieldNames.PROJECT_ID;
+import static org.icgc.dcc.common.core.model.ReleaseDatabase.GENOME;
+import static org.icgc.dcc.common.core.model.ReleaseDatabase.PROJECT;
+import static org.icgc.dcc.common.core.model.ReleaseDatabase.UNDETERMINED;
 import static org.icgc.dcc.common.core.util.Joiners.NAMESPACING;
 
 import java.util.List;
@@ -32,9 +40,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import org.icgc.dcc.common.core.model.FieldNames.IdentifierFieldNames;
-import org.icgc.dcc.common.core.model.FieldNames.LoaderFieldNames;
-
 /**
  * Represents a collection in the the MongoDB data model.
  */
@@ -42,15 +47,14 @@ import org.icgc.dcc.common.core.model.FieldNames.LoaderFieldNames;
 @Getter
 public enum ReleaseCollection implements Identifiable {
 
-  RELEASE_COLLECTION(ReleaseDatabase.UNDETERMINED, "Release", newArrayList(RELEASE_ID)),
-  PROJECT_COLLECTION(ReleaseDatabase.PROJECT, "Project", newArrayList(LoaderFieldNames.PROJECT_ID)),
-  DONOR_COLLECTION(ReleaseDatabase.UNDETERMINED, "Donor", newArrayList(IdentifierFieldNames.SURROGATE_DONOR_ID)),
-  GENE_COLLECTION(ReleaseDatabase.GENOME, "Gene", newArrayList(LoaderFieldNames.GENE_ID)),
-  OBSERVATION_COLLECTION(ReleaseDatabase.UNDETERMINED, "Observation", newArrayList(
-      IdentifierFieldNames.SURROGATE_DONOR_ID,
-      IdentifierFieldNames.SURROGATE_MUTATION_ID)),
-  MUTATION_COLLECTION(ReleaseDatabase.UNDETERMINED, "Mutation", newArrayList(IdentifierFieldNames.SURROGATE_MUTATION_ID)),
-  PATHWAY_COLLECTION(ReleaseDatabase.UNDETERMINED, "Pathway", newArrayList(PATHWAY_REACTOME_ID));
+  RELEASE_COLLECTION(UNDETERMINED, "Release", newArrayList(RELEASE_ID)),
+  PROJECT_COLLECTION(PROJECT, "Project", newArrayList(PROJECT_ID)),
+  DONOR_COLLECTION(UNDETERMINED, "Donor", newArrayList(SURROGATE_DONOR_ID)),
+  GENE_COLLECTION(GENOME, "Gene", newArrayList(GENE_ID)),
+  OBSERVATION_COLLECTION(UNDETERMINED, "Observation", newArrayList(SURROGATE_DONOR_ID, SURROGATE_MUTATION_ID)),
+  MUTATION_COLLECTION(UNDETERMINED, "Mutation", newArrayList(SURROGATE_MUTATION_ID)),
+  PATHWAY_COLLECTION(UNDETERMINED, "Pathway", newArrayList(PATHWAY_REACTOME_ID)),
+  GEN_SET_COLLECTION(UNDETERMINED, "GeneSet", newArrayList(GENE_SET_ID));
 
   private final ReleaseDatabase parentDatabase;
 

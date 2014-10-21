@@ -337,7 +337,7 @@ public final class FieldNames {
   public static final String RELEASE_MUTATED_GENE_COUNT = "mutated_gene_count";
 
   /**
-   * Reactome pathway names
+   * Reactome pathway names.
    */
   public static final String PATHWAY_REACTOME_ID = "pathway_id";
   public static final String PATHWAY_NAME = "pathway_name";
@@ -350,6 +350,11 @@ public final class FieldNames {
   public static final String PATHWAY_HAS_DIAGRAM = "has_diagram";
   public static final String PATHWAY_SUMMATION = "summation";
   public static final String PATHWAY_SOURCE = "source";
+
+  /**
+   * Gene set pathway names.
+   */
+  public static final String GENE_SET_ID = "gene_set_id";
 
   /**
    * Aggregate field names.
