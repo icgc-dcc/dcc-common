@@ -30,11 +30,11 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import lombok.val;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.icgc.dcc.common.core.util.Protocol;
-import org.icgc.dcc.common.core.util.URIs;
 
 /**
  * Util methods for {@link FileSystem}.
@@ -57,7 +57,7 @@ public final class FileSystems {
   }
 
   public static FileSystem getFileSystem(@NonNull final String fsDefaultUri) {
-    return getFileSystem(URIs.getURI(fsDefaultUri));
+    return getFileSystem(normalizeFsUri(fsDefaultUri));
   }
 
   public static FileSystem getFileSystem(@NonNull final URI uri) {
@@ -93,4 +93,14 @@ public final class FileSystems {
             hadoopProperties.values())))
         .isFile();
   }
+
+  @SneakyThrows
+  private static URI normalizeFsUri(String fsUri) {
+    val schemeSeparator = "://";
+    val defaultScheme = "http";
+    val defaultPrefix = defaultScheme + schemeSeparator;
+
+    return new URI(fsUri.contains(schemeSeparator) ? fsUri : defaultPrefix + fsUri);
+  }
+
 }

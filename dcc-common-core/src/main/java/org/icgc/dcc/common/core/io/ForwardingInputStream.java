@@ -15,66 +15,68 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util;
+package org.icgc.dcc.common.core.io;
 
-import static lombok.AccessLevel.PRIVATE;
-import static org.icgc.dcc.common.core.util.Strings2.isLowerCase;
-import lombok.NoArgsConstructor;
+import java.io.IOException;
+import java.io.InputStream;
+
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-import org.icgc.dcc.common.core.model.Identifiable;
+@RequiredArgsConstructor
+public class ForwardingInputStream extends InputStream {
 
-@NoArgsConstructor(access = PRIVATE)
-public enum Scheme implements Identifiable {
+  @NonNull
+  private final InputStream delegate;
+  private final boolean closeWrapped;
 
-  FILE,
-  CLASSPATH,
-  HTTP,
-  HTTPS,
-  HDFS,
-  MONGODB,
-  ES,
-  S3;
+  public ForwardingInputStream(InputStream delegate) {
+    this(delegate, false);
+  }
 
   @Override
-  public String getId() {
-    return name().toLowerCase();
+  public int read() throws IOException {
+    return delegate.read();
   }
 
-  public boolean isFile() {
-    return this == FILE;
+  @Override
+  public int read(final byte[] b) throws IOException {
+    return delegate.read(b);
   }
 
-  public boolean isHdfs() {
-    return this == HDFS;
+  @Override
+  public int read(final byte[] b, final int off, final int len) throws IOException {
+    return delegate.read(b, off, len);
   }
 
-  public static Scheme from(@NonNull String scheme) {
-    return valueOf(scheme.toUpperCase());
+  @Override
+  public long skip(final long n) throws IOException {
+    return delegate.skip(n);
   }
 
-  public static boolean isFile(@NonNull String scheme) {
-    return is(scheme, FILE);
+  @Override
+  public int available() throws IOException {
+    return delegate.available();
   }
 
-  public static boolean isHdfs(@NonNull String scheme) {
-    return is(scheme, HDFS);
+  @Override
+  public void close() throws IOException {
+    if (closeWrapped) delegate.close();
   }
 
-  public static boolean isHttp(@NonNull String scheme) {
-    return is(scheme, HTTP);
+  @Override
+  public synchronized void mark(final int readlimit) {
+    delegate.mark(readlimit);
   }
 
-  public static boolean isHttps(@NonNull String scheme) {
-    return is(scheme, HTTPS);
+  @Override
+  public synchronized void reset() throws IOException {
+    delegate.reset();
   }
 
-  public static boolean isClasspath(@NonNull String scheme) {
-    return is(scheme, CLASSPATH);
-  }
-
-  private static boolean is(String schemeString, Scheme scheme) {
-    return isLowerCase(schemeString) && from(schemeString) == scheme;
+  @Override
+  public boolean markSupported() {
+    return delegate.markSupported();
   }
 
 }
