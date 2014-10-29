@@ -21,7 +21,9 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
+import static org.icgc.dcc.common.core.model.FieldNames.GENE_LIST_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.GENE_SET_ID;
+import static org.icgc.dcc.common.core.model.FieldNames.GO_TERM_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.MONGO_INTERNAL_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.PATHWAY_REACTOME_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.RELEASE_ID;
@@ -29,8 +31,6 @@ import static org.icgc.dcc.common.core.model.FieldNames.IdentifierFieldNames.SUR
 import static org.icgc.dcc.common.core.model.FieldNames.IdentifierFieldNames.SURROGATE_MUTATION_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.LoaderFieldNames.GENE_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.LoaderFieldNames.PROJECT_ID;
-import static org.icgc.dcc.common.core.model.ReleaseDatabase.GENOME;
-import static org.icgc.dcc.common.core.model.ReleaseDatabase.PROJECT;
 import static org.icgc.dcc.common.core.model.ReleaseDatabase.UNDETERMINED;
 import static org.icgc.dcc.common.core.util.Joiners.NAMESPACING;
 
@@ -48,20 +48,22 @@ import lombok.RequiredArgsConstructor;
 public enum ReleaseCollection implements Identifiable {
 
   RELEASE_COLLECTION(UNDETERMINED, "Release", newArrayList(RELEASE_ID)),
-  PROJECT_COLLECTION(PROJECT, "Project", newArrayList(PROJECT_ID)),
+  PROJECT_COLLECTION(UNDETERMINED, "Project", newArrayList(PROJECT_ID)),
   DONOR_COLLECTION(UNDETERMINED, "Donor", newArrayList(SURROGATE_DONOR_ID)),
-  GENE_COLLECTION(GENOME, "Gene", newArrayList(GENE_ID)),
+  GENE_COLLECTION(UNDETERMINED, "Gene", newArrayList(GENE_ID)),
   OBSERVATION_COLLECTION(UNDETERMINED, "Observation", newArrayList(SURROGATE_DONOR_ID, SURROGATE_MUTATION_ID)),
   MUTATION_COLLECTION(UNDETERMINED, "Mutation", newArrayList(SURROGATE_MUTATION_ID)),
   PATHWAY_COLLECTION(UNDETERMINED, "Pathway", newArrayList(PATHWAY_REACTOME_ID)),
-  GEN_SET_COLLECTION(UNDETERMINED, "GeneSet", newArrayList(GENE_SET_ID));
+  GO_TERM_COLLECTION(UNDETERMINED, "GoTerm", newArrayList(GO_TERM_ID)),
+  GENE_LIST_COLLECTION(UNDETERMINED, "GeneList", newArrayList(GENE_LIST_ID)),
+  GENE_SET_COLLECTION(UNDETERMINED, "GeneSet", newArrayList(GENE_SET_ID));
 
   private final ReleaseDatabase parentDatabase;
 
   /**
    * The name of the collection.
    */
-  private final String name; // TODO: replace with "id"
+  private final String id;
 
   /**
    * The primary key of the collection.
@@ -87,12 +89,12 @@ public enum ReleaseCollection implements Identifiable {
 
   @Override
   public String getId() {
-    return getName();
+    return id;
   }
 
   @Override
   public String toString() {
-    return name;
+    return id;
   }
 
   /**

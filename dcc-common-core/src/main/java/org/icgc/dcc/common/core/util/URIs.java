@@ -34,6 +34,7 @@ import java.util.Map.Entry;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import lombok.val;
 
 import com.google.common.base.Optional;
 
@@ -66,6 +67,15 @@ public final class URIs {
   @SneakyThrows
   public static URI getUri(@NonNull String value) {
     return new URI(value);
+  }
+
+  @SneakyThrows
+  public static URI getQualifiedUri(String fsUri) {
+    val schemeSeparator = "://";
+    val defaultScheme = "http";
+    val defaultPrefix = defaultScheme + schemeSeparator;
+
+    return new URI(fsUri.contains(schemeSeparator) ? fsUri : defaultPrefix + fsUri);
   }
 
   public static Optional<String> getHost(@NonNull URI uri) {

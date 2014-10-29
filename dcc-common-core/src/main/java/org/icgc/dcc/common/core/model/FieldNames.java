@@ -357,6 +357,16 @@ public final class FieldNames {
   public static final String GENE_SET_ID = "gene_set_id";
 
   /**
+   * Gene list names.
+   */
+  public static final String GENE_LIST_ID = "id";
+
+  /**
+   * Go term names.
+   */
+  public static final String GO_TERM_ID = "id";
+
+  /**
    * Aggregate field names.
    */
   public static final String SYNTHETIC_PREFIX = "_";
