@@ -241,6 +241,9 @@ public final class FieldNames {
   public static final String GENE_TRANSCRIPTS_TRANSCRIPT_ID = "id";
   public static final String GENE_TRANSCRIPTS_TRANSCRIPT_EXONS = "exons";
   public static final String GENE_TRANSCRIPTS_TRANSCRIPT_DOMAINS = "domains";
+  public static final String GENE_SETS = "sets";
+  public static final String GENE_SETS_TYPE = "type";
+  public static final String GENE_UNIPROT_IDS = "external_db_ids.uniprotkb_swissprot";
 
   public static final String GENE_SUMMARY = "_summary";
   public static final String GENE_SUMMARY_AFFECTED_TRANSCRIPT_IDS = "_affected_transcript_id";
@@ -352,19 +355,9 @@ public final class FieldNames {
   public static final String PATHWAY_SOURCE = "source";
 
   /**
-   * Gene set pathway names.
+   * Gene set field names.
    */
-  public static final String GENE_SET_ID = "gene_set_id";
-
-  /**
-   * Gene list names.
-   */
-  public static final String GENE_LIST_ID = "id";
-
-  /**
-   * Go term names.
-   */
-  public static final String GO_TERM_ID = "id";
+  public static final String GENE_SET_ID = "id";
 
   /**
    * Aggregate field names.

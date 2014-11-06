@@ -23,6 +23,7 @@ public enum Entity {
   PROJECT,
   DONOR,
   GENE,
+  GENE_SET,
   OBSERVATION,
   MUTATION,
   TRANSCRIPT,

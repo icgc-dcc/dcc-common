@@ -21,9 +21,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
-import static org.icgc.dcc.common.core.model.FieldNames.GENE_LIST_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.GENE_SET_ID;
-import static org.icgc.dcc.common.core.model.FieldNames.GO_TERM_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.MONGO_INTERNAL_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.PATHWAY_REACTOME_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.RELEASE_ID;
@@ -54,8 +52,6 @@ public enum ReleaseCollection implements Identifiable {
   OBSERVATION_COLLECTION(UNDETERMINED, "Observation", newArrayList(SURROGATE_DONOR_ID, SURROGATE_MUTATION_ID)),
   MUTATION_COLLECTION(UNDETERMINED, "Mutation", newArrayList(SURROGATE_MUTATION_ID)),
   PATHWAY_COLLECTION(UNDETERMINED, "Pathway", newArrayList(PATHWAY_REACTOME_ID)),
-  GO_TERM_COLLECTION(UNDETERMINED, "GoTerm", newArrayList(GO_TERM_ID)),
-  GENE_LIST_COLLECTION(UNDETERMINED, "GeneList", newArrayList(GENE_LIST_ID)),
   GENE_SET_COLLECTION(UNDETERMINED, "GeneSet", newArrayList(GENE_SET_ID));
 
   private final ReleaseDatabase parentDatabase;
