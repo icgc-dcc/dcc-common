@@ -66,13 +66,13 @@ public enum IndexType {
    * Mutation type(s).
    */
   MUTATION_TEXT_TYPE(Entity.MUTATION, "mutation-text", Classifier.CENTRIC),
-  MUTATION_CENTRIC_TYPE(Entity.OBSERVATION, "mutation-centric", Classifier.CENTRIC),
+  MUTATION_CENTRIC_TYPE(Entity.MUTATION, "mutation-centric", Classifier.CENTRIC),
 
   /**
-   * Pathway types
+   * Gene Set types
    */
-  PATHWAY_TYPE(Entity.PATHWAY, "pathway", Classifier.BASIC),
-  PATHWAY_TEXT_TYPE(Entity.PATHWAY, "pathway-text", Classifier.BASIC);
+  GENE_SET_TYPE(Entity.GENE_SET, "gene-set", Classifier.BASIC),
+  GENE_SET_TEXT_TYPE(Entity.GENE_SET, "gene-set-text", Classifier.BASIC);
 
   /**
    * The corresponding entity of the index type.
