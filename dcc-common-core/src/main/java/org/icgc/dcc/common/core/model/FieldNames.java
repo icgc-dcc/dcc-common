@@ -243,6 +243,7 @@ public final class FieldNames {
   public static final String GENE_TRANSCRIPTS_TRANSCRIPT_DOMAINS = "domains";
   public static final String GENE_SETS = "sets";
   public static final String GENE_SETS_TYPE = "type";
+
   public static final String GENE_UNIPROT_IDS = "external_db_ids.uniprotkb_swissprot";
 
   public static final String GENE_SUMMARY = "_summary";
@@ -358,6 +359,14 @@ public final class FieldNames {
    * Gene set field names.
    */
   public static final String GENE_SET_ID = "id";
+  public static final String GENE_SET_TYPE = "type";
+  public static final String GENE_SET_NAME = "name";
+  public static final String GENE_SET_SOURCE = "source";
+  public static final String GENE_SET_DESCRIPTION = "description";
+  public static final String GENE_SET_PROJECTS = "projects";
+  public static final String GENE_SET_PATHWAY = "pathway";
+  public static final String GENE_SET_GO_TERM = "go_term";
+  public static final String GENE_SET_CURATED_SET = "curated_set";
 
   /**
    * Aggregate field names.

@@ -23,7 +23,9 @@ import static lombok.AccessLevel.PRIVATE;
 import static org.icgc.dcc.common.hadoop.fs.HadoopUtils.isPartFile;
 import static org.icgc.dcc.common.hadoop.parser.FileParsers.newStringFileParser;
 
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.compress.CompressionCodecFactory;
 import org.icgc.dcc.common.hadoop.parser.FileRecordProcessor;
 
 import com.google.common.collect.Lists;
@@ -49,6 +52,11 @@ import com.google.common.collect.Lists;
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
 public class FileOperations {
+
+  /**
+   * Constants.
+   */
+  private static final int KB = 1024;
 
   /**
    * Merge files, assumes that a header line exists on all input files
@@ -149,6 +157,21 @@ public class FileOperations {
   @SneakyThrows
   private static PrintWriter getWriter(FileSystem fs, Path path) {
     return new PrintWriter(fs.create(path));
+  }
+
+  public static DataInputStream getDataInputStream(FileSystem fileSystem, Path file) {
+    // Config
+    val bufferSize = 8 * KB;
+    val factory = new CompressionCodecFactory(fileSystem.getConf());
+
+    try {
+      val codec = factory.getCodec(file);
+      InputStream inputStream =
+          (codec == null) ? fileSystem.open(file) : codec.createInputStream(fileSystem.open(file, bufferSize));
+      return new DataInputStream(inputStream);
+    } catch (IOException e) {
+      throw new RuntimeException("Error reading: '" + file.toString() + "'", e);
+    }
   }
 
 }
