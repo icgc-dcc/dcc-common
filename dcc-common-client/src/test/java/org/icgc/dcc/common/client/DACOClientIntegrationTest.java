@@ -20,6 +20,7 @@ package org.icgc.dcc.common.client;
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.icgc.dcc.common.util.AssertUtils.assertClientToString;
 
 import java.util.NoSuchElementException;
 
@@ -100,6 +101,11 @@ public class DACOClientIntegrationTest {
     assertThat(e)
         .isInstanceOf(NoSuchElementException.class)
         .hasMessage(NOT_FOUND_MESSAGE);
+  }
+
+  @Test
+  public void toStringTest() {
+    assertClientToString(client.toString());
   }
 
 }

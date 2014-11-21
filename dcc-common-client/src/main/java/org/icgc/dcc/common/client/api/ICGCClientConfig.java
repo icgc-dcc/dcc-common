@@ -17,6 +17,7 @@
  */
 package org.icgc.dcc.common.client.api;
 
+import lombok.ToString;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.Builder;
@@ -51,8 +52,9 @@ import lombok.experimental.Builder;
  * @see <a href="https://wiki.oicr.on.ca/display/icgcweb/Shorten">Shorten API</a>
  * @see <a href="https://wiki.oicr.on.ca/display/icgcweb/About+OAuth+1.0a+-+Authenticated+Requests">OAuth 1.0a</a>
  */
-@Builder
 @Value
+@Builder
+@ToString(exclude = { "consumerSecret", "accessSecret", "cudAppId" })
 public class ICGCClientConfig {
 
   private String cgpServiceUrl;
