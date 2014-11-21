@@ -31,7 +31,6 @@ import org.icgc.dcc.common.client.api.ICGCAccessException;
 import org.icgc.dcc.common.client.api.ICGCClient;
 import org.icgc.dcc.common.client.api.ICGCClientConfig;
 import org.icgc.dcc.common.client.api.cud.CUDClient;
-import org.icgc.dcc.common.client.impl.BaseICGCClient;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -232,7 +231,7 @@ public class CUDClientIntegrationTest {
 
   @Test
   public void toStringTest() {
-    assertThat((BaseICGCClient) client).toStringIsCompleteAndProtected();
+    assertThat(client).toStringIsCompleteAndProtected();
   }
 
 }

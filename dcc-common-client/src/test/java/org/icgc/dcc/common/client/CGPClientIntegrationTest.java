@@ -34,7 +34,6 @@ import org.icgc.dcc.common.client.api.cgp.CGPClient;
 import org.icgc.dcc.common.client.api.cgp.CancerGenomeProject;
 import org.icgc.dcc.common.client.api.cgp.DataLevelProject;
 import org.icgc.dcc.common.client.api.cgp.User;
-import org.icgc.dcc.common.client.impl.BaseICGCClient;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -266,7 +265,7 @@ public class CGPClientIntegrationTest {
 
   @Test
   public void toStringTest() {
-    assertThat((BaseICGCClient) client).toStringIsCompleteAndProtected();
+    assertThat(client).toStringIsCompleteAndProtected();
   }
 
 }

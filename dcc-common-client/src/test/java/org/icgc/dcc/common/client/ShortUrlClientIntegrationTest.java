@@ -27,7 +27,6 @@ import org.icgc.dcc.common.client.api.ICGCClient;
 import org.icgc.dcc.common.client.api.ICGCClientConfig;
 import org.icgc.dcc.common.client.api.ICGCUnknownException;
 import org.icgc.dcc.common.client.api.shorturl.ShortURLClient;
-import org.icgc.dcc.common.client.impl.BaseICGCClient;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -147,7 +146,7 @@ public class ShortUrlClientIntegrationTest {
 
   @Test
   public void toStringTest() {
-    assertThat((BaseICGCClient) client).toStringIsCompleteAndProtected();
+    assertThat(client).toStringIsCompleteAndProtected();
   }
 
 }

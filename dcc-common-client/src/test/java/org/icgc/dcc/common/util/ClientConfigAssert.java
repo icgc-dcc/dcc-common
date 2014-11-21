@@ -20,6 +20,10 @@ package org.icgc.dcc.common.util;
 import lombok.val;
 
 import org.assertj.core.api.AbstractAssert;
+import org.icgc.dcc.common.client.api.cgp.CGPClient;
+import org.icgc.dcc.common.client.api.cud.CUDClient;
+import org.icgc.dcc.common.client.api.daco.DACOClient;
+import org.icgc.dcc.common.client.api.shorturl.ShortURLClient;
 import org.icgc.dcc.common.client.impl.BaseICGCClient;
 
 public class ClientConfigAssert extends AbstractAssert<ClientConfigAssert, BaseICGCClient> {
@@ -30,6 +34,22 @@ public class ClientConfigAssert extends AbstractAssert<ClientConfigAssert, BaseI
 
   public static ClientConfigAssert assertThat(BaseICGCClient actual) {
     return new ClientConfigAssert(actual);
+  }
+
+  public static ClientConfigAssert assertThat(CGPClient client) {
+    return assertThat((BaseICGCClient) client);
+  }
+
+  public static ClientConfigAssert assertThat(CUDClient client) {
+    return assertThat((BaseICGCClient) client);
+  }
+
+  public static ClientConfigAssert assertThat(DACOClient client) {
+    return assertThat((BaseICGCClient) client);
+  }
+
+  public static ClientConfigAssert assertThat(ShortURLClient client) {
+    return assertThat((BaseICGCClient) client);
   }
 
   public ClientConfigAssert toStringContainsFields(String... fieldNames) {
