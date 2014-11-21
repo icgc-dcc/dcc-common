@@ -20,7 +20,7 @@ package org.icgc.dcc.common.client;
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.icgc.dcc.common.util.AssertUtils.assertClientToString;
+import static org.icgc.dcc.common.util.ClientConfigAssert.assertThat;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -67,7 +67,9 @@ public class CUDClientIntegrationTest {
         .strictSSLCertificates(false)
         .requestLoggingEnabled(true)
         .build();
-    client = ICGCClient.create(config).cud();
+    client = ICGCClient
+        .create(config)
+        .cud();
     token = client.login(CUD_USER, CUD_PASSWD);
   }
 
@@ -229,7 +231,7 @@ public class CUDClientIntegrationTest {
 
   @Test
   public void toStringTest() {
-    assertClientToString(client.toString());
+    assertThat(client).toStringIsCompleteAndProtected();
   }
 
 }

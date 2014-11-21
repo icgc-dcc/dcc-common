@@ -17,7 +17,7 @@
  */
 package org.icgc.dcc.common.client;
 
-import static org.icgc.dcc.common.util.AssertUtils.assertClientToString;
+import static org.icgc.dcc.common.util.ClientConfigAssert.assertThat;
 
 import java.util.List;
 import java.util.Map;
@@ -265,7 +265,7 @@ public class CGPClientIntegrationTest {
 
   @Test
   public void toStringTest() {
-    assertClientToString(client.toString());
+    assertThat(client).toStringIsCompleteAndProtected();
   }
 
 }
