@@ -32,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import lombok.ToString;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +54,7 @@ import com.sun.jersey.client.urlconnection.HTTPSProperties;
  * Base class to initialize a ICGC REST API client
  */
 @Slf4j
+@ToString(exclude = "jerseyClient")
 public abstract class BaseICGCClient {
 
   protected final ICGCClientConfig config;

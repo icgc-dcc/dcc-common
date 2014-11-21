@@ -18,6 +18,7 @@
 package org.icgc.dcc.common.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.icgc.dcc.common.util.AssertUtils.assertClientToString;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
@@ -141,6 +142,11 @@ public class ShortUrlClientIntegrationTest {
         .build();
     val client = ICGCClient.create(config).shortUrl();
     client.shorten(SAMPLE_URL);
+  }
+
+  @Test
+  public void toStringTest() {
+    assertClientToString(client.toString());
   }
 
 }
