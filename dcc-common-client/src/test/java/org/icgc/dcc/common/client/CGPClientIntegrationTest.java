@@ -17,7 +17,7 @@
  */
 package org.icgc.dcc.common.client;
 
-import static org.icgc.dcc.common.util.ClientConfigAssert.toStringIsCompleteAndProtected;
+import static org.icgc.dcc.common.util.ClientConfigAssert.assertThat;
 
 import java.util.List;
 import java.util.Map;
@@ -266,7 +266,7 @@ public class CGPClientIntegrationTest {
 
   @Test
   public void toStringTest() {
-    toStringIsCompleteAndProtected((BaseICGCClient) client);
+    assertThat((BaseICGCClient) client).toStringIsCompleteAndProtected();
   }
 
 }

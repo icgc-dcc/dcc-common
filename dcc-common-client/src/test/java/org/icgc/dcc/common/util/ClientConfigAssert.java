@@ -62,10 +62,10 @@ public class ClientConfigAssert extends AbstractAssert<ClientConfigAssert, BaseI
     return this;
   }
 
-  public static void toStringIsCompleteAndProtected(BaseICGCClient client) {
-    assertThat(client).toStringContainsFields("cgpServiceUrl", "cudServiceUrl", "shortServiceUrl", "consumerKey",
-        "accessToken", "strictSSLCertificates", "requestLoggingEnabled");
-    assertThat(client).toStringExcludesFields("consumerSecret", "accessSecret", "cudAppId", "jerseyClient");
+  public ClientConfigAssert toStringIsCompleteAndProtected() {
+    return toStringContainsFields("cgpServiceUrl", "cudServiceUrl", "shortServiceUrl", "consumerKey", "accessToken",
+        "strictSSLCertificates", "requestLoggingEnabled")
+        .toStringExcludesFields("consumerSecret", "accessSecret", "cudAppId", "jerseyClient");
   }
 
 }
