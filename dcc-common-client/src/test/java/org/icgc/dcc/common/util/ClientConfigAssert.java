@@ -32,12 +32,12 @@ public class ClientConfigAssert extends AbstractAssert<ClientConfigAssert, BaseI
     return new ClientConfigAssert(actual);
   }
 
-  public ClientConfigAssert contains(String... configuration) {
-    // check that actual TolkienCharacter we want to make assertions on is not null.
+  public ClientConfigAssert toStringContainsFields(String... fieldNames) {
+    // check that actual BaseICGCClient we want to make assertions on is not null.
     isNotNull();
     val toStringValue = actual.toString();
 
-    for (val value : configuration) {
+    for (val value : fieldNames) {
       if (!toStringValue.contains(value)) {
         failWithMessage("Expected that string representation of the client contains <%s> but was <%s>", value,
             toStringValue);
@@ -47,12 +47,12 @@ public class ClientConfigAssert extends AbstractAssert<ClientConfigAssert, BaseI
     return this;
   }
 
-  public ClientConfigAssert doesNotContain(String... configuration) {
-    // check that actual TolkienCharacter we want to make assertions on is not null.
+  public ClientConfigAssert toStringExcludesFields(String... fieldNames) {
+    // check that actual BaseICGCClient we want to make assertions on is not null.
     isNotNull();
     val toStringValue = actual.toString();
 
-    for (val value : configuration) {
+    for (val value : fieldNames) {
       if (toStringValue.contains(value)) {
         failWithMessage("Expected that string representation of the client does not contain <%s> but was <%s>", value,
             toStringValue);
@@ -60,6 +60,12 @@ public class ClientConfigAssert extends AbstractAssert<ClientConfigAssert, BaseI
     }
 
     return this;
+  }
+
+  public static void toStringIsCompleteAndProtected(BaseICGCClient client) {
+    assertThat(client).toStringContainsFields("cgpServiceUrl", "cudServiceUrl", "shortServiceUrl", "consumerKey",
+        "accessToken", "strictSSLCertificates", "requestLoggingEnabled");
+    assertThat(client).toStringExcludesFields("consumerSecret", "accessSecret", "cudAppId", "jerseyClient");
   }
 
 }

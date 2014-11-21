@@ -18,7 +18,7 @@
 package org.icgc.dcc.common.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.icgc.dcc.common.util.AssertUtils.assertClientToString;
+import static org.icgc.dcc.common.util.ClientConfigAssert.toStringIsCompleteAndProtected;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
@@ -147,7 +147,7 @@ public class ShortUrlClientIntegrationTest {
 
   @Test
   public void toStringTest() {
-    assertClientToString((BaseICGCClient) client);
+    toStringIsCompleteAndProtected((BaseICGCClient) client);
   }
 
 }

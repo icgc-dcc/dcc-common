@@ -20,7 +20,7 @@ package org.icgc.dcc.common.client;
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.icgc.dcc.common.util.AssertUtils.assertClientToString;
+import static org.icgc.dcc.common.util.ClientConfigAssert.toStringIsCompleteAndProtected;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -232,7 +232,7 @@ public class CUDClientIntegrationTest {
 
   @Test
   public void toStringTest() {
-    assertClientToString((BaseICGCClient) client);
+    toStringIsCompleteAndProtected((BaseICGCClient) client);
   }
 
 }
