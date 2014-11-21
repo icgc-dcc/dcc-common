@@ -17,6 +17,8 @@
  */
 package org.icgc.dcc.common.client;
 
+import static org.icgc.dcc.common.util.AssertUtils.assertClientToString;
+
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -259,6 +261,11 @@ public class CGPClientIntegrationTest {
     for (val key : details.keySet()) {
       System.out.printf("%s : %s\n", key, details.get(key));
     }
+  }
+
+  @Test
+  public void toStringTest() {
+    assertClientToString(client.toString());
   }
 
 }
