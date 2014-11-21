@@ -30,6 +30,7 @@ import org.icgc.dcc.common.client.api.ICGCClient;
 import org.icgc.dcc.common.client.api.ICGCClientConfig;
 import org.icgc.dcc.common.client.api.daco.DACOClient;
 import org.icgc.dcc.common.client.api.daco.DACOClient.UserType;
+import org.icgc.dcc.common.client.impl.BaseICGCClient;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -105,7 +106,7 @@ public class DACOClientIntegrationTest {
 
   @Test
   public void toStringTest() {
-    assertClientToString(client.toString());
+    assertClientToString((BaseICGCClient) client);
   }
 
 }

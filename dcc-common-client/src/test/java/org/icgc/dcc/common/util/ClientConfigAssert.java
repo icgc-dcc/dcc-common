@@ -17,19 +17,49 @@
  */
 package org.icgc.dcc.common.util;
 
-import static lombok.AccessLevel.PRIVATE;
-import static org.icgc.dcc.common.util.ClientConfigAssert.assertThat;
-import lombok.NoArgsConstructor;
+import lombok.val;
 
+import org.assertj.core.api.AbstractAssert;
 import org.icgc.dcc.common.client.impl.BaseICGCClient;
 
-@NoArgsConstructor(access = PRIVATE)
-public final class AssertUtils {
+public class ClientConfigAssert extends AbstractAssert<ClientConfigAssert, BaseICGCClient> {
 
-  public static void assertClientToString(BaseICGCClient client) {
-    assertThat(client).contains("cgpServiceUrl", "cudServiceUrl", "shortServiceUrl", "consumerKey",
-        "accessToken", "strictSSLCertificates", "requestLoggingEnabled");
-    assertThat(client).doesNotContain("consumerSecret", "accessSecret", "cudAppId", "jerseyClient");
+  public ClientConfigAssert(BaseICGCClient actual) {
+    super(actual, ClientConfigAssert.class);
+  }
+
+  public static ClientConfigAssert assertThat(BaseICGCClient actual) {
+    return new ClientConfigAssert(actual);
+  }
+
+  public ClientConfigAssert contains(String... configuration) {
+    // check that actual TolkienCharacter we want to make assertions on is not null.
+    isNotNull();
+    val toStringValue = actual.toString();
+
+    for (val value : configuration) {
+      if (!toStringValue.contains(value)) {
+        failWithMessage("Expected that string representation of the client contains <%s> but was <%s>", value,
+            toStringValue);
+      }
+    }
+
+    return this;
+  }
+
+  public ClientConfigAssert doesNotContain(String... configuration) {
+    // check that actual TolkienCharacter we want to make assertions on is not null.
+    isNotNull();
+    val toStringValue = actual.toString();
+
+    for (val value : configuration) {
+      if (toStringValue.contains(value)) {
+        failWithMessage("Expected that string representation of the client does not contain <%s> but was <%s>", value,
+            toStringValue);
+      }
+    }
+
+    return this;
   }
 
 }
