@@ -20,7 +20,7 @@ package org.icgc.dcc.common.client;
 import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.icgc.dcc.common.util.AssertUtils.assertClientToString;
+import static org.icgc.dcc.common.util.ClientConfigAssert.assertThat;
 
 import java.util.NoSuchElementException;
 
@@ -105,7 +105,7 @@ public class DACOClientIntegrationTest {
 
   @Test
   public void toStringTest() {
-    assertClientToString(client.toString());
+    assertThat(client).toStringIsCompleteAndProtected();
   }
 
 }
