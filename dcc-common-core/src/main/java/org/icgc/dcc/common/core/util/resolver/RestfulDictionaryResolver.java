@@ -33,7 +33,7 @@ import com.google.common.base.Optional;
 @NoArgsConstructor
 public class RestfulDictionaryResolver implements SubmissionSystemDictionaryResolver {
 
-  private String url = DEFAULT_DICTIONARY_URL;
+  private String url = DEFAULT_API_URL;
 
   @Override
   public ObjectNode get() {

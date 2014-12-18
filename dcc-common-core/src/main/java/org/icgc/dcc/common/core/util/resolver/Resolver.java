@@ -46,24 +46,25 @@ public interface Resolver {
   interface SubmissionSystemResolver extends Resolver {
 
     String DEFAULT_SCHEME = "http://";
-    String DEFAULT_HOST = "***REMOVED***";
+    String DEFAULT_HOST = "hwww2-dcc.oicr.on.ca";
     int DEFAULT_PORT = 5380;
-    String PATH_BASE = "/ws";
+    String DEFAULT_API_PATH = "/ws";
+    String DEFAULT_API_URL = DEFAULT_SCHEME + DEFAULT_HOST + ":" + DEFAULT_PORT + DEFAULT_API_PATH;
 
     String getSubmissionSystemUrl(Optional<String> qualifier);
 
     interface SubmissionSystemDictionaryResolver extends DictionaryResolver, SubmissionSystemResolver {
 
-      String PATH_SPECIFIC = PATH_BASE + "/dictionaries";
-      String PATH_CURRENT = PATH_BASE + "/nextRelease/dictionary";
-      String DEFAULT_DICTIONARY_URL = DEFAULT_SCHEME + DEFAULT_HOST + ":" + DEFAULT_PORT + PATH_CURRENT;
+      String PATH_SPECIFIC = "/dictionaries";
+      String PATH_CURRENT = "/nextRelease/dictionary";
+      String DEFAULT_DICTIONARY_URL = DEFAULT_API_URL + PATH_CURRENT;
 
     }
 
     interface SubmissionSystemCodeListsResolver extends CodeListsResolver, SubmissionSystemResolver {
 
-      String PATH = PATH_BASE + "/codeLists";
-      String DEFAULT_CODELISTS_URL = DEFAULT_SCHEME + DEFAULT_HOST + ":" + DEFAULT_PORT + PATH;
+      String PATH = "/codeLists";
+      String DEFAULT_CODELISTS_URL = DEFAULT_API_URL + PATH;
 
     }
 
