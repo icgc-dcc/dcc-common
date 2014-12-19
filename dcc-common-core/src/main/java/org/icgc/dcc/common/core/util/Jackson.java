@@ -72,7 +72,6 @@ public final class Jackson {
     while (fieldNames.hasNext()) {
       val fieldName = fieldNames.next();
       val jsonNode = objectNode.get(fieldName);
-      checkState(jsonNode.getNodeType() != JsonNodeType.OBJECT && jsonNode.getNodeType() != JsonNodeType.ARRAY);
       builder.put(
           fieldName,
           jsonNode.asText());

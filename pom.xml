@@ -24,6 +24,7 @@
 
   <modules>
     <module>dcc-common-core</module>
+    <module>dcc-common-meta</module>
     <module>dcc-common-client</module>
     <module>dcc-common-hadoop</module>
     <module>dcc-common-test</module>
