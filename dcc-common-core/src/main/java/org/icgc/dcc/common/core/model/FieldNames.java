@@ -148,6 +148,7 @@ public final class FieldNames {
     public static final String OBSERVATION_ARRAY_NAME = "observation";
 
     public static final String AVAILABLE_RAW_SEQUENCE_DATA = "available_raw_sequence_data";
+    public static final String STUDY = "study";
     public static final String SUMMARY = "_summary";
 
     public static final String SURROGATE_MATCHED_SAMPLE_ID = _("_%s", SUBMISSION_MATCHED_SAMPLE_ID);

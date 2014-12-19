@@ -22,8 +22,10 @@ import java.io.IOException;
 import lombok.val;
 
 import org.icgc.dcc.common.core.util.resolver.RestfulDictionaryResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class DictionaryMetadataGeneratorTest {
 
   @Test
