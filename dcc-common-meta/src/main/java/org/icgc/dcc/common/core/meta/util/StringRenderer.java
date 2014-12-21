@@ -15,8 +15,33 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.meta;
+package org.icgc.dcc.common.core.meta.util;
 
-public class Metadata {
+import java.util.Locale;
+
+import lombok.val;
+
+import org.icgc.dcc.common.core.model.ValueType;
+import org.stringtemplate.v4.AttributeRenderer;
+
+public class StringRenderer implements AttributeRenderer {
+
+  @Override
+  public String toString(Object o, String formatString, Locale locale) {
+    val text = (String) o;
+    if ("className".equals(formatString)) {
+      return Formatters.formatClassName(text);
+    } else if ("instanceName".equals(formatString)) {
+      return Formatters.formatInstanceName(text);
+    } else if ("fieldName".equals(formatString)) {
+      return Formatters.formatInstanceName(text);
+    } else if ("enumValue".equals(formatString)) {
+      return Formatters.formatEnumValue(text);
+    } else if ("valueType".equals(formatString)) {
+      return ValueType.valueOf(text).getJavaType().getSimpleName();
+    } else {
+      return text;
+    }
+  }
 
 }

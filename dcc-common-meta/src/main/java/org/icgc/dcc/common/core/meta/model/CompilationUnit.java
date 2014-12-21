@@ -15,23 +15,15 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util.resolver;
+package org.icgc.dcc.common.core.meta.model;
 
-import org.icgc.dcc.common.core.util.resolver.Resolver.DictionaryResolver;
+import lombok.Value;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Optional;
+@Value
+public class CompilationUnit {
 
-public class ArtifactoryDictionaryResolver extends AbstractArtifactoryResolver implements DictionaryResolver {
-
-  @Override
-  public ObjectNode get() {
-    return read("Dictionary.json", ObjectNode.class);
-  }
-
-  @Override
-  public ObjectNode apply(Optional<String> version) {
-    return read("Dictionary.json", ObjectNode.class, version);
-  }
+  String packageName;
+  String name;
+  String source;
 
 }

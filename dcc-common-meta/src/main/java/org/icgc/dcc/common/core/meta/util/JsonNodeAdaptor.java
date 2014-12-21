@@ -15,24 +15,35 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.meta;
+package org.icgc.dcc.common.core.meta.util;
 
-import java.io.IOException;
-
+import static com.google.common.collect.Lists.newArrayList;
 import lombok.val;
 
-import org.icgc.dcc.common.core.util.resolver.RestfulDictionaryResolver;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.stringtemplate.v4.Interpreter;
+import org.stringtemplate.v4.ModelAdaptor;
+import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.misc.STNoSuchPropertyException;
 
-@Ignore
-public class DictionaryMetadataGeneratorTest {
+import com.fasterxml.jackson.databind.JsonNode;
 
-  @Test
-  public void testGenerate() throws IOException {
-    val generator = new DictionaryMetadataGenerator(new RestfulDictionaryResolver());
+public class JsonNodeAdaptor implements ModelAdaptor {
 
-    generator.generate();
+  @Override
+  public Object getProperty(Interpreter interpreter, ST self, Object o, Object property, String propertyName)
+      throws STNoSuchPropertyException {
+    val jsonNode = (JsonNode) o;
+
+    val attribute = jsonNode.path(propertyName);
+    if (attribute.isArray()) {
+      return newArrayList((Iterable<?>) attribute);
+    } else if (attribute.isTextual()) {
+      return attribute.asText();
+    } else if (attribute.isMissingNode() || attribute.isNull()) {
+      return null;
+    } else {
+      return attribute;
+    }
   }
 
 }

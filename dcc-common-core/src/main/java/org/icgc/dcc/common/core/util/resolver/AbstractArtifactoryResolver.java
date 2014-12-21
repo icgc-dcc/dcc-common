@@ -17,21 +17,54 @@
  */
 package org.icgc.dcc.common.core.util.resolver;
 
-import org.icgc.dcc.common.core.util.resolver.Resolver.DictionaryResolver;
+import static org.icgc.dcc.common.core.util.FormatUtils._;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import lombok.Cleanup;
+import lombok.SneakyThrows;
+import lombok.val;
+
+import org.icgc.dcc.common.core.util.Optionals;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
 
-public class ArtifactoryDictionaryResolver extends AbstractArtifactoryResolver implements DictionaryResolver {
+public abstract class AbstractArtifactoryResolver implements Resolver {
 
-  @Override
-  public ObjectNode get() {
-    return read("Dictionary.json", ObjectNode.class);
+  private static String getDefaultVersion() {
+    return "0.10a";
   }
 
-  @Override
-  public ObjectNode apply(Optional<String> version) {
-    return read("Dictionary.json", ObjectNode.class, version);
+  protected static <T> T read(String fileName, Class<T> type) {
+    return read(fileName, type, Optional.of(getDefaultVersion()));
+  }
+
+  @SneakyThrows
+  protected static <T> T read(String fileName, Class<T> type, Optional<String> version) {
+    // Resolve
+    @Cleanup
+    val zip = new ZipInputStream(getUrl(version).openStream());
+    ZipEntry entry;
+
+    val entryName = "org/icgc/dcc/resources/" + fileName;
+    do {
+      entry = zip.getNextEntry();
+    } while (!entryName.equals(entry.getName()));
+
+    return new ObjectMapper().readValue(zip, type);
+  }
+
+  protected static URL getUrl(Optional<String> optionalVersion) throws MalformedURLException {
+    val basePath = "http://seqwaremaven.oicr.on.ca/artifactory";
+    val template = "%s/simple/dcc-dependencies/org/icgc/dcc/dcc-resources/%s/dcc-resources-%s.jar";
+    val version = Optionals.defaultValue(optionalVersion, getDefaultVersion());
+    URL url = new URL(_(template, basePath, version, version));
+
+    return url;
   }
 
 }

@@ -15,23 +15,30 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util.resolver;
+package org.icgc.dcc.common.core.meta.generator;
 
-import org.icgc.dcc.common.core.util.resolver.Resolver.DictionaryResolver;
+import java.io.File;
+import java.io.IOException;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Optional;
+import lombok.val;
 
-public class ArtifactoryDictionaryResolver extends AbstractArtifactoryResolver implements DictionaryResolver {
+import org.icgc.dcc.common.core.meta.generator.SubmissionModelGenerator;
+import org.icgc.dcc.common.core.util.resolver.ArtifactoryCodeListsResolver;
+import org.icgc.dcc.common.core.util.resolver.ArtifactoryDictionaryResolver;
+import org.junit.Test;
 
-  @Override
-  public ObjectNode get() {
-    return read("Dictionary.json", ObjectNode.class);
-  }
+//@Ignore
+public class SubmissionModelGeneratorTest {
 
-  @Override
-  public ObjectNode apply(Optional<String> version) {
-    return read("Dictionary.json", ObjectNode.class, version);
+  @Test
+  public void testGenerate() throws IOException {
+    val outputDir = new File("target");
+    val generator = new SubmissionModelGenerator(
+        new ArtifactoryDictionaryResolver(),
+        new ArtifactoryCodeListsResolver(),
+        outputDir);
+
+    generator.generate();
   }
 
 }

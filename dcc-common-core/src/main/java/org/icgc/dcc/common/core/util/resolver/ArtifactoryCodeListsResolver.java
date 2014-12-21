@@ -15,22 +15,17 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.meta;
+package org.icgc.dcc.common.core.util.resolver;
 
-import lombok.Value;
+import org.icgc.dcc.common.core.util.resolver.Resolver.CodeListsResolver;
 
-@Value
-public class DataElement {
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
-  String source;
-  String schema;
-  String name;
-  String type;
-  String path;
+public class ArtifactoryCodeListsResolver extends AbstractArtifactoryResolver implements CodeListsResolver {
 
   @Override
-  public String toString() {
-    return name;
+  public ArrayNode get() {
+    return read("CodeList.json", ArrayNode.class);
   }
 
 }

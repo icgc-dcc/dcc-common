@@ -1,5 +1,5 @@
 /*
- * Copyright (c) <year< The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2015 The Ontario Institute for Cancer Research. All rights reserved.                             
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -19,21 +19,59 @@
 /**
  * Dictionary file type.
  */
+codeList(source, codeList) ::= <<
+<copyright(source.year)>
+package <source.packageName>;
+
+import <source.imports>;
+import static lombok.AccessLevel.PRIVATE;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+
+/**
+ * Code list {@code <codeList.name>}.
+ */
+@Getter
+@RequiredArgsConstructor(access = PRIVATE)
+public enum <className(codeList)> {
+	
+  <codeList.terms:{ t | <term(t)>}; separator=",\n\n">;
+  
+  private final int code;
+  @NonNull
+  private final String value;
+  private final String uri;
+  
+}
+>>
+
+/**
+ * Dictionary file type.
+ */
 fileType(source, schema) ::= <<
 <copyright(source.year)>
 package <source.packageName>;
 
 import <source.imports>;
 import lombok.Value;
+import lombok.experimental.Builders;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
+/**
+ * Dictionary {@code <schema.name>} schema (file type).
+ */
 @Value
-public class <className(schema)> {  
-  <schema.fields:{ f | <field(f)>}>
+@Builder
+public class <className(schema)> {
+	
+  <schema.fields:{ f | <field(f)>}; separator="\n\n">
   
-  private static final <className(schema)> <instanceName(schema)>;
-  public static <className(schema)> <instanceName(schema)>() {
-    return <instanceName(schema)>; // fields: <schema.fields:{ f | <fieldName(f)>};separator=", ">
-  } 
+  @JsonCreator
+  private <className(schema)>(<schema.fields:{ f | <param(f)>}; anchor, wrap, separator=", ">) {
+    <schema.fields:{ f | this.<f.name; format="fieldName"> = <f.name; format="fieldName">;}; separator="\n">
+  }
   
 }
 >>
@@ -41,9 +79,24 @@ public class <className(schema)> {
 /**
  * Field template
  */
-field(field) ::= <<
+param(field) ::= <<
+@JsonProperty("<field.name; format="fieldName">") <field.valueType; format="valueType"> <field.name; format="fieldName">
+>>
 
-private <field.valueType; format="className"> <field.name; format="fieldName">;
+/**
+ * Field template
+ */
+field(field) ::= <<
+/** Schema field {@code <field.name>} */
+private <field.valueType; format="valueType"> <field.name; format="fieldName">;
+>>
+
+/**
+ * Term template
+ */
+term(term) ::= <<
+/** Code list term {@code <term.value>} */
+<term.value; format="enumValue">(<term.code>, "<term.value>", <if(!term.uri)>null<else>"<term.uri>"<endif>)
 >>
 
 /**
@@ -88,4 +141,4 @@ copyright(year) ::= <<
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- >>
+>>
