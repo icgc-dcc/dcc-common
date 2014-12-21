@@ -43,6 +43,8 @@ public class Formatters {
 
   private static String normalizeToken(String text) {
     text = text.replaceAll("[ï]", "i");
+    text = text.replaceAll(">=", "_GTE_");
+    text = text.replaceAll("<=", "_LTE_");
     text = text.replaceAll("^-1$", "MINUS_ONE");
     text = text.replaceAll("^1$", "ONE");
     text = text.replaceAll("^2$", "TWO");

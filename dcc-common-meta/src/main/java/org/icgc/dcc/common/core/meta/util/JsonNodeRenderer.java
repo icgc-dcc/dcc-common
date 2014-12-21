@@ -17,32 +17,20 @@
  */
 package org.icgc.dcc.common.core.meta.util;
 
+import static org.icgc.dcc.common.core.util.Jackson.PRETTY_WRITTER;
+
 import java.util.Locale;
 
-import lombok.val;
+import lombok.SneakyThrows;
 
-import org.icgc.dcc.common.core.model.ValueType;
+import org.stringtemplate.v4.AttributeRenderer;
 
-public class StringRenderer extends org.stringtemplate.v4.StringRenderer {
+public class JsonNodeRenderer implements AttributeRenderer {
 
   @Override
+  @SneakyThrows
   public String toString(Object o, String formatString, Locale locale) {
-    val text = (String) o;
-    if ("className".equals(formatString)) {
-      return Formatters.formatClassName(text);
-    } else if ("instanceName".equals(formatString)) {
-      return Formatters.formatInstanceName(text);
-    } else if ("fieldName".equals(formatString)) {
-      return Formatters.formatInstanceName(text);
-    } else if ("enumValue".equals(formatString)) {
-      return Formatters.formatEnumValue(text);
-    } else if ("valueType".equals(formatString)) {
-      return ValueType.valueOf(text).getJavaType().getSimpleName();
-    } else if ("javadoc".equals(formatString)) {
-      return text.replace("\n", "\n* ");
-    } else {
-      return super.toString(o, formatString, locale);
-    }
+    return PRETTY_WRITTER.writeValueAsString(o);
   }
 
 }

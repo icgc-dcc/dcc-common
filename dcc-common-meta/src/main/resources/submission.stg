@@ -61,16 +61,21 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
  * Dictionary {@code <schema.name>} schema (file type).
+ * \<p>
+ * Dictionary definition:
+ * \<code>
+ * <schema; format="javadoc">
+ * \</code>
  */
 @Value
 @Builder
 public class <className(schema)> {
 	
-  <schema.fields:{ f | <field(f)>}; separator="\n\n">
+  <schema.fields:field(); separator="\n\n">
   
   @JsonCreator
-  private <className(schema)>(<schema.fields:{ f | <param(f)>}; anchor, wrap, separator=", ">) {
-    <schema.fields:{ f | this.<f.name; format="fieldName"> = <f.name; format="fieldName">;}; separator="\n">
+  private <className(schema)>(<schema.fields:param(); anchor, wrap, separator=", ">) {
+    <schema.fields:{ f | this.fieldName(f) = fieldName(f);}; separator="\n">
   }
   
 }
@@ -80,7 +85,7 @@ public class <className(schema)> {
  * Field template
  */
 param(field) ::= <<
-@JsonProperty("<field.name; format="fieldName">") <field.valueType; format="valueType"> <field.name; format="fieldName">
+@JsonProperty("<fieldName(field)>") <field.valueType; format="valueType"> <fieldName(field)>
 >>
 
 /**

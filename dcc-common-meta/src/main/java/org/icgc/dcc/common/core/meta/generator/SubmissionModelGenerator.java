@@ -31,6 +31,7 @@ import lombok.val;
 
 import org.icgc.dcc.common.core.meta.model.CompilationUnit;
 import org.icgc.dcc.common.core.meta.util.JsonNodeAdaptor;
+import org.icgc.dcc.common.core.meta.util.JsonNodeRenderer;
 import org.icgc.dcc.common.core.meta.util.StringRenderer;
 import org.icgc.dcc.common.core.util.resolver.Resolver.CodeListsResolver;
 import org.icgc.dcc.common.core.util.resolver.Resolver.DictionaryResolver;
@@ -112,6 +113,7 @@ public class SubmissionModelGenerator {
   private static STGroupFile createGroup() {
     val group = new STGroupFile(TEMPLATE_FILE);
     group.registerRenderer(String.class, new StringRenderer());
+    group.registerRenderer(JsonNode.class, new JsonNodeRenderer());
     group.registerModelAdaptor(JsonNode.class, new JsonNodeAdaptor());
 
     return group;
