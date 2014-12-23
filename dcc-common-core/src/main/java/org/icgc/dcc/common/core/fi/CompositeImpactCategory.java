@@ -22,6 +22,7 @@ import static lombok.AccessLevel.PRIVATE;
 import static org.icgc.dcc.common.core.model.ConsequenceType.FRAMESHIFT_VARIANT;
 import static org.icgc.dcc.common.core.model.ConsequenceType.INITIATOR_CODON_VARIANT;
 import static org.icgc.dcc.common.core.model.ConsequenceType.MISSENSE_VARIANT;
+import static org.icgc.dcc.common.core.model.ConsequenceType.START_LOST;
 import static org.icgc.dcc.common.core.model.ConsequenceType.STOP_GAINED;
 import static org.icgc.dcc.common.core.model.ConsequenceType.STOP_LOST;
 
@@ -59,6 +60,7 @@ public enum CompositeImpactCategory implements ImpactPredictorCategory {
   private static final List<ConsequenceType> NON_MISSENSE_HIGH_IMPACT_CONSEQUENCE_TYPES = of(
       FRAMESHIFT_VARIANT,
       // NON_CONSERVATIVE_MISSENSE_VARIANT, No longer available
+      START_LOST,
       INITIATOR_CODON_VARIANT,
       STOP_GAINED,
       STOP_LOST);
