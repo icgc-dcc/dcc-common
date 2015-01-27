@@ -155,7 +155,9 @@ public abstract class BaseICGCClient {
    * @param defaultMessage - returned in case the <code>resopnse</code> does not have body
    */
   protected static String getErrorMessage(ClientResponse response, String defaultMessage) {
-    return response.hasEntity() ? response.getEntity(String.class) : defaultMessage;
+    val apiMessage = response.hasEntity() ? response.getEntity(String.class) : "";
+
+    return String.format("[%d] %s. %s", response.getStatus(), defaultMessage, apiMessage);
   }
 
 }

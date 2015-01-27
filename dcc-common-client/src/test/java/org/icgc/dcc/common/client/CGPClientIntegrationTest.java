@@ -21,7 +21,6 @@ import static org.icgc.dcc.common.util.ClientConfigAssert.assertThat;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.icgc.dcc.common.client.api.ICGCAccessException;
 import org.icgc.dcc.common.client.api.ICGCClient;
 import org.icgc.dcc.common.client.api.ICGCClientConfig;
+import org.icgc.dcc.common.client.api.ICGCEntityNotFoundException;
 import org.icgc.dcc.common.client.api.ICGCUnknownException;
 import org.icgc.dcc.common.client.api.cgp.CGPClient;
 import org.icgc.dcc.common.client.api.cgp.CancerGenomeProject;
@@ -152,7 +152,7 @@ public class CGPClientIntegrationTest {
     }
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test(expected = ICGCEntityNotFoundException.class)
   public void notFoundTest() {
     client.getCancerGenomeProject("00");
   }
@@ -160,7 +160,7 @@ public class CGPClientIntegrationTest {
   @Test
   public void noRestAPITest() {
     exception.expect(ICGCUnknownException.class);
-    exception.expectMessage("REST API could not be found");
+    exception.expectMessage("[404] Remote API endpoint not found");
     val config = ICGCClientConfig.builder()
         .cgpServiceUrl(NO_API_URL)
         .consumerKey(CONSUMER_KEY)
@@ -175,13 +175,14 @@ public class CGPClientIntegrationTest {
   @Test
   public void wrongConsumerKeyTest() {
     exception.expect(ICGCAccessException.class);
-    exception.expectMessage("Invalid consumer");
+    exception.expectMessage("[401] Not authorized. Invalid consumer");
     val config = ICGCClientConfig.builder()
         .cgpServiceUrl(SERVICE_URL)
         .consumerKey(WRONG_CONSUMER_KEY)
         .consumerSecret(CONSUMER_SECRET)
         .accessToken(ACCESS_TOKEN)
         .accessSecret(ACCESS_SECRET)
+        .strictSSLCertificates(false)
         .build();
     val client = ICGCClient.create(config).cgp();
     client.getCancerGenomeProject("1172");
@@ -190,28 +191,30 @@ public class CGPClientIntegrationTest {
   @Test
   public void InvalidSignatureTest() {
     exception.expect(ICGCAccessException.class);
-    exception.expectMessage("Invalid signature");
+    exception.expectMessage("[401] Not authorized. Invalid signature");
     val config = ICGCClientConfig.builder()
         .cgpServiceUrl(SERVICE_URL)
         .consumerKey(CONSUMER_KEY)
         .consumerSecret(WRONG_CONSUMER_SECRET)
         .accessToken(ACCESS_TOKEN)
         .accessSecret(ACCESS_SECRET)
+        .strictSSLCertificates(false)
         .build();
     val client = ICGCClient.create(config).cgp();
     client.getCancerGenomeProject("1172");
   }
 
   @Test
-  public void AccessTokenTest() {
+  public void accessTokenTest() {
     exception.expect(ICGCAccessException.class);
-    exception.expectMessage("Invalid access token");
+    exception.expectMessage("[401] Not authorized. Invalid access token");
     val config = ICGCClientConfig.builder()
         .cgpServiceUrl(SERVICE_URL)
         .consumerKey(CONSUMER_KEY)
         .consumerSecret(CONSUMER_SECRET)
         .accessToken(WRONG_ACCESS_TOKEN)
         .accessSecret(ACCESS_SECRET)
+        .strictSSLCertificates(false)
         .build();
     val client = ICGCClient.create(config).cgp();
     client.getCancerGenomeProject("1172");
@@ -220,14 +223,8 @@ public class CGPClientIntegrationTest {
   @Test
   public void argumentsTest() {
     exception.expect(IllegalArgumentException.class);
-    exception.expectMessage("Null or empty ID");
+    exception.expectMessage("Null or empty argument");
     client.getCancerGenomeProject("");
-  }
-
-  @Test
-  @Ignore
-  public void cgpResponseStructureTest() {
-    // TODO how to check if CGPResponse - CancerGenomeProject mapping is correct?
   }
 
   @Test
