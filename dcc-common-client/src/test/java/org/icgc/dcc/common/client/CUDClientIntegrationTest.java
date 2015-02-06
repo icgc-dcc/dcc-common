@@ -130,7 +130,7 @@ public class CUDClientIntegrationTest {
     assertPermissionDeniedException(caughtException());
 
     catchException(client).getUserInfo(token, WRONG_TOKEN);
-    assertThat(caughtException())
+    assertThat((ICGCAccessException) caughtException())
         .isInstanceOf(ICGCAccessException.class)
         .hasMessage(INVALID_TOKEN_MESSAGE);
   }
