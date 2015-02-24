@@ -20,7 +20,7 @@ package org.icgc.dcc.common.client.api;
 import lombok.ToString;
 import lombok.Value;
 import lombok.val;
-import lombok.experimental.Builder;
+import lombok.Builder;
 
 /**
  * A container of configuration required to interact with the ICGC API.
