@@ -25,7 +25,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.transformValues;
 import static java.util.Collections.sort;
 import static java.util.regex.Pattern.compile;
-import static org.icgc.dcc.common.core.util.FormatUtils._;
+
 import static org.icgc.dcc.common.core.util.Jackson.formatPrettyJson;
 import static org.icgc.dcc.common.core.util.Joiners.PATH;
 import static org.icgc.dcc.common.hadoop.fs.HadoopUtils.lsAll;
@@ -194,7 +194,7 @@ public class SubmissionInputData {
   }
 
   private static String getKeyName(FileType fileType) {
-    return _("%s_file", fileType.getId());
+    return String.format("%s_file", fileType.getId());
   }
 
   @SneakyThrows

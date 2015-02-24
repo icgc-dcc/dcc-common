@@ -19,7 +19,7 @@ package org.icgc.dcc.common.core.util;
 
 import static com.google.common.base.Splitter.on;
 import static com.google.common.collect.ImmutableSet.of;
-import static org.icgc.dcc.common.core.util.FormatUtils._;
+
 import lombok.NonNull;
 
 import com.google.common.base.Joiner;
@@ -97,7 +97,7 @@ public class Splitters {
 
     // Error
     else {
-      throw new UnsupportedOperationException(_("Unsupported yet: '%s'", splitter));
+      throw new UnsupportedOperationException(String.format("Unsupported yet: '%s'", splitter));
     }
   }
 }
