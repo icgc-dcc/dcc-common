@@ -45,7 +45,7 @@ public class SubmissionModelGenerator {
   /**
    * Constants.
    */
-  private static String TEMPLATE_FILE = "submission.stg";
+  private static String TEMPLATE_FILE = "templates/submission.stg";
 
   /**
    * Dependencies.
@@ -62,7 +62,6 @@ public class SubmissionModelGenerator {
   private final File outputDir;
 
   public void generate() throws IOException {
-
     val group = createGroup();
 
     val dictionary = dictionaryResolver.get();
@@ -84,7 +83,6 @@ public class SubmissionModelGenerator {
       val unit = new CompilationUnit(getModelPackage(), className, source);
       writeSourceFile(unit);
     }
-
   }
 
   private String renderSource(STGroupFile group, String templateName, String modelName, JsonNode model) {

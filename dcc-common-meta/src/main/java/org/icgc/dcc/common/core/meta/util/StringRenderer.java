@@ -39,7 +39,7 @@ public class StringRenderer extends org.stringtemplate.v4.StringRenderer {
     } else if ("valueType".equals(formatString)) {
       return ValueType.valueOf(text).getJavaType().getSimpleName();
     } else if ("javadoc".equals(formatString)) {
-      return text.replace("\n", "\n* ");
+      return text.replace("\n", "\n * ");
     } else {
       return super.toString(o, formatString, locale);
     }
