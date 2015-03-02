@@ -52,7 +52,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.val;
-import lombok.experimental.Builder;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 import org.icgc.dcc.common.hadoop.cascading.operation.BaseBuffer;

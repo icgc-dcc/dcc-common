@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2015 The Ontario Institute for Cancer Research. All rights reserved.                             
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -15,29 +15,23 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.client.api.cgp;
-
-import java.util.List;
-import java.util.Map;
-
-import lombok.Builder;
-import lombok.Value;
+package org.icgc.dcc.common.client.api;
 
 /**
- * Cancer Genome Project (CGP). Can have nested {@link DataLevelProject}
+ * Throws when the ICGC API did not return the expected element. The ICGC API returns {@code 204 No Content} response.
  */
-@Value
-@Builder
-public class CancerGenomeProject {
+public class ICGCEntityNotFoundException extends ICGCException {
 
-  String nid;
-  String name;
-  String organSystem;
-  String country;
-  List<User> members;
-  List<User> leaders;
-  List<User> dataSubmitters;
-  Map<String, String> details;
-  List<DataLevelProject> dlps;
+  public ICGCEntityNotFoundException(Exception e) {
+    super(e);
+  }
+
+  public ICGCEntityNotFoundException(String message, Object... args) {
+    super(String.format(message, args));
+  }
+
+  public ICGCEntityNotFoundException(String message, Exception e) {
+    super(message, e);
+  }
 
 }

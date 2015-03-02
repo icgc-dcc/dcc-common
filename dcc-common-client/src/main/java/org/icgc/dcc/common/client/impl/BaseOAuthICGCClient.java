@@ -17,14 +17,13 @@
  */
 package org.icgc.dcc.common.client.impl;
 
-import java.util.NoSuchElementException;
-
 import lombok.NonNull;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 import org.icgc.dcc.common.client.api.ICGCAccessException;
 import org.icgc.dcc.common.client.api.ICGCClientConfig;
+import org.icgc.dcc.common.client.api.ICGCEntityNotFoundException;
 import org.icgc.dcc.common.client.api.ICGCUnknownException;
 
 import com.sun.jersey.api.client.ClientHandlerException;
@@ -80,10 +79,10 @@ public abstract class BaseOAuthICGCClient extends BaseICGCClient {
     if (status != Status.OK) {
       switch (status) {
       case NO_CONTENT:
-        throw new NoSuchElementException("An entity with such ID was not found");
+        throw new ICGCEntityNotFoundException("An entity with such ID was not found");
 
       case NOT_FOUND:
-        throw new ICGCUnknownException(getErrorMessage(response, "Remote API endpoint not found"));
+        throw new ICGCUnknownException("[404] Remote API endpoint not found");
 
       case UNAUTHORIZED:
         throw new ICGCAccessException(getErrorMessage(response, "Not authorized"));

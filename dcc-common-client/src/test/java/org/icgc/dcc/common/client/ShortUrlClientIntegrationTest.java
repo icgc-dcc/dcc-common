@@ -80,7 +80,7 @@ public class ShortUrlClientIntegrationTest {
   @Test
   public void incorrectServiceUrlTest() {
     exception.expect(ICGCUnknownException.class);
-    exception.expectMessage("REST API could not be found");
+    exception.expectMessage("[404] Remote API endpoint not found");
     val config = ICGCClientConfig.builder()
         .shortServiceUrl(NO_API_URL)
         .consumerKey(WRONG_CONSUMER_KEY)

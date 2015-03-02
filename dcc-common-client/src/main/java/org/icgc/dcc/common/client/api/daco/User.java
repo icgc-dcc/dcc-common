@@ -17,8 +17,8 @@
  */
 package org.icgc.dcc.common.client.api.daco;
 
+import lombok.Builder;
 import lombok.Value;
-import lombok.experimental.Builder;
 
 /**
  * Represents an approved DACO user.

@@ -47,9 +47,11 @@ public class CUDClientIntegrationTest {
   private static final String CUD_USER_2 = "someuser@o.ca";
   private static final String CUD_PASSWD = "***REMOVED***";
   private static final String WRONG_TOKEN = "~";
-  private static final String INVALID_KEY_MESSAGE = "{\"message\":\"Invalid key\"}";
-  private static final String INVALID_TOKEN_MESSAGE = "{\"message\":\"Invalid token\"}";
-  private static final String PERMISSION_DENIED_MESSAGE = "REST API permission deny";
+  private static final String INVALID_KEY_MESSAGE = "[500] Invalid key. {\"message\":\"Invalid key\"}";
+  private static final String INVALID_TOKEN_MESSAGE =
+      "[404] Remote API endpoint not found. {\"message\":\"Invalid token\"}";
+  private static final String PERMISSION_DENIED_MESSAGE =
+      "[403] Remote API permission denied. REST API permission deny";
 
   private static CUDClient client;
   private static final Map<String, String> singleItem = createOneItem();
@@ -128,7 +130,7 @@ public class CUDClientIntegrationTest {
     assertPermissionDeniedException(caughtException());
 
     catchException(client).getUserInfo(token, WRONG_TOKEN);
-    assertThat(caughtException())
+    assertThat((ICGCAccessException) caughtException())
         .isInstanceOf(ICGCAccessException.class)
         .hasMessage(INVALID_TOKEN_MESSAGE);
   }

@@ -20,8 +20,8 @@ package org.icgc.dcc.common.client.api.cgp;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Builder;
 import lombok.Value;
-import lombok.experimental.Builder;
 
 /**
  * Data Level Project (DLP). Can be a part of {@link CancerGenomeProject}, but no back reference is present.

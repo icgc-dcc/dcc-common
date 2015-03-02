@@ -21,13 +21,11 @@ import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.icgc.dcc.common.util.ClientConfigAssert.assertThat;
-
-import java.util.NoSuchElementException;
-
 import lombok.val;
 
 import org.icgc.dcc.common.client.api.ICGCClient;
 import org.icgc.dcc.common.client.api.ICGCClientConfig;
+import org.icgc.dcc.common.client.api.ICGCEntityNotFoundException;
 import org.icgc.dcc.common.client.api.daco.DACOClient;
 import org.icgc.dcc.common.client.api.daco.DACOClient.UserType;
 import org.junit.Before;
@@ -89,7 +87,7 @@ public class DACOClientIntegrationTest {
     // TODO find username that matches
   }
 
-  @Test
+  @Test(expected = ICGCEntityNotFoundException.class)
   public void hasDacoAccessTest() {
     assertThat(client.hasDacoAccess(VALID_OPENID, UserType.OPENID)).isTrue();
     assertThat(client.hasDacoAccess("SomeInvalidOpenId@gmail.com", UserType.OPENID)).isFalse();
@@ -99,7 +97,7 @@ public class DACOClientIntegrationTest {
 
   private static void assertNoSuchElementException(Exception e) {
     assertThat(e)
-        .isInstanceOf(NoSuchElementException.class)
+        .isInstanceOf(ICGCEntityNotFoundException.class)
         .hasMessage(NOT_FOUND_MESSAGE);
   }
 

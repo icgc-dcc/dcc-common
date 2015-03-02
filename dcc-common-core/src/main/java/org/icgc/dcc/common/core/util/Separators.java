@@ -18,7 +18,7 @@
 package org.icgc.dcc.common.core.util;
 
 import static com.google.common.collect.ImmutableSet.of;
-import static org.icgc.dcc.common.core.util.FormatUtils._;
+
 import lombok.NonNull;
 
 import com.google.common.base.Joiner;
@@ -109,12 +109,12 @@ public class Separators {
 
     // Special ones
     else if (separator.equals(EMPTY_STRING)) {
-      throw new IllegalStateException(_("Cannot split/join using '{}'", EMPTY_STRING)); // TODO: confirm for join
+      throw new IllegalStateException(String.format("Cannot split/join using '{}'", EMPTY_STRING)); // TODO: confirm for join
     }
 
     // Error
     else {
-      throw new UnsupportedOperationException(_("Unsupported yet: '%s'", separator));
+      throw new UnsupportedOperationException(String.format("Unsupported yet: '%s'", separator));
     }
 
   }
