@@ -21,7 +21,7 @@ import static lombok.AccessLevel.PRIVATE;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_DONOR_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_MATCHED_SAMPLE_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_SPECIMEN_ID;
-import static org.icgc.dcc.common.core.util.FormatUtils._;
+
 import lombok.NoArgsConstructor;
 
 import org.icgc.dcc.common.core.model.FeatureTypes.FeatureType;
@@ -124,8 +124,8 @@ public final class FieldNames {
     private IdentifierFieldNames() {
     }
 
-    public static final String SURROGATE_DONOR_ID = _("_%s", SUBMISSION_DONOR_ID);
-    public static final String SURROGATE_SPECIMEN_ID = _("_%s", SUBMISSION_SPECIMEN_ID);
+    public static final String SURROGATE_DONOR_ID = String.format("_%s", SUBMISSION_DONOR_ID);
+    public static final String SURROGATE_SPECIMEN_ID = String.format("_%s", SUBMISSION_SPECIMEN_ID);
     public static final String SURROGATE_SAMPLE_ID = "_sample_id";
     public static final String SURROGATE_MUTATION_ID = "_mutation_id";
 
@@ -151,7 +151,7 @@ public final class FieldNames {
     public static final String STUDY = "study";
     public static final String SUMMARY = "_summary";
 
-    public static final String SURROGATE_MATCHED_SAMPLE_ID = _("_%s", SUBMISSION_MATCHED_SAMPLE_ID);
+    public static final String SURROGATE_MATCHED_SAMPLE_ID = String.format("_%s", SUBMISSION_MATCHED_SAMPLE_ID);
   }
 
   /**

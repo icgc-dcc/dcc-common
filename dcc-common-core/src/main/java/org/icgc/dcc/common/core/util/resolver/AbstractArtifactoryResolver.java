@@ -17,8 +17,6 @@
  */
 package org.icgc.dcc.common.core.util.resolver;
 
-import static org.icgc.dcc.common.core.util.FormatUtils._;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
@@ -62,7 +60,7 @@ public abstract class AbstractArtifactoryResolver implements Resolver {
     val basePath = "http://seqwaremaven.oicr.on.ca/artifactory";
     val template = "%s/simple/dcc-dependencies/org/icgc/dcc/dcc-resources/%s/dcc-resources-%s.jar";
     val version = Optionals.defaultValue(optionalVersion, getDefaultVersion());
-    URL url = new URL(_(template, basePath, version, version));
+    URL url = new URL(String.format(template, basePath, version, version));
 
     return url;
   }

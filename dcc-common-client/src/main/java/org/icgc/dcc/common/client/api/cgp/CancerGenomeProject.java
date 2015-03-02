@@ -20,8 +20,8 @@ package org.icgc.dcc.common.client.api.cgp;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Builder;
 import lombok.Value;
-import lombok.experimental.Builder;
 
 /**
  * Cancer Genome Project (CGP). Can have nested {@link DataLevelProject}

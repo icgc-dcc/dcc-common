@@ -20,7 +20,7 @@ package org.icgc.dcc.common.core.util;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.collect.ImmutableSet.of;
 import static lombok.AccessLevel.PRIVATE;
-import static org.icgc.dcc.common.core.util.FormatUtils._;
+
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
@@ -99,12 +99,12 @@ public final class Joiners {
 
     // Special ones
     else if (joiner.equals(EMPTY_STRING)) {
-      throw new IllegalStateException(_("Cannot split using '{}'", EMPTY_STRING));
+      throw new IllegalStateException(String.format("Cannot split using '{}'", EMPTY_STRING));
     }
 
     // Error
     else {
-      throw new UnsupportedOperationException(_("Unsupported yet: '%s'", joiner));
+      throw new UnsupportedOperationException(String.format("Unsupported yet: '%s'", joiner));
     }
   }
 

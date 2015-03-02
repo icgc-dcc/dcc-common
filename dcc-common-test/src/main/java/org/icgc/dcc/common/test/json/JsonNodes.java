@@ -30,43 +30,44 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonNodes {
 
-  /**
-   * Allow for more liberal JSON strings to simplify literals with constants, etc.
-   */
-  public static final ObjectMapper MAPPER = new ObjectMapper() //
-      .configure(ALLOW_UNQUOTED_FIELD_NAMES, true) //
-      .configure(ALLOW_SINGLE_QUOTES, true) //
-      .configure(ALLOW_COMMENTS, true);
+	/**
+	 * Allow for more liberal JSON strings to simplify literals with constants,
+	 * etc.
+	 */
+	public static final ObjectMapper MAPPER = new ObjectMapper() //
+			.configure(ALLOW_UNQUOTED_FIELD_NAMES, true) //
+			.configure(ALLOW_SINGLE_QUOTES, true) //
+			.configure(ALLOW_COMMENTS, true);
 
-  /**
-   * Utility method that returns a {@code JsonNode} given a JSON String.
-   * <p>
-   * The name and use is inspired by jQuery's {@code $} function.
-   * 
-   * @param json
-   * @return
-   */
-  @SneakyThrows
-  public static JsonNode $(String json) {
-    return MAPPER.readTree(json);
-  }
+	/**
+	 * Utility method that returns a {@code JsonNode} given a JSON String.
+	 * <p>
+	 * The name and use is inspired by jQuery's {@code $} function.
+	 * 
+	 * @param json
+	 * @return
+	 */
+	@SneakyThrows
+	public static JsonNode $(String json) {
+		return MAPPER.readTree(json);
+	}
 
-  /**
-   * Utility method that returns a {@code JsonNode} given a JSON String.
-   * <p>
-   * The name and use is inspired by jQuery's {@code $} function.
-   * 
-   * @param json
-   * @return
-   */
-  @SneakyThrows
-  public static JsonNode $(File jsonFile) {
-    return MAPPER.readTree(jsonFile);
-  }
+	/**
+	 * Utility method that returns a {@code JsonNode} given a JSON String.
+	 * <p>
+	 * The name and use is inspired by jQuery's {@code $} function.
+	 * 
+	 * @param json
+	 * @return
+	 */
+	@SneakyThrows
+	public static JsonNode $(File jsonFile) {
+		return MAPPER.readTree(jsonFile);
+	}
 
-  @SneakyThrows
-  public static String _(Object object) {
-    return MAPPER.writeValueAsString(object);
-  }
+	@SneakyThrows
+	public static String convertToString(Object object) {
+		return MAPPER.writeValueAsString(object);
+	}
 
 }
