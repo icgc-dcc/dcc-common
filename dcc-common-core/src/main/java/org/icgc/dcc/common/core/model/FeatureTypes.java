@@ -27,7 +27,6 @@ import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
-import static lombok.AccessLevel.PRIVATE;
 import static org.icgc.dcc.common.core.model.FeatureTypes.FeatureType.CNSM_TYPE;
 import static org.icgc.dcc.common.core.model.FeatureTypes.FeatureType.EXP_ARRAY_TYPE;
 import static org.icgc.dcc.common.core.model.FeatureTypes.FeatureType.METH_ARRAY_TYPE;
@@ -46,9 +45,9 @@ import static org.icgc.dcc.common.core.util.Strings2.removeTarget;
 import java.util.List;
 import java.util.Set;
 
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.val;
+import lombok.experimental.UtilityClass;
 
 import org.icgc.dcc.common.core.model.FileTypes.FileSubType;
 import org.icgc.dcc.common.core.model.FileTypes.FileType;
@@ -65,8 +64,8 @@ import com.google.common.collect.ImmutableSet;
  * <p>
  * Only expose with*() and {@link Proposition} methods, no {@link Predicate}s.
  */
-@NoArgsConstructor(access = PRIVATE)
-public final class FeatureTypes {
+@UtilityClass
+public class FeatureTypes {
 
   private enum SummaryType implements Identifiable {
     COUNT, EXISTS;

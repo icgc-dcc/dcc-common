@@ -17,15 +17,14 @@
  */
 package org.icgc.dcc.common.core.model;
 
-import static lombok.AccessLevel.PRIVATE;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_DONOR_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_MATCHED_SAMPLE_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_SPECIMEN_ID;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 import org.icgc.dcc.common.core.model.FeatureTypes.FeatureType;
 
-@NoArgsConstructor(access = PRIVATE)
+@UtilityClass
 public final class FieldNames {
 
   /**
@@ -36,8 +35,7 @@ public final class FieldNames {
   /**
    * Field names in the original submission format.
    */
-  @NoArgsConstructor(access = PRIVATE)
-  public static final class SubmissionFieldNames {
+  public static class SubmissionFieldNames {
 
     public static final String SUBMISSION_DONOR_ID = "donor_id";
     public static final String SUBMISSION_SPECIMEN_ID = "specimen_id";
@@ -78,8 +76,8 @@ public final class FieldNames {
   /**
    * Field names used in the normalizer component.
    */
-  @NoArgsConstructor(access = PRIVATE)
-  public static final class NormalizerFieldNames {
+  @UtilityClass
+  public static class NormalizerFieldNames {
 
     /**
      * Field to act as primary key between primary and secondary files.
@@ -97,8 +95,8 @@ public final class FieldNames {
   /**
    * Field names used in the annotator component.
    */
-  @NoArgsConstructor(access = PRIVATE)
-  public static final class AnnotatorFieldNames {
+  @UtilityClass
+  public static class AnnotatorFieldNames {
 
     // Represent some of the SSM_S and SGV_S headers
     public static final String ANNOTATOR_AMINO_ACID_CHANGE = "aa_change";
@@ -113,8 +111,8 @@ public final class FieldNames {
   /**
    * Field names used in the identifier component.
    */
-  @NoArgsConstructor(access = PRIVATE)
-  public static final class IdentifierFieldNames {
+  @UtilityClass
+  public static class IdentifierFieldNames {
 
     public static final String SURROGATE_DONOR_ID = String.format("_%s", SUBMISSION_DONOR_ID);
     public static final String SURROGATE_SPECIMEN_ID = String.format("_%s", SUBMISSION_SPECIMEN_ID);
@@ -126,8 +124,8 @@ public final class FieldNames {
   /**
    * Names for the fields in the loader.
    */
-  @NoArgsConstructor(access = PRIVATE)
-  public static final class LoaderFieldNames {
+  @UtilityClass
+  public static class LoaderFieldNames {
 
     public static final String OBSERVATION_TYPE = "_type";
     public static final String PROJECT_ID = "_project_id";
@@ -148,8 +146,8 @@ public final class FieldNames {
   /**
    * Names for the fields in the importer.
    */
-  @NoArgsConstructor(access = PRIVATE)
-  public static final class ImporterFieldNames {
+  @UtilityClass
+  public static class ImporterFieldNames {
 
     public static final String CGC_ID = "CGC";
     public static final String GO_ID = "GO";
@@ -159,8 +157,8 @@ public final class FieldNames {
   /**
    * Names for the fields in the reporter.
    */
-  @NoArgsConstructor(access = PRIVATE)
-  public static final class ReporterFieldNames {
+  @UtilityClass
+  public static class ReporterFieldNames {
 
     public static final String RELEASE_NAME = "release_name";
 
