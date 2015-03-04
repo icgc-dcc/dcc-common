@@ -36,10 +36,8 @@ public final class FieldNames {
   /**
    * Field names in the original submission format.
    */
-  public static class SubmissionFieldNames {
-
-    private SubmissionFieldNames() {
-    }
+  @NoArgsConstructor(access = PRIVATE)
+  public static final class SubmissionFieldNames {
 
     public static final String SUBMISSION_DONOR_ID = "donor_id";
     public static final String SUBMISSION_SPECIMEN_ID = "specimen_id";
@@ -80,10 +78,8 @@ public final class FieldNames {
   /**
    * Field names used in the normalizer component.
    */
-  public static class NormalizerFieldNames {
-
-    private NormalizerFieldNames() {
-    }
+  @NoArgsConstructor(access = PRIVATE)
+  public static final class NormalizerFieldNames {
 
     /**
      * Field to act as primary key between primary and secondary files.
@@ -95,15 +91,14 @@ public final class FieldNames {
      * Formerly in the submission files.
      */
     public static final String NORMALIZER_MUTATION = "mutation";
+
   }
 
   /**
    * Field names used in the annotator component.
    */
-  public static class AnnotatorFieldNames {
-
-    private AnnotatorFieldNames() {
-    }
+  @NoArgsConstructor(access = PRIVATE)
+  public static final class AnnotatorFieldNames {
 
     // Represent some of the SSM_S and SGV_S headers
     public static final String ANNOTATOR_AMINO_ACID_CHANGE = "aa_change";
@@ -118,10 +113,8 @@ public final class FieldNames {
   /**
    * Field names used in the identifier component.
    */
-  public static class IdentifierFieldNames {
-
-    private IdentifierFieldNames() {
-    }
+  @NoArgsConstructor(access = PRIVATE)
+  public static final class IdentifierFieldNames {
 
     public static final String SURROGATE_DONOR_ID = String.format("_%s", SUBMISSION_DONOR_ID);
     public static final String SURROGATE_SPECIMEN_ID = String.format("_%s", SUBMISSION_SPECIMEN_ID);
@@ -133,10 +126,8 @@ public final class FieldNames {
   /**
    * Names for the fields in the loader.
    */
-  public static class LoaderFieldNames {
-
-    private LoaderFieldNames() {
-    }
+  @NoArgsConstructor(access = PRIVATE)
+  public static final class LoaderFieldNames {
 
     public static final String OBSERVATION_TYPE = "_type";
     public static final String PROJECT_ID = "_project_id";
@@ -151,25 +142,25 @@ public final class FieldNames {
     public static final String SUMMARY = "_summary";
 
     public static final String SURROGATE_MATCHED_SAMPLE_ID = String.format("_%s", SUBMISSION_MATCHED_SAMPLE_ID);
+
   }
 
   /**
    * Names for the fields in the importer.
    */
-  public static class ImporterFieldNames {
-
-    private ImporterFieldNames() {
-    }
+  @NoArgsConstructor(access = PRIVATE)
+  public static final class ImporterFieldNames {
 
     public static final String CGC_ID = "CGC";
     public static final String GO_ID = "GO";
+
   }
 
   /**
    * Names for the fields in the reporter.
    */
   @NoArgsConstructor(access = PRIVATE)
-  public static class ReporterFieldNames {
+  public static final class ReporterFieldNames {
 
     public static final String RELEASE_NAME = "release_name";
 
