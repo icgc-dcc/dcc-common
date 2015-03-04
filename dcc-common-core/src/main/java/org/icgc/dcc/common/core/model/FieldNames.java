@@ -21,7 +21,6 @@ import static lombok.AccessLevel.PRIVATE;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_DONOR_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_MATCHED_SAMPLE_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_SPECIMEN_ID;
-
 import lombok.NoArgsConstructor;
 
 import org.icgc.dcc.common.core.model.FeatureTypes.FeatureType;
@@ -152,6 +151,18 @@ public final class FieldNames {
     public static final String SUMMARY = "_summary";
 
     public static final String SURROGATE_MATCHED_SAMPLE_ID = String.format("_%s", SUBMISSION_MATCHED_SAMPLE_ID);
+  }
+
+  /**
+   * Names for the fields in the importer.
+   */
+  public static class ImporterFieldNames {
+
+    private ImporterFieldNames() {
+    }
+
+    public static final String CGC_ID = "CGC";
+    public static final String GO_ID = "GO";
   }
 
   /**

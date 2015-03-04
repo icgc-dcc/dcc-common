@@ -27,6 +27,8 @@ import static org.icgc.dcc.common.core.model.FieldNames.PATHWAY_REACTOME_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.RELEASE_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.IdentifierFieldNames.SURROGATE_DONOR_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.IdentifierFieldNames.SURROGATE_MUTATION_ID;
+import static org.icgc.dcc.common.core.model.FieldNames.ImporterFieldNames.CGC_ID;
+import static org.icgc.dcc.common.core.model.FieldNames.ImporterFieldNames.GO_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.LoaderFieldNames.GENE_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.LoaderFieldNames.PROJECT_ID;
 import static org.icgc.dcc.common.core.model.ReleaseDatabase.UNDETERMINED;
@@ -49,6 +51,8 @@ public enum ReleaseCollection implements Identifiable {
   PROJECT_COLLECTION(UNDETERMINED, "Project", newArrayList(PROJECT_ID)),
   DONOR_COLLECTION(UNDETERMINED, "Donor", newArrayList(SURROGATE_DONOR_ID)),
   GENE_COLLECTION(UNDETERMINED, "Gene", newArrayList(GENE_ID)),
+  CGC_COLLECTION(UNDETERMINED, "Cgc", newArrayList(CGC_ID)),
+  GO_COLLECTION(UNDETERMINED, "Go", newArrayList(GO_ID)),
   OBSERVATION_COLLECTION(UNDETERMINED, "Observation", newArrayList(SURROGATE_DONOR_ID, SURROGATE_MUTATION_ID)),
   MUTATION_COLLECTION(UNDETERMINED, "Mutation", newArrayList(SURROGATE_MUTATION_ID)),
   PATHWAY_COLLECTION(UNDETERMINED, "Pathway", newArrayList(PATHWAY_REACTOME_ID)),
