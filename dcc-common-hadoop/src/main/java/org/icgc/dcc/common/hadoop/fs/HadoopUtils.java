@@ -56,8 +56,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.compress.CompressionCodecFactory;
 import org.icgc.dcc.common.core.util.Separators;
 
-import cascading.tuple.Fields;
-
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -403,7 +401,7 @@ public class HadoopUtils {
   }
 
   @SneakyThrows
-  public static Fields getFileHeader(
+  public static String[] getFileHeader(
       @NonNull final FileSystem fileSystem,
       @NonNull final String inputFilePath,
       @NonNull final String separator) {
@@ -421,11 +419,9 @@ public class HadoopUtils {
 
     val splitter = Separators.getCorrespondingSplitter(separator);
 
-    return new Fields(toArray(
-        splitter.split(
-            new LineReader(reader)
-                .readLine()),
-        String.class));
+    val header = splitter.split(new LineReader(reader).readLine());
+
+    return toArray(header, String.class);
 
   }
 

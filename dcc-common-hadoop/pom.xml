@@ -54,20 +54,6 @@
       <artifactId>hadoop-common</artifactId>
     </dependency>
 
-    <!-- Cascading -->
-    <dependency>
-      <groupId>cascading</groupId>
-      <artifactId>cascading-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>cascading</groupId>
-      <artifactId>cascading-local</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>cascading</groupId>
-      <artifactId>cascading-hadoop</artifactId>
-    </dependency>
-
     <!-- Mongo -->
     <dependency>
       <groupId>org.mongodb</groupId>

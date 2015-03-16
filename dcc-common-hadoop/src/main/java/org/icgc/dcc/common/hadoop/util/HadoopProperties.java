@@ -17,13 +17,9 @@
  */
 package org.icgc.dcc.common.hadoop.util;
 
-import static cascading.flow.stream.StreamGraph.DOT_FILE_PATH;
-import static cascading.flow.stream.StreamGraph.ERROR_DOT_FILE_NAME;
 import static com.google.common.base.Joiner.on;
 import static java.lang.String.format;
 import static org.icgc.dcc.common.hadoop.util.HadoopConstants.BZIP2_CODEC_PROPERTY_VALUE;
-import static org.icgc.dcc.common.hadoop.util.HadoopConstants.CASCADING_DOT_FILE_PATH;
-import static org.icgc.dcc.common.hadoop.util.HadoopConstants.CASCADING_ERROR_DOT_FILE_NAME;
 import static org.icgc.dcc.common.hadoop.util.HadoopConstants.DEFAULT_CODEC_PROPERTY_VALUE;
 import static org.icgc.dcc.common.hadoop.util.HadoopConstants.ENABLED_COMPRESSION;
 import static org.icgc.dcc.common.hadoop.util.HadoopConstants.GZIP_CODEC_PROPERTY_VALUE;
@@ -115,23 +111,6 @@ public class HadoopProperties {
             SNAPPY_CODEC_PROPERTY_VALUE :
             codec);
     log.info(getLogMessage(properties, MAPRED_OUTPUT_COMPRESSION_CODE_PROPERTY_NAME));
-
-    return properties;
-  }
-
-  /**
-   * DCC-1526: Enable DOT export.
-   */
-  public static Map<Object, Object> enableDotExports(Map<Object, Object> properties) {
-    properties.put(
-        DOT_FILE_PATH,
-        CASCADING_DOT_FILE_PATH);
-    log.info(getLogMessage(properties, DOT_FILE_PATH));
-
-    properties.put(
-        ERROR_DOT_FILE_NAME,
-        CASCADING_ERROR_DOT_FILE_NAME);
-    log.info(getLogMessage(properties, ERROR_DOT_FILE_NAME));
 
     return properties;
   }
