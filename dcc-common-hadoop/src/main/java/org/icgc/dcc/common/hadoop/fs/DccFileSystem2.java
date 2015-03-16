@@ -27,6 +27,7 @@ import static org.icgc.dcc.common.hadoop.fs.HadoopUtils.mkdirs;
 import java.io.File;
 
 import lombok.Cleanup;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +36,6 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.icgc.dcc.common.core.model.FileTypes.FileType;
-import org.icgc.dcc.common.hadoop.cascading.CascadingContext;
-
-import cascading.tap.Tap;
 
 /**
  * Very basic replacement for {@link DccFileSystem}, as discussed with @Bob Tiernay around 13/11/07 (see DCC-1876). This
@@ -49,19 +47,9 @@ public class DccFileSystem2 {
 
   private final FileSystem fileSystem;
   private final String rootDir;
+
+  @Getter
   private final boolean hadoopMode;
-
-  private CascadingContext getCascadingContext() {
-    return hadoopMode ?
-        CascadingContext.getDistributed() :
-        CascadingContext.getLocal();
-  }
-
-  public Tap<?, ?, ?> getNormalizationDataOutputTap(String path) {
-    return getCascadingContext()
-        .getTaps()
-        .getNoCompressionTsvWithHeader(path);
-  }
 
   /**
    * Temporarily under .validation so that ReleaseFileSystem#resetValidationFolder() can reset it as well (TODO: address

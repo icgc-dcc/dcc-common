@@ -22,6 +22,7 @@ import static org.icgc.dcc.common.core.util.Jackson.DEFAULT;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.val;
 
 import org.icgc.dcc.common.core.util.resolver.Resolver.SubmissionSystemResolver.SubmissionSystemCodeListsResolver;
 
@@ -41,18 +42,16 @@ public class RestfulCodeListsResolver implements SubmissionSystemCodeListsResolv
 
   @SneakyThrows
   private ArrayNode getCodeList() {
-    return DEFAULT.readValue(
-        Resolvers.getContent(
-            getSubmissionSystemUrl(
-            Optional.<String> absent())),
-        ArrayNode.class);
+    val content = Resolvers.getContent(getSubmissionSystemUrl(Optional.<String> absent()));
+
+    return DEFAULT.readValue(content, ArrayNode.class);
   }
 
   @Override
   public String getSubmissionSystemUrl(Optional<String> qualifier) {
-    checkArgument(!qualifier.isPresent(),
-        "Code lists can not be qualified, '%s' provided", qualifier);
-    return url + PATH;
+    checkArgument(!qualifier.isPresent(), "Code lists can not be qualified, '%s' provided", qualifier);
+
+    return url;
   }
 
 }

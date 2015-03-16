@@ -27,6 +27,7 @@
     <module>dcc-common-meta</module>
     <module>dcc-common-client</module>
     <module>dcc-common-hadoop</module>
+    <module>dcc-common-cascading</module>
     <module>dcc-common-test</module>
   </modules>
 
