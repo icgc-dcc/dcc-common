@@ -15,52 +15,41 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util.resolver;
+package org.icgc.dcc.common.core.meta;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import lombok.Cleanup;
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.icgc.dcc.common.core.util.Jackson.DEFAULT;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 
-import org.icgc.dcc.common.core.util.Optionals;
+import org.icgc.dcc.common.core.meta.Resolver.SubmissionSystemResolver.SubmissionSystemCodeListsResolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.Optional;
 
-public abstract class AbstractArtifactoryResolver implements Resolver {
+@AllArgsConstructor
+@NoArgsConstructor
+public class RestfulCodeListsResolver implements SubmissionSystemCodeListsResolver {
 
-  private static String getDefaultVersion() {
-    return "0.10a";
-  }
+  private String url = DEFAULT_CODELISTS_URL;
 
-  protected static <T> T read(String fileName, Class<T> type) {
-    return read(fileName, type, Optional.of(getDefaultVersion()));
+  @Override
+  public ArrayNode get() {
+    return getCodeList();
   }
 
   @SneakyThrows
-  protected static <T> T read(String fileName, Class<T> type, Optional<String> version) {
-    // Resolve
-    @Cleanup
-    val zip = new ZipInputStream(getUrl(version).openStream());
-    ZipEntry entry;
+  private ArrayNode getCodeList() {
+    val content = Resolvers.getContent(getSubmissionSystemUrl(Optional.<String> absent()));
 
-    val entryName = "org/icgc/dcc/resources/" + fileName;
-    do {
-      entry = zip.getNextEntry();
-    } while (!entryName.equals(entry.getName()));
-
-    return new ObjectMapper().readValue(zip, type);
+    return DEFAULT.readValue(content, ArrayNode.class);
   }
 
-  protected static URL getUrl(Optional<String> optionalVersion) throws MalformedURLException {
-    val basePath = "http://seqwaremaven.oicr.on.ca/artifactory";
-    val template = "%s/simple/dcc-dependencies/org/icgc/dcc/dcc-resources/%s/dcc-resources-%s.jar";
-    val version = Optionals.defaultValue(optionalVersion, getDefaultVersion());
-    URL url = new URL(String.format(template, basePath, version, version));
+  @Override
+  public String getSubmissionSystemUrl(Optional<String> qualifier) {
+    checkArgument(!qualifier.isPresent(), "Code lists can not be qualified, '%s' provided", qualifier);
 
     return url;
   }

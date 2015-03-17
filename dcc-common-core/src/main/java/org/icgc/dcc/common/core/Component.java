@@ -25,9 +25,8 @@ import static org.icgc.dcc.common.core.util.Joiners.PATH;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import org.icgc.dcc.common.core.model.Identifiable;
 import org.icgc.dcc.common.core.model.FileTypes.FileType;
-import org.icgc.dcc.common.core.util.EtlConventions;
+import org.icgc.dcc.common.core.model.Identifiable;
 
 /**
  * Represents components in our system.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2013 The Ontario Institute for Cancer Research. All rights reserved.                             
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -15,17 +15,50 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util.resolver;
+package org.icgc.dcc.common.core.collect;
 
-import org.icgc.dcc.common.core.util.resolver.Resolver.CodeListsResolver;
+import static lombok.AccessLevel.PRIVATE;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
-public class ArtifactoryCodeListsResolver extends AbstractArtifactoryResolver implements CodeListsResolver {
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 
-  @Override
-  public ArrayNode get() {
-    return read("CodeList.json", ArrayNode.class);
+import com.google.common.collect.Maps;
+
+@NoArgsConstructor(access = PRIVATE)
+public final class MapUtils {
+
+  @SuppressWarnings("unchecked")
+  @SneakyThrows
+  public static TreeMap<String, Object> asTreeMap(Map<String, Object> map) {
+    TreeMap<String, Object> treeMap = Maps.newTreeMap();
+    for(Entry<String, Object> entry : map.entrySet()) {
+      String key = entry.getKey();
+      Object value = entry.getValue();
+      if(value instanceof Map) {
+        Map<String, Object> subMap = (Map<String, Object>) value;
+        treeMap.put(key, asTreeMap(subMap));
+      } else if(value instanceof List) {
+        Map<String, Object> bufferMap = Maps.newTreeMap(); // so as to order it
+        for(Object item : (List<Object>) value) {
+          if(item instanceof Map) {
+            TreeMap<String, Object> subSubMap = asTreeMap((Map<String, Object>) item);
+            bufferMap.put(subSubMap.toString(), subSubMap);
+          } else {
+            bufferMap.put(item.toString(), item); // TODO: can it be null?
+          }
+        }
+        treeMap.put(key, bufferMap.values());
+      } else {
+        treeMap.put(key, value); // possibly null
+      }
+    }
+
+    return treeMap;
   }
 
 }

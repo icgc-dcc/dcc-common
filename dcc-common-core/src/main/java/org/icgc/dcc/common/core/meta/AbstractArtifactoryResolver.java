@@ -15,49 +15,54 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util.resolver;
+package org.icgc.dcc.common.core.meta;
 
-import static org.icgc.dcc.common.core.util.Jackson.DEFAULT;
-import static org.icgc.dcc.common.core.util.Joiners.PATH;
-import static org.icgc.dcc.common.core.util.resolver.Resolver.Resolvers.getContent;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import lombok.Cleanup;
 import lombok.SneakyThrows;
+import lombok.val;
 
-import org.icgc.dcc.common.core.util.resolver.Resolver.SubmissionSystemResolver.SubmissionSystemDictionaryResolver;
+import org.icgc.dcc.common.core.util.Optionals;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
 
-@AllArgsConstructor
-@NoArgsConstructor
-public class RestfulDictionaryResolver implements SubmissionSystemDictionaryResolver {
+public abstract class AbstractArtifactoryResolver implements Resolver {
 
-  private String url = DEFAULT_API_URL;
-
-  @Override
-  public ObjectNode get() {
-    return apply(Optional.<String> absent());
+  private static String getDefaultVersion() {
+    return "0.10a";
   }
 
-  @Override
-  public ObjectNode apply(Optional<String> version) {
-    return getDictionary(version);
+  protected static <T> T read(String fileName, Class<T> type) {
+    return read(fileName, type, Optional.of(getDefaultVersion()));
   }
 
   @SneakyThrows
-  private ObjectNode getDictionary(Optional<String> version) {
-    return DEFAULT.readValue(
-        getContent(
-        getSubmissionSystemUrl(version)),
-        ObjectNode.class);
+  protected static <T> T read(String fileName, Class<T> type, Optional<String> version) {
+    // Resolve
+    @Cleanup
+    val zip = new ZipInputStream(getUrl(version).openStream());
+    ZipEntry entry;
+
+    val entryName = "org/icgc/dcc/resources/" + fileName;
+    do {
+      entry = zip.getNextEntry();
+    } while (!entryName.equals(entry.getName()));
+
+    return new ObjectMapper().readValue(zip, type);
   }
 
-  @Override
-  public String getSubmissionSystemUrl(Optional<String> version) {
-    return url + (version.isPresent() ?
-        PATH.join(PATH_SPECIFIC, version.get()) :
-        PATH_CURRENT);
+  protected static URL getUrl(Optional<String> optionalVersion) throws MalformedURLException {
+    val basePath = "http://seqwaremaven.oicr.on.ca/artifactory";
+    val template = "%s/simple/dcc-dependencies/org/icgc/dcc/dcc-resources/%s/dcc-resources-%s.jar";
+    val version = Optionals.defaultValue(optionalVersion, getDefaultVersion());
+    URL url = new URL(String.format(template, basePath, version, version));
+
+    return url;
   }
 
 }

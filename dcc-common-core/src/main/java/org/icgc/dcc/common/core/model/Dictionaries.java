@@ -36,9 +36,9 @@ import lombok.NonNull;
 import lombok.Value;
 import lombok.val;
 
+import org.icgc.dcc.common.core.collect.SerializableMaps;
 import org.icgc.dcc.common.core.model.Dictionaries.CodeListModel.SchemaMapping.FieldMapping;
 import org.icgc.dcc.common.core.model.FileTypes.FileType;
-import org.icgc.dcc.common.core.util.SerializableMaps;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Function;

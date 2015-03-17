@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2013 The Ontario Institute for Cancer Research. All rights reserved.                             
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -15,27 +15,44 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util;
+package org.icgc.dcc.common.core.util.concurrent;
 
-import static lombok.AccessLevel.PRIVATE;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Value;
+import lombok.val;
 
 /**
- * Util methods for {@link Collection}s.
+ * {@link Runnable} that allows changing the name of the executing thread and will always restore the previous upon
+ * completion.
  */
-@NoArgsConstructor(access = PRIVATE)
-public final class Collections3 {
+@Value
+public class ThreadNamingRunnable implements Runnable {
 
-  public static <T extends Comparable<T>> List<T> sort(@NonNull final List<T> list) {
-    Collections.sort(list);
+  @NonNull
+  String name;
+  @NonNull
+  Runnable delegate;
 
-    return list;
+  @Override
+  public void run() {
+    val originalName = getName();
+    try {
+      setName(name);
+
+      // Delegate
+      delegate.run();
+    } finally {
+      // Always called
+      setName(originalName);
+    }
+  }
+
+  private String getName() {
+    return Thread.currentThread().getName();
+  }
+
+  private void setName(String name) {
+    Thread.currentThread().setName(name);
   }
 
 }

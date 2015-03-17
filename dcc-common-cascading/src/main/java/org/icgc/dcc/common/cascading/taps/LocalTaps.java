@@ -23,7 +23,7 @@ import static lombok.AccessLevel.PUBLIC;
 import static org.icgc.dcc.common.cascading.Fields2.checkFieldsCardinalityOne;
 import static org.icgc.dcc.common.cascading.taps.GenericTaps.LINE_FIELD;
 import static org.icgc.dcc.common.cascading.taps.LegacySchemes.newLocalLooseTsvScheme;
-import static org.icgc.dcc.common.core.util.Files2.getCompressionAgnosticInputStream;
+import static org.icgc.dcc.common.core.io.Files2.getCompressionAgnosticInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;

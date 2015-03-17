@@ -18,7 +18,6 @@
 package org.icgc.dcc.common.test;
 
 import static lombok.AccessLevel.PRIVATE;
-import static org.icgc.dcc.common.core.util.EtlConventions.JOB_ID_JOINER;
 import static org.icgc.dcc.common.core.util.Extensions.JSON;
 import static org.icgc.dcc.common.core.util.Joiners.DASH;
 import static org.icgc.dcc.common.core.util.Joiners.EXTENSION;
@@ -70,7 +69,7 @@ public final class Tests {
   public static final int ELASTIC_SEARCH_PORT = 9300;
 
   public static String getTestJobId(@NonNull final Component component) {
-    return JOB_ID_JOINER.join(getTestReleaseName(component), TEST_PATCH_NUMBER, TEST_RUN_NUMBER);
+    return  DASH.join(getTestReleaseName(component), TEST_PATCH_NUMBER, TEST_RUN_NUMBER);
   }
 
   public static String getTestReleaseName(@NonNull final Component component) {

@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Maps.filterValues;
 import static com.google.common.collect.Sets.newLinkedHashSet;
-import static org.icgc.dcc.common.core.util.SerializableMaps.transformValues;
+import static org.icgc.dcc.common.core.collect.SerializableMaps.transformValues;
 
 import java.io.Serializable;
 import java.util.List;

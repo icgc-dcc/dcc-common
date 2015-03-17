@@ -21,7 +21,7 @@ import java.util.Map;
 
 import lombok.NonNull;
 
-import org.icgc.dcc.common.core.util.Maps2;
+import org.icgc.dcc.common.core.collect.Maps2;
 
 import cascading.cascade.CascadeConnector;
 import cascading.flow.FlowConnector;

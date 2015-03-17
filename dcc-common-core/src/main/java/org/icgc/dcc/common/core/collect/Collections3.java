@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2014 The Ontario Institute for Cancer Research. All rights reserved.                             
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -15,18 +15,27 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util;
+package org.icgc.dcc.common.core.collect;
 
-public class FsConfig {
+import static lombok.AccessLevel.PRIVATE;
 
-  /**
-   * Root of DCC filesystem
-   */
-  public static final String FS_ROOT = "fs.root";
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-  /**
-   * Hadoop's file system scheme: {@code fs.default.name}
-   */
-  public static final String FS_URL = "fs.url";
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
+/**
+ * Util methods for {@link Collection}s.
+ */
+@NoArgsConstructor(access = PRIVATE)
+public final class Collections3 {
+
+  public static <T extends Comparable<T>> List<T> sort(@NonNull final List<T> list) {
+    Collections.sort(list);
+
+    return list;
+  }
 
 }

@@ -15,23 +15,17 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util.resolver;
+package org.icgc.dcc.common.core.meta;
 
-import org.icgc.dcc.common.core.util.resolver.Resolver.DictionaryResolver;
+import org.icgc.dcc.common.core.meta.Resolver.CodeListsResolver;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Optional;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
-public class ArtifactoryDictionaryResolver extends AbstractArtifactoryResolver implements DictionaryResolver {
-
-  @Override
-  public ObjectNode get() {
-    return read("Dictionary.json", ObjectNode.class);
-  }
+public class ArtifactoryCodeListsResolver extends AbstractArtifactoryResolver implements CodeListsResolver {
 
   @Override
-  public ObjectNode apply(Optional<String> version) {
-    return read("Dictionary.json", ObjectNode.class, version);
+  public ArrayNode get() {
+    return read("CodeList.json", ArrayNode.class);
   }
 
 }

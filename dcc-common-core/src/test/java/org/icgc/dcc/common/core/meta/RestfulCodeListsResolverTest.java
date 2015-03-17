@@ -1,8 +1,9 @@
-package org.icgc.dcc.common.core.util.resolver;
+package org.icgc.dcc.common.core.meta;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import lombok.val;
 
+import org.icgc.dcc.common.core.meta.RestfulCodeListsResolver;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;

@@ -22,9 +22,9 @@ import java.io.IOException;
 
 import lombok.val;
 
+import org.icgc.dcc.common.core.meta.ArtifactoryCodeListsResolver;
+import org.icgc.dcc.common.core.meta.ArtifactoryDictionaryResolver;
 import org.icgc.dcc.common.core.meta.generator.SubmissionModelGenerator;
-import org.icgc.dcc.common.core.util.resolver.ArtifactoryCodeListsResolver;
-import org.icgc.dcc.common.core.util.resolver.ArtifactoryDictionaryResolver;
 import org.junit.Test;
 
 //@Ignore

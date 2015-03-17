@@ -24,7 +24,7 @@ import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.toArray;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.io.ByteStreams.copy;
-import static org.icgc.dcc.common.core.util.Collections3.sort;
+import static org.icgc.dcc.common.core.collect.Collections3.sort;
 import static org.icgc.dcc.common.core.util.Jackson.formatPrettyJson;
 import static org.icgc.dcc.common.core.util.Joiners.PATH;
 import static org.icgc.dcc.common.core.util.Separators.DASH;

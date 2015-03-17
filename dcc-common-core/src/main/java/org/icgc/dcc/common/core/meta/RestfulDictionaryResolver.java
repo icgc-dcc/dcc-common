@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2014 The Ontario Institute for Cancer Research. All rights reserved.                             
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -15,50 +15,49 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util;
+package org.icgc.dcc.common.core.meta;
 
-import static lombok.AccessLevel.PRIVATE;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
+import static org.icgc.dcc.common.core.meta.Resolver.Resolvers.getContent;
+import static org.icgc.dcc.common.core.util.Jackson.DEFAULT;
+import static org.icgc.dcc.common.core.util.Joiners.PATH;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
-import com.google.common.collect.Maps;
+import org.icgc.dcc.common.core.meta.Resolver.SubmissionSystemResolver.SubmissionSystemDictionaryResolver;
 
-@NoArgsConstructor(access = PRIVATE)
-public final class MapUtils {
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Optional;
 
-  @SuppressWarnings("unchecked")
+@AllArgsConstructor
+@NoArgsConstructor
+public class RestfulDictionaryResolver implements SubmissionSystemDictionaryResolver {
+
+  private String url = DEFAULT_API_URL;
+
+  @Override
+  public ObjectNode get() {
+    return apply(Optional.<String> absent());
+  }
+
+  @Override
+  public ObjectNode apply(Optional<String> version) {
+    return getDictionary(version);
+  }
+
   @SneakyThrows
-  public static TreeMap<String, Object> asTreeMap(Map<String, Object> map) {
-    TreeMap<String, Object> treeMap = Maps.newTreeMap();
-    for(Entry<String, Object> entry : map.entrySet()) {
-      String key = entry.getKey();
-      Object value = entry.getValue();
-      if(value instanceof Map) {
-        Map<String, Object> subMap = (Map<String, Object>) value;
-        treeMap.put(key, asTreeMap(subMap));
-      } else if(value instanceof List) {
-        Map<String, Object> bufferMap = Maps.newTreeMap(); // so as to order it
-        for(Object item : (List<Object>) value) {
-          if(item instanceof Map) {
-            TreeMap<String, Object> subSubMap = asTreeMap((Map<String, Object>) item);
-            bufferMap.put(subSubMap.toString(), subSubMap);
-          } else {
-            bufferMap.put(item.toString(), item); // TODO: can it be null?
-          }
-        }
-        treeMap.put(key, bufferMap.values());
-      } else {
-        treeMap.put(key, value); // possibly null
-      }
-    }
+  private ObjectNode getDictionary(Optional<String> version) {
+    return DEFAULT.readValue(
+        getContent(
+        getSubmissionSystemUrl(version)),
+        ObjectNode.class);
+  }
 
-    return treeMap;
+  @Override
+  public String getSubmissionSystemUrl(Optional<String> version) {
+    return url + (version.isPresent() ?
+        PATH.join(PATH_SPECIFIC, version.get()) :
+        PATH_CURRENT);
   }
 
 }

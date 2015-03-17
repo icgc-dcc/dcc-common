@@ -26,7 +26,7 @@ import static org.icgc.dcc.common.cascading.TupleEntries.getFirstObject;
 import static org.icgc.dcc.common.cascading.taps.GenericSchemes.TSV_DELIMITER;
 import static org.icgc.dcc.common.cascading.taps.GenericSchemes.noHeader;
 import static org.icgc.dcc.common.cascading.taps.GenericSchemes.withHeader;
-import static org.icgc.dcc.common.core.util.Files2.getCompressionAgnosticFirstLine;
+import static org.icgc.dcc.common.core.io.Files2.getCompressionAgnosticFirstLine;
 
 import java.io.IOException;
 import java.io.InputStream;

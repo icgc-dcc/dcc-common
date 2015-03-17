@@ -29,12 +29,12 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
+import org.icgc.dcc.common.core.meta.Resolver.CodeListsResolver;
+import org.icgc.dcc.common.core.meta.Resolver.DictionaryResolver;
 import org.icgc.dcc.common.core.meta.model.CompilationUnit;
 import org.icgc.dcc.common.core.meta.util.JsonNodeAdaptor;
 import org.icgc.dcc.common.core.meta.util.JsonNodeRenderer;
 import org.icgc.dcc.common.core.meta.util.StringRenderer;
-import org.icgc.dcc.common.core.util.resolver.Resolver.CodeListsResolver;
-import org.icgc.dcc.common.core.util.resolver.Resolver.DictionaryResolver;
 import org.stringtemplate.v4.STGroupFile;
 
 import com.fasterxml.jackson.databind.JsonNode;

@@ -15,7 +15,7 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util;
+package org.icgc.dcc.common.core.io;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -29,6 +29,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.icgc.dcc.common.core.util.Separators;
 
 /**
  * Util methods for files (compressed or not).
