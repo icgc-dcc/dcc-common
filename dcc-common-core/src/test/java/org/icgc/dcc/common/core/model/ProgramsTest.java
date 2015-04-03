@@ -5,7 +5,7 @@
  * You should have received a copy of the GNU General Public License along with                                  
  * this program. If not, see <http://www.gnu.org/licenses/>.                                                     
  *                                                                                                               
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY                           
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY                           
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES                          
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT                           
  * SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,                                
@@ -17,55 +17,33 @@
  */
 package org.icgc.dcc.common.core.model;
 
-import lombok.experimental.UtilityClass;
+import static org.assertj.core.api.Assertions.assertThat;
+import lombok.val;
 
-@UtilityClass
-public class Programs {
+import org.icgc.dcc.common.core.model.Programs.TCGA;
+import org.junit.Test;
 
-  public static boolean isTCGA(String projectName) {
-    try {
-      TCGA.valueOfProjectName(projectName);
+public class ProgramsTest {
 
-      return true;
-    } catch (Exception e) {
-      return false;
-    }
+  @Test
+  public void testIsTCGATrue() throws Exception {
+    val tcga = Programs.isTCGA("COAD-US");
+
+    assertThat(tcga).isTrue();
   }
 
-  public enum TCGA {
+  @Test
+  public void testIsTCGAFalse() throws Exception {
+    val tcga = Programs.isTCGA("ALL-US");
 
-    BLCA_US,
-    BRCA_US,
-    CESC_US,
-    COAD_US,
-    DBLC_US, // Non-DCC
-    GBM_US,
-    HNSC_US,
-    KICH_US, // Non-DCC
-    KIRC_US,
-    KIRP_US,
-    LAML_US,
-    LGG_US,
-    LIHC_US,
-    LUAD_US,
-    LUSC_US,
-    OV_US,
-    PAAD_US,
-    PRAD_US,
-    READ_US,
-    SKCM_US,
-    STAD_US,
-    THCA_US,
-    UCEC_US;
+    assertThat(tcga).isFalse();
+  }
 
-    public String getProjectName() {
-      return name().replace("_", "-");
-    }
+  @Test
+  public void testTCGAGetProjectNAme() throws Exception {
+    val projectName = TCGA.COAD_US.getProjectName();
 
-    public static TCGA valueOfProjectName(String projectName) {
-      return valueOf(projectName.replace("-", "_"));
-    }
-
+    assertThat(projectName).isEqualTo("COAD-US");
   }
 
 }

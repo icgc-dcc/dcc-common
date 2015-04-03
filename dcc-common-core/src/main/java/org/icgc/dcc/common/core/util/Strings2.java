@@ -53,6 +53,14 @@ public class Strings2 {
     return s.equals(s.toUpperCase());
   }
 
+  public static boolean isEmpty(CharSequence cs) {
+    return cs == null || cs.length() == 0;
+  }
+
+  public static boolean isNotEmpty(CharSequence cs) {
+    return !isEmpty(cs);
+  }
+
   public static String removeTarget(@NonNull final String s, @NonNull final String target) {
     return s.replace(target, EMPTY_STRING);
   }
