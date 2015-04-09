@@ -357,6 +357,14 @@ public final class FieldNames {
   public static final String PATHWAY_SOURCE = "source";
 
   /**
+   * Reactome diagram names
+   */
+  public static final String DIAGRAM_ID = "diagram_id";
+  public static final String DIAGRAM_XML = "xml";
+  public static final String DIAGRAM_HIGHLIGHTS = "highlights";
+  public static final String DIAGRAM_PROTEIN_MAP = "protein_map";
+
+  /**
    * Gene set field names.
    */
   public static final String GENE_SET_ID = "id";
