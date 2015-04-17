@@ -38,6 +38,7 @@ import com.sun.jersey.oauth.signature.OAuthSecrets;
 @Slf4j
 public abstract class BaseOAuthICGCClient extends BaseICGCClient {
 
+  private static final String CMS_NOT_FOUND_RESPONSE = "{\"message\":\"Invalid token\"}";
   private static final String SIGNATURE_METHOD = "HMAC-SHA1";
 
   public BaseOAuthICGCClient(@NonNull ICGCClientConfig config) {
@@ -82,6 +83,10 @@ public abstract class BaseOAuthICGCClient extends BaseICGCClient {
         throw new ICGCEntityNotFoundException("An entity with such ID was not found");
 
       case NOT_FOUND:
+        if (isCmsApiNotFound(response)) {
+          throw new ICGCEntityNotFoundException("[404] The session not found");
+        }
+
         throw new ICGCUnknownException("[404] Remote API endpoint not found");
 
       case UNAUTHORIZED:
@@ -96,6 +101,15 @@ public abstract class BaseOAuthICGCClient extends BaseICGCClient {
     }
 
     return response;
+  }
+
+  private static boolean isCmsApiNotFound(ClientResponse response) {
+    val entity = response.getEntity(String.class);
+    if (entity != null) {
+      return entity.equals(CMS_NOT_FOUND_RESPONSE);
+    }
+
+    return false;
   }
 
 }
