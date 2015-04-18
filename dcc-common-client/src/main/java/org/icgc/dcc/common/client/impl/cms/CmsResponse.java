@@ -17,39 +17,19 @@
  */
 package org.icgc.dcc.common.client.impl.cms;
 
-import lombok.NonNull;
+import lombok.Value;
 
-import org.icgc.dcc.common.client.api.ICGCClientConfig;
-import org.icgc.dcc.common.client.api.cms.CMSClient;
-import org.icgc.dcc.common.client.api.cud.User;
-import org.icgc.dcc.common.client.impl.BaseOAuthICGCClient;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
-import com.sun.jersey.api.client.WebResource;
+@Value
+class CmsResponse {
 
-public class DefaultCMSClient extends BaseOAuthICGCClient implements CMSClient {
+  String name;
 
-  private static final String SESSION_NAME_ENDPOINT = "session_name";
-  private static final String USER_INFO_ENDPOINT = "session";
-
-  private final WebResource resourse;
-
-  public DefaultCMSClient(ICGCClientConfig config) {
-    super(config);
-    this.resourse = jerseyClient.resource(config.getCmsServiceUrl());
-  }
-
-  @Override
-  public String getSessionName() {
-    return resourse.path(SESSION_NAME_ENDPOINT)
-        .get(CmsResponse.class)
-        .getName();
-  }
-
-  @Override
-  public User getUserInfo(@NonNull String session) {
-    return resourse.path(USER_INFO_ENDPOINT)
-        .path(session)
-        .get(User.class);
+  @JsonCreator
+  public CmsResponse(@JsonProperty("name") String name) {
+    this.name = name;
   }
 
 }

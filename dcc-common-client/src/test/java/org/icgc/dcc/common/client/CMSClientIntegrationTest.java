@@ -28,9 +28,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-public class CMDClientIntegrationTest {
+public class CMSClientIntegrationTest {
 
-  private static final String BETATRA_SESSION_NAME = "SESS10272bceecb84d3d5608ae4b0a4e5934";
+  private static final String BETATRA_SESSION_NAME = "***REMOVED***";
   private static final String SERVICE_URL = "https://***REMOVED***/cms_oauth_coop/1";
   private static final String CONSUMER_KEY = "***REMOVED***";
   private static final String CONSUMER_SECRET = "***REMOVED***";
@@ -67,7 +67,7 @@ public class CMDClientIntegrationTest {
 
   private static ICGCClientConfig createConfig() {
     return ICGCClientConfig.builder()
-        .cgpServiceUrl(SERVICE_URL)
+        .cmsServiceUrl(SERVICE_URL)
         .consumerKey(CONSUMER_KEY)
         .consumerSecret(CONSUMER_SECRET)
         .accessToken(ACCESS_TOKEN)
