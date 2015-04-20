@@ -22,10 +22,12 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 
 import org.icgc.dcc.common.client.api.cgp.CGPClient;
+import org.icgc.dcc.common.client.api.cms.CMSClient;
 import org.icgc.dcc.common.client.api.cud.CUDClient;
 import org.icgc.dcc.common.client.api.daco.DACOClient;
 import org.icgc.dcc.common.client.api.shorturl.ShortURLClient;
 import org.icgc.dcc.common.client.impl.cgp.DefaultCGPClient;
+import org.icgc.dcc.common.client.impl.cms.DefaultCMSClient;
 import org.icgc.dcc.common.client.impl.cud.DefaultCUDClient;
 import org.icgc.dcc.common.client.impl.daco.DefaultDACOClient;
 import org.icgc.dcc.common.client.impl.shorturl.DefaultShortURLClient;
@@ -72,6 +74,15 @@ public class ICGCClient {
    */
   public ShortURLClient shortUrl() {
     return new DefaultShortURLClient(config);
+  }
+
+  /**
+   * Get a client for CMS API requests
+   * 
+   * @throws IllegalArgumentException when the configuration parameters are empty or missing
+   */
+  public CMSClient cms() {
+    return new DefaultCMSClient(config);
   }
 
   /**

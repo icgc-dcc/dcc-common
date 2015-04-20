@@ -17,10 +17,10 @@
  */
 package org.icgc.dcc.common.client.api;
 
+import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
 import lombok.val;
-import lombok.Builder;
 
 /**
  * A container of configuration required to interact with the ICGC API.
@@ -60,6 +60,7 @@ public class ICGCClientConfig {
   private String cgpServiceUrl;
   private String cudServiceUrl;
   private String shortServiceUrl;
+  private String cmsServiceUrl;
   private String consumerKey;
   private String consumerSecret;
   private String accessToken;
