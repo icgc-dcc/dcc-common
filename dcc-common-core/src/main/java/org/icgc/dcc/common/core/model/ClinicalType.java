@@ -17,16 +17,28 @@
  */
 package org.icgc.dcc.common.core.model;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Iterables.find;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newLinkedHashSet;
+import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.SUPPLEMENTAL_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileType.DONOR_TYPE;
 import static org.icgc.dcc.common.core.util.Joiners.UNDERSCORE;
 import static org.icgc.dcc.common.core.util.Strings2.EMPTY_STRING;
+
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.val;
 
 import org.icgc.dcc.common.core.model.FeatureTypes.FeatureType;
 import org.icgc.dcc.common.core.model.FileTypes.FileSubType;
 import org.icgc.dcc.common.core.model.FileTypes.FileType;
+
+import com.google.common.base.Predicate;
 
 /**
  * Represents a (the only one for now) type of clinical data, see {@link FeatureType} for the observation counterpart.
@@ -107,6 +119,54 @@ public enum ClinicalType implements DataType, Identifiable {
   public boolean isCountSummary() {
     // TODO is it?
     return false;
+  }
+
+  /**
+   * Returns the file types corresponding to the feature type.
+   * <p>
+   * TODO: move to {@link FileTypes} rather
+   */
+  public Set<FileType> getCorrespondingFileTypes() {
+    val dataType = this;
+    return newLinkedHashSet(filter(
+        newArrayList(FileType.values()),
+        new Predicate<FileType>() {
+
+          @Override
+          public boolean apply(FileType fileType) {
+            return fileType.getDataType() == dataType;
+          }
+
+        }));
+  }
+
+  /**
+   * Returns the file type whose presence indicates that the type is considered as "present" and therefore to be
+   * processed.
+   * <p>
+   * TODO: move to {@link FileTypes} rather
+   */
+  public FileType getDataTypePresenceIndicator() {
+    return checkNotNull(
+        getSupplementalFileType(),
+        "There should be at least one file type that acts as type presence flagship for the feature type '%s'", this);
+  }
+
+  public FileType getSupplementalFileType() {
+    return getFileType(SUPPLEMENTAL_SUBTYPE);
+  }
+
+  private FileType getFileType(final FileSubType fileSubType) {
+    return find( // MUST have a match (by design)
+        getCorrespondingFileTypes(),
+        new Predicate<FileType>() {
+
+          @Override
+          public boolean apply(FileType fileType) {
+            return fileType.getSubType() == fileSubType;
+          }
+
+        });
   }
 
 }

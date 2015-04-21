@@ -79,12 +79,7 @@ public final class FileTypes {
     // Clinical Supplemental
     //
 
-    BIOMARKER_SUBTYPE,
-    FAMILY_SUBTYPE,
-    EXPOSURE_SUBTYPE,
-    SURGERY_SUBTYPE,
-    THERAPY_SUBTYPE,
-
+    SUPPLEMENTAL_SUBTYPE,
     //
     // Feature Types
     //
@@ -145,18 +140,6 @@ public final class FileTypes {
             .build();
 
     /**
-     * These sub-types are for supplemental clinical data.
-     */
-    public static final Set<FileSubType> SUPPLEMENTAL_SUBTYPES =
-        new ImmutableSet.Builder<FileSubType>()
-            .add(BIOMARKER_SUBTYPE)
-            .add(FAMILY_SUBTYPE)
-            .add(EXPOSURE_SUBTYPE)
-            .add(SURGERY_SUBTYPE)
-            .add(THERAPY_SUBTYPE)
-            .build();
-
-    /**
      * See {@link #usedAsAbbrevatiation()}.
      */
     private static final List<FileSubType> TYPES_USED_AS_ABBREVIATION =
@@ -186,11 +169,11 @@ public final class FileTypes {
     // Clinical Supplemental
     //
 
-    BIOMARKER_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.BIOMARKER_SUBTYPE),
-    FAMILY_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.FAMILY_SUBTYPE),
-    EXPOSURE_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.EXPOSURE_SUBTYPE),
-    SURGERY_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.SURGERY_SUBTYPE),
-    THERAPY_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.THERAPY_SUBTYPE),
+    BIOMARKER_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.SUPPLEMENTAL_SUBTYPE),
+    FAMILY_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.SUPPLEMENTAL_SUBTYPE),
+    EXPOSURE_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.SUPPLEMENTAL_SUBTYPE),
+    SURGERY_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.SUPPLEMENTAL_SUBTYPE),
+    THERAPY_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.SUPPLEMENTAL_SUBTYPE),
 
     //
     // Feature Types
@@ -325,7 +308,7 @@ public final class FileTypes {
       return getSubType() == SECONDARY_SUBTYPE;
     }
 
-    public boolean isOptional() {
+    public boolean isSupplemental() {
       return getDataType() == CLINICAL_SUPPLEMENTAL_TYPE;
     }
 
