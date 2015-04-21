@@ -59,7 +59,7 @@ public class FileTypesTest {
 
     assertThat(BIOMARKER_TYPE.getId()).isEqualTo("biomarker");
     assertThat(from("biomarker")).isEqualTo(BIOMARKER_TYPE);
-    assertThat(BIOMARKER_TYPE.getDataType()).isEqualTo(ClinicalType.CLINICAL_OPTIONAL_TYPE);
+    assertThat(BIOMARKER_TYPE.getDataType()).isEqualTo(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE);
 
     assertThat(FileType.MANDATORY_TYPES).isEqualTo(
         newLinkedHashSet(newArrayList(

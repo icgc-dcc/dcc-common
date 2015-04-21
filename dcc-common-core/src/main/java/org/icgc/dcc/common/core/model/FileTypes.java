@@ -24,7 +24,7 @@ import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static lombok.AccessLevel.PRIVATE;
-import static org.icgc.dcc.common.core.model.ClinicalType.CLINICAL_OPTIONAL_TYPE;
+import static org.icgc.dcc.common.core.model.ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.META_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.PRIMARY_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.SECONDARY_SUBTYPE;
@@ -68,7 +68,7 @@ public final class FileTypes {
   public enum FileSubType implements Identifiable {
 
     //
-    // Clinical
+    // Clinical Core
     //
 
     DONOR_SUBTYPE,
@@ -76,7 +76,7 @@ public final class FileTypes {
     SAMPLE_SUBTYPE,
 
     //
-    // Optionals
+    // Clinical Supplemental
     //
 
     BIOMARKER_SUBTYPE,
@@ -145,6 +145,18 @@ public final class FileTypes {
             .build();
 
     /**
+     * These sub-types are for supplemental clinical data.
+     */
+    public static final Set<FileSubType> SUPPLEMENTAL_SUBTYPES =
+        new ImmutableSet.Builder<FileSubType>()
+            .add(BIOMARKER_SUBTYPE)
+            .add(FAMILY_SUBTYPE)
+            .add(EXPOSURE_SUBTYPE)
+            .add(SURGERY_SUBTYPE)
+            .add(THERAPY_SUBTYPE)
+            .build();
+
+    /**
      * See {@link #usedAsAbbrevatiation()}.
      */
     private static final List<FileSubType> TYPES_USED_AS_ABBREVIATION =
@@ -163,7 +175,7 @@ public final class FileTypes {
   public enum FileType implements Identifiable {
 
     //
-    // Clinical
+    // Clinical Core
     //
 
     DONOR_TYPE(ClinicalType.CLINICAL_CORE_TYPE, FileSubType.DONOR_SUBTYPE),
@@ -171,14 +183,14 @@ public final class FileTypes {
     SAMPLE_TYPE(ClinicalType.CLINICAL_CORE_TYPE, FileSubType.SAMPLE_SUBTYPE),
 
     //
-    // Optionals
+    // Clinical Supplemental
     //
 
-    BIOMARKER_TYPE(ClinicalType.CLINICAL_OPTIONAL_TYPE, FileSubType.BIOMARKER_SUBTYPE),
-    FAMILY_TYPE(ClinicalType.CLINICAL_OPTIONAL_TYPE, FileSubType.FAMILY_SUBTYPE),
-    EXPOSURE_TYPE(ClinicalType.CLINICAL_OPTIONAL_TYPE, FileSubType.EXPOSURE_SUBTYPE),
-    SURGERY_TYPE(ClinicalType.CLINICAL_OPTIONAL_TYPE, FileSubType.SURGERY_SUBTYPE),
-    THERAPY_TYPE(ClinicalType.CLINICAL_OPTIONAL_TYPE, FileSubType.THERAPY_SUBTYPE),
+    BIOMARKER_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.BIOMARKER_SUBTYPE),
+    FAMILY_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.FAMILY_SUBTYPE),
+    EXPOSURE_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.EXPOSURE_SUBTYPE),
+    SURGERY_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.SURGERY_SUBTYPE),
+    THERAPY_TYPE(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE, FileSubType.THERAPY_SUBTYPE),
 
     //
     // Feature Types
@@ -314,7 +326,7 @@ public final class FileTypes {
     }
 
     public boolean isOptional() {
-      return getDataType() == CLINICAL_OPTIONAL_TYPE;
+      return getDataType() == CLINICAL_SUPPLEMENTAL_TYPE;
     }
 
     /**
