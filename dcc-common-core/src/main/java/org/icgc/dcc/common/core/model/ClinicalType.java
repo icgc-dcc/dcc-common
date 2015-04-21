@@ -19,6 +19,8 @@ package org.icgc.dcc.common.core.model;
 
 import static com.google.common.base.Preconditions.checkState;
 import static org.icgc.dcc.common.core.model.FileTypes.FileType.DONOR_TYPE;
+import static org.icgc.dcc.common.core.util.Joiners.UNDERSCORE;
+import static org.icgc.dcc.common.core.util.Strings2.EMPTY_STRING;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -33,16 +35,19 @@ import org.icgc.dcc.common.core.model.FileTypes.FileType;
  */
 public enum ClinicalType implements DataType, Identifiable {
 
-  CLINICAL_CORE_TYPE(FileSubType.DONOR_SUBTYPE.getFullName()),
-  CLINICAL_SUPPLEMENTAL_TYPE(CLINICAL_SUPPLEMENTAL_TYPE_NAME);
+  CLINICAL_CORE_TYPE(FileSubType.DONOR_SUBTYPE.getFullName(), SummaryType.EXISTS),
+  CLINICAL_SUPPLEMENTAL_TYPE(CLINICAL_SUPPLEMENTAL_TYPE_NAME, SummaryType.EXISTS);
 
-  private ClinicalType(@NonNull final String id) {
+  private ClinicalType(@NonNull final String id, @NonNull final SummaryType summaryType) {
     this.id = id;
+    this.summaryType = summaryType;
   }
 
   @Getter
-  // @Override
   private final String id;
+
+  @Getter
+  private final SummaryType summaryType;
 
   @Override
   public boolean isClinicalType() {
@@ -92,6 +97,16 @@ public enum ClinicalType implements DataType, Identifiable {
 
     throw new IllegalArgumentException(
         "Unknown " + ClinicalType.class.getSimpleName() + "  for type name'" + typeName + "'");
+  }
+
+  public String getSummaryFieldName() {
+
+    return UNDERSCORE.join(EMPTY_STRING, this.getId(), summaryType.getId());
+  }
+
+  public boolean isCountSummary() {
+    // TODO is it?
+    return false;
   }
 
 }

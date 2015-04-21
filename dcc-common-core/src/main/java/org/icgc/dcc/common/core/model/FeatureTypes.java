@@ -67,16 +67,6 @@ import com.google.common.collect.ImmutableSet;
 @UtilityClass
 public class FeatureTypes {
 
-  private enum SummaryType implements Identifiable {
-    COUNT, EXISTS;
-
-    @Override
-    public String getId() {
-      return name().toLowerCase();
-    }
-
-  }
-
   /**
    * Represents a type of observation data, see {@link ClinicalType} for the clinical counterpart.
    */
