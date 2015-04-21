@@ -27,6 +27,7 @@ import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.SUPPLEMENTAL_
 import static org.icgc.dcc.common.core.model.FileTypes.FileType.DONOR_TYPE;
 import static org.icgc.dcc.common.core.util.Joiners.UNDERSCORE;
 import static org.icgc.dcc.common.core.util.Strings2.EMPTY_STRING;
+import static org.icgc.dcc.common.core.util.Strings2.removeTarget;
 
 import java.util.Set;
 
@@ -45,18 +46,18 @@ import com.google.common.base.Predicate;
  * <p>
  * The "donor" name is reused here (which makes things a bit confusing...).
  */
-public enum ClinicalType implements DataType, Identifiable {
+public enum ClinicalType implements DataType {
 
-  CLINICAL_CORE_TYPE(FileSubType.DONOR_SUBTYPE.getFullName(), SummaryType.EXISTS),
-  CLINICAL_SUPPLEMENTAL_TYPE(CLINICAL_SUPPLEMENTAL_TYPE_NAME, SummaryType.EXISTS);
+  CLINICAL_CORE_TYPE(SummaryType.EXISTS),
+  BIOMARKER_TYPE(SummaryType.EXISTS),
+  FAMILY_TYPE(SummaryType.EXISTS),
+  EXPOSURE_TYPE(SummaryType.EXISTS),
+  SURGERY_TYPE(SummaryType.EXISTS),
+  THERAPY_TYPE(SummaryType.EXISTS);
 
-  private ClinicalType(@NonNull final String id, @NonNull final SummaryType summaryType) {
-    this.id = id;
+  private ClinicalType(@NonNull final SummaryType summaryType) {
     this.summaryType = summaryType;
   }
-
-  @Getter
-  private final String id;
 
   @Getter
   private final SummaryType summaryType;
@@ -85,10 +86,6 @@ public enum ClinicalType implements DataType, Identifiable {
     return this == CLINICAL_CORE_TYPE;
   }
 
-  public boolean isSupplementalClinicalType() {
-    return this == CLINICAL_SUPPLEMENTAL_TYPE;
-  }
-
   @Override
   public FeatureType asFeatureType() {
     checkState(false, "Not a '%s': '%s'",
@@ -99,17 +96,24 @@ public enum ClinicalType implements DataType, Identifiable {
   /**
    * Returns an enum matching the type name provided.
    */
-  public static DataType from(String typeName) {
+  public static ClinicalType from(String typeName) {
     if (typeName.equals(CLINICAL_CORE_TYPE.getId())) {
       return CLINICAL_CORE_TYPE;
     }
-    if (typeName.equals(CLINICAL_SUPPLEMENTAL_TYPE.getId())) {
-      return CLINICAL_SUPPLEMENTAL_TYPE;
-    }
-
-    throw new IllegalArgumentException(
-        "Unknown " + ClinicalType.class.getSimpleName() + "  for type name'" + typeName + "'");
+    return valueOf(typeName.toUpperCase() + TYPE_SUFFIX);
   }
+
+  // public static DataType from(String typeName) {
+  // if (typeName.equals(CLINICAL_CORE_TYPE.getId())) {
+  // return CLINICAL_CORE_TYPE;
+  // }
+  // if (typeName.equals(CLINICAL_SUPPLEMENTAL_TYPE.getId())) {
+  // return CLINICAL_SUPPLEMENTAL_TYPE;
+  // }
+  //
+  // throw new IllegalArgumentException(
+  // "Unknown " + ClinicalType.class.getSimpleName() + "  for type name'" + typeName + "'");
+  // }
 
   public String getSummaryFieldName() {
 
@@ -167,6 +171,11 @@ public enum ClinicalType implements DataType, Identifiable {
           }
 
         });
+  }
+
+  @Override
+  public String getId() {
+    return removeTarget(name(), TYPE_SUFFIX).toLowerCase();
   }
 
 }

@@ -20,10 +20,10 @@ package org.icgc.dcc.common.core.model;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.BIOMARKER_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.DONOR_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.META_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.SAMPLE_SUBTYPE;
+import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.SUPPLEMENTAL_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileType.BIOMARKER_TYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileType.CNSM_S_TYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileType.DONOR_TYPE;
@@ -32,7 +32,6 @@ import static org.icgc.dcc.common.core.model.FileTypes.FileType.SPECIMEN_TYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileType.SSM_M_TYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileType.from;
 
-import org.icgc.dcc.common.core.model.ClinicalType;
 import org.icgc.dcc.common.core.model.FeatureTypes.FeatureType;
 import org.icgc.dcc.common.core.model.FileTypes.FileType;
 import org.junit.Test;
@@ -58,8 +57,8 @@ public class FileTypesTest {
     assertThat(SPECIMEN_TYPE.getDataType()).isEqualTo(ClinicalType.CLINICAL_CORE_TYPE);
 
     assertThat(BIOMARKER_TYPE.getId()).isEqualTo("biomarker");
+    assertThat(BIOMARKER_TYPE.getDataType()).isEqualTo(ClinicalType.BIOMARKER_TYPE);
     assertThat(from("biomarker")).isEqualTo(BIOMARKER_TYPE);
-    assertThat(BIOMARKER_TYPE.getDataType()).isEqualTo(ClinicalType.CLINICAL_SUPPLEMENTAL_TYPE);
 
     assertThat(FileType.MANDATORY_TYPES).isEqualTo(
         newLinkedHashSet(newArrayList(
@@ -75,7 +74,6 @@ public class FileTypesTest {
     assertThat(META_SUBTYPE.getAbbreviation()).isEqualTo("m");
     assertThat(DONOR_SUBTYPE.getFullName()).isEqualTo("donor");
     assertThat(SAMPLE_SUBTYPE.getFullName()).isEqualTo("sample");
-    assertThat(BIOMARKER_SUBTYPE.getFullName()).isEqualTo("biomarker");
   }
 
   @Test(expected = IllegalStateException.class)
@@ -95,7 +93,7 @@ public class FileTypesTest {
 
   @Test(expected = IllegalStateException.class)
   public void test_SubmissionFileSubType_invalid_biomarker() {
-    BIOMARKER_SUBTYPE.getAbbreviation();
+    SUPPLEMENTAL_SUBTYPE.getAbbreviation();
   }
 
 }
