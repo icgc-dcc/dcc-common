@@ -19,14 +19,13 @@ package org.icgc.dcc.common.core.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.icgc.dcc.common.core.model.ClinicalType;
 import org.junit.Test;
 
 public class ClinicalTypeTest {
 
   @Test
   public void test_ClinicalType() {
-    assertThat(ClinicalType.from("donor")).isEqualTo(ClinicalType.CLINICAL_CORE_TYPE);
+    assertThat(ClinicalType.from("donor")).isEqualTo(ClinicalType.DONOR_TYPE);
   }
 
 }

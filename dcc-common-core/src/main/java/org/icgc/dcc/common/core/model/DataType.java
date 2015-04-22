@@ -17,9 +17,7 @@
  */
 package org.icgc.dcc.common.core.model;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
@@ -83,7 +81,9 @@ public interface DataType extends Identifiable {
      */
     private static Set<DataType> MANDATORY_TYPES =
         new ImmutableSet.Builder<DataType>()
-            .add(ClinicalType.CLINICAL_CORE_TYPE)
+            .add(ClinicalType.DONOR_TYPE)
+            .add(ClinicalType.SPECIMEN_TYPE)
+            .add(ClinicalType.SAMPLE_TYPE)
             .build();
 
     /**
@@ -91,7 +91,10 @@ public interface DataType extends Identifiable {
      */
     private static final Set<DataType> MONGO_LOADED_FEATURE_TYPES =
         new ImmutableSet.Builder<DataType>()
-            .add(ClinicalType.CLINICAL_CORE_TYPE)
+            .add(ClinicalType.DONOR_TYPE)
+            .add(ClinicalType.SPECIMEN_TYPE)
+            .add(ClinicalType.SAMPLE_TYPE)
+
             .addAll( // All aggregated feature types are mongo sinkable
                 Iterables.filter(newArrayList(FeatureType.values()), new Predicate<FeatureType>() {
 

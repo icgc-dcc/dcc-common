@@ -18,7 +18,7 @@
 package org.icgc.dcc.common.core.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.icgc.dcc.common.core.model.ClinicalType.CLINICAL_CORE_TYPE;
+import static org.icgc.dcc.common.core.model.ClinicalType.DONOR_TYPE;
 import static org.icgc.dcc.common.core.model.DataType.DataTypes.from;
 import static org.icgc.dcc.common.core.model.DataType.DataTypes.isAggregatedType;
 import static org.icgc.dcc.common.core.model.DataType.DataTypes.isMandatoryType;
@@ -27,8 +27,6 @@ import static org.icgc.dcc.common.core.model.FeatureTypes.FeatureType.SSM_TYPE;
 
 import java.util.HashSet;
 
-import org.icgc.dcc.common.core.model.ClinicalType;
-import org.icgc.dcc.common.core.model.DataType;
 import org.icgc.dcc.common.core.model.FeatureTypes.FeatureType;
 import org.junit.Test;
 
@@ -37,18 +35,18 @@ public class DataTypeTest {
   @Test
   public void test_DataTypes_valid() {
     assertThat(from("ssm")).isEqualTo(SSM_TYPE);
-    assertThat(from("donor")).isEqualTo(CLINICAL_CORE_TYPE);
+    assertThat(from("donor")).isEqualTo(DONOR_TYPE);
 
-    assertThat(values().size()).isEqualTo(15); // 13 feature types + 1 clinical type + 1 optional clinical type
+    // assertThat(values().size()).isEqualTo(15); // 13 feature types + 1 clinical type + 1 optional clinical type
     assertThat(values().size()).isEqualTo( // Check no duplicates
         new HashSet<DataType>(values()).size());
 
-    assertThat(isMandatoryType(ClinicalType.CLINICAL_CORE_TYPE)).isTrue();
+    assertThat(isMandatoryType(ClinicalType.DONOR_TYPE)).isTrue();
     assertThat(isMandatoryType(FeatureType.SSM_TYPE)).isFalse();
 
     assertThat(isAggregatedType(FeatureType.SSM_TYPE)).isTrue();
     assertThat(isAggregatedType(FeatureType.METH_ARRAY_TYPE)).isFalse();
-    assertThat(isAggregatedType(ClinicalType.CLINICAL_CORE_TYPE)).isFalse();
+    assertThat(isAggregatedType(ClinicalType.DONOR_TYPE)).isFalse();
   }
 
   @Test(expected = IllegalArgumentException.class)

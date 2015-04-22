@@ -24,10 +24,10 @@ import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
 import static lombok.AccessLevel.PRIVATE;
+import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.CLINICAL_SUPPLEMENTAL_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.META_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.PRIMARY_SUBTYPE;
 import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.SECONDARY_SUBTYPE;
-import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.SUPPLEMENTAL_SUBTYPE;
 import static org.icgc.dcc.common.core.util.Strings2.getFirstCharacter;
 
 import java.util.List;
@@ -71,15 +71,13 @@ public final class FileTypes {
     // Clinical Core
     //
 
-    DONOR_SUBTYPE,
-    SPECIMEN_SUBTYPE,
-    SAMPLE_SUBTYPE,
+    CLINICAL_CORE_SUBTYPE,
 
     //
     // Clinical Supplemental
     //
 
-    SUPPLEMENTAL_SUBTYPE,
+    CLINICAL_SUPPLEMENTAL_SUBTYPE,
 
     //
     // Feature Types
@@ -130,8 +128,12 @@ public final class FileTypes {
       return this == SYSTEM_SUBTYPE;
     }
 
-    public boolean isSupplementalSubType() {
-      return this == SUPPLEMENTAL_SUBTYPE;
+    public boolean isClinicalCoreSubType() {
+      return this == CLINICAL_CORE_SUBTYPE;
+    }
+
+    public boolean isClinicalSupplementalSubType() {
+      return this == CLINICAL_SUPPLEMENTAL_SUBTYPE;
     }
 
     /**
@@ -139,9 +141,7 @@ public final class FileTypes {
      */
     public static final Set<FileSubType> MANDATORY_SUBTYPES =
         new ImmutableSet.Builder<FileSubType>()
-            .add(DONOR_SUBTYPE)
-            .add(SPECIMEN_SUBTYPE)
-            .add(SAMPLE_SUBTYPE)
+            .add(CLINICAL_CORE_SUBTYPE)
             .build();
 
     /**
@@ -166,19 +166,19 @@ public final class FileTypes {
     // Clinical Core
     //
 
-    DONOR_TYPE(ClinicalType.CLINICAL_CORE_TYPE, FileSubType.DONOR_SUBTYPE),
-    SPECIMEN_TYPE(ClinicalType.CLINICAL_CORE_TYPE, FileSubType.SPECIMEN_SUBTYPE),
-    SAMPLE_TYPE(ClinicalType.CLINICAL_CORE_TYPE, FileSubType.SAMPLE_SUBTYPE),
+    DONOR_TYPE(ClinicalType.DONOR_TYPE, FileSubType.CLINICAL_CORE_SUBTYPE),
+    SPECIMEN_TYPE(ClinicalType.SPECIMEN_TYPE, FileSubType.CLINICAL_CORE_SUBTYPE),
+    SAMPLE_TYPE(ClinicalType.SAMPLE_TYPE, FileSubType.CLINICAL_CORE_SUBTYPE),
 
     //
     // Clinical Supplemental
     //
 
-    BIOMARKER_TYPE(ClinicalType.BIOMARKER_TYPE, FileSubType.SUPPLEMENTAL_SUBTYPE),
-    FAMILY_TYPE(ClinicalType.FAMILY_TYPE, FileSubType.SUPPLEMENTAL_SUBTYPE),
-    EXPOSURE_TYPE(ClinicalType.EXPOSURE_TYPE, FileSubType.SUPPLEMENTAL_SUBTYPE),
-    SURGERY_TYPE(ClinicalType.SURGERY_TYPE, FileSubType.SUPPLEMENTAL_SUBTYPE),
-    THERAPY_TYPE(ClinicalType.THERAPY_TYPE, FileSubType.SUPPLEMENTAL_SUBTYPE),
+    BIOMARKER_TYPE(ClinicalType.BIOMARKER_TYPE, FileSubType.CLINICAL_SUPPLEMENTAL_SUBTYPE),
+    FAMILY_TYPE(ClinicalType.FAMILY_TYPE, FileSubType.CLINICAL_SUPPLEMENTAL_SUBTYPE),
+    EXPOSURE_TYPE(ClinicalType.EXPOSURE_TYPE, FileSubType.CLINICAL_SUPPLEMENTAL_SUBTYPE),
+    SURGERY_TYPE(ClinicalType.SURGERY_TYPE, FileSubType.CLINICAL_SUPPLEMENTAL_SUBTYPE),
+    THERAPY_TYPE(ClinicalType.THERAPY_TYPE, FileSubType.CLINICAL_SUPPLEMENTAL_SUBTYPE),
 
     //
     // Feature Types
@@ -268,7 +268,9 @@ public final class FileTypes {
         return JOINER.join(dataType.getId(), subType.getAbbreviation());
       } else if (subType.isSystemSubType()) {
         return JOINER.join(dataType.getId(), PROBES);
-      } else if (subType.isSupplementalSubType()) {
+      } else if (subType.isClinicalSupplementalSubType()) {
+        return dataType.getId();
+      } else if (subType.isClinicalCoreSubType()) {
         return dataType.getId();
       } else {
         return subType.getFullName();
@@ -316,7 +318,7 @@ public final class FileTypes {
     }
 
     public boolean isSupplemental() {
-      return getSubType() == SUPPLEMENTAL_SUBTYPE;
+      return getSubType() == CLINICAL_SUPPLEMENTAL_SUBTYPE;
     }
 
     /**

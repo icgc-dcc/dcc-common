@@ -23,8 +23,7 @@ import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.find;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newLinkedHashSet;
-import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.SUPPLEMENTAL_SUBTYPE;
-import static org.icgc.dcc.common.core.model.FileTypes.FileType.DONOR_TYPE;
+import static org.icgc.dcc.common.core.model.FileTypes.FileSubType.CLINICAL_SUPPLEMENTAL_SUBTYPE;
 import static org.icgc.dcc.common.core.util.Joiners.UNDERSCORE;
 import static org.icgc.dcc.common.core.util.Strings2.EMPTY_STRING;
 import static org.icgc.dcc.common.core.util.Strings2.removeTarget;
@@ -48,7 +47,9 @@ import com.google.common.base.Predicate;
  */
 public enum ClinicalType implements DataType {
 
-  CLINICAL_CORE_TYPE(SummaryType.EXISTS),
+  DONOR_TYPE(SummaryType.EXISTS),
+  SPECIMEN_TYPE(SummaryType.EXISTS),
+  SAMPLE_TYPE(SummaryType.EXISTS),
   BIOMARKER_TYPE(SummaryType.EXISTS),
   FAMILY_TYPE(SummaryType.EXISTS),
   EXPOSURE_TYPE(SummaryType.EXISTS),
@@ -79,12 +80,12 @@ public enum ClinicalType implements DataType {
 
   @Override
   public FileType getTopLevelFileType() {
-    return DONOR_TYPE;
+    return FileType.DONOR_TYPE;
   }
 
-  public boolean isCoreClinicalType() {
-    return this == CLINICAL_CORE_TYPE;
-  }
+  // public boolean isCoreClinicalType() {
+  // return this == CLINICAL_CORE_TYPE;
+  // }
 
   @Override
   public FeatureType asFeatureType() {
@@ -97,9 +98,6 @@ public enum ClinicalType implements DataType {
    * Returns an enum matching the type name provided.
    */
   public static ClinicalType from(String typeName) {
-    if (typeName.equals(CLINICAL_CORE_TYPE.getId())) {
-      return CLINICAL_CORE_TYPE;
-    }
     return valueOf(typeName.toUpperCase() + TYPE_SUFFIX);
   }
 
@@ -157,7 +155,7 @@ public enum ClinicalType implements DataType {
   }
 
   public FileType getSupplementalFileType() {
-    return getFileType(SUPPLEMENTAL_SUBTYPE);
+    return getFileType(CLINICAL_SUPPLEMENTAL_SUBTYPE);
   }
 
   private FileType getFileType(final FileSubType fileSubType) {
