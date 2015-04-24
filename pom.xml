@@ -29,6 +29,7 @@
     <module>dcc-common-hadoop</module>
     <module>dcc-common-cascading</module>
     <module>dcc-common-test</module>
+    <module>dcc-common-resources</module>
   </modules>
 
   <scm>
