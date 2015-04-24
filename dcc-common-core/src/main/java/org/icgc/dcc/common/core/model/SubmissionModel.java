@@ -207,4 +207,9 @@ public class SubmissionModel implements Serializable, ControlFieldsReference {
     };
   }
 
+  @JsonIgnore
+  public Set<FileType> getFileTypes() {
+    return files.keySet();
+  }
+
 }

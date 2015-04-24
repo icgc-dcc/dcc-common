@@ -18,7 +18,11 @@
 package org.icgc.dcc.common.core.model;
 
 import static com.google.common.base.Preconditions.checkState;
+import static org.icgc.dcc.common.core.model.FileTypes.FileType.CLINICAL_OPTIONAL_FILE_TYPES;
 import static org.icgc.dcc.common.core.model.FileTypes.FileType.DONOR_TYPE;
+
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -94,4 +98,7 @@ public enum ClinicalType implements DataType, Identifiable {
         "Unknown " + ClinicalType.class.getSimpleName() + "  for type name'" + typeName + "'");
   }
 
+  public Set<FileType> getOptionalDataTypeFileTypes() {
+    return CLINICAL_OPTIONAL_FILE_TYPES;
+  }
 }

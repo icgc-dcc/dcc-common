@@ -36,6 +36,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.val;
 
 import org.icgc.dcc.common.core.model.DataType.DataTypes;
 import org.icgc.dcc.common.core.model.FeatureTypes.FeatureType;
@@ -134,6 +135,10 @@ public final class FileTypes {
       return this == SYSTEM_SUBTYPE;
     }
 
+    public boolean isOptionalSubType() {
+      return CLINICAL_OPTIONAL_SUBTYPES.contains(this);
+    }
+
     /**
      * These sub-types are always provided for a submission to be {@link SubmissionState#VALID}.
      */
@@ -142,6 +147,37 @@ public final class FileTypes {
             .add(DONOR_SUBTYPE)
             .add(SPECIMEN_SUBTYPE)
             .add(SAMPLE_SUBTYPE)
+            .build();
+
+    /**
+     * These sub-types are optional for a submission to be {@link SubmissionState#VALID}.
+     */
+    public static final Set<FileSubType> CLINICAL_OPTIONAL_SUBTYPES =
+        new ImmutableSet.Builder<FileSubType>()
+            .add(BIOMARKER_SUBTYPE)
+            .add(FAMILY_SUBTYPE)
+            .add(EXPOSURE_SUBTYPE)
+            .add(SURGERY_SUBTYPE)
+            .add(THERAPY_SUBTYPE)
+            .build();
+
+    public static final Set<FileSubType> CLINICAL_OPTIONAL_SPECIMEN_SUBTYPES =
+        new ImmutableSet.Builder<FileSubType>()
+            .add(BIOMARKER_SUBTYPE)
+            .add(SURGERY_SUBTYPE)
+            .build();
+
+    public static final Set<FileSubType> CLINICAL_OPTIONAL_ALONE_SUBTYPES =
+        new ImmutableSet.Builder<FileSubType>()
+            .add(FAMILY_SUBTYPE)
+            .add(EXPOSURE_SUBTYPE)
+            .add(THERAPY_SUBTYPE)
+            .build();
+
+    public static final Set<FileSubType> CLINICAL_SUBTYPES =
+        new ImmutableSet.Builder<FileSubType>()
+            .addAll(MANDATORY_SUBTYPES)
+            .addAll(CLINICAL_OPTIONAL_SUBTYPES)
             .build();
 
     /**
@@ -156,6 +192,20 @@ public final class FileTypes {
      */
     private boolean usedAsAbbrevatiation() {
       return TYPES_USED_AS_ABBREVIATION.contains(this);
+    }
+
+    public Set<FileType> getCorrespondingFileTypes() {
+      val subType = this;
+      return newLinkedHashSet(filter(
+          newArrayList(FileType.values()),
+          new Predicate<FileType>() {
+
+            @Override
+            public boolean apply(FileType fileType) {
+              return fileType.getSubType() == subType;
+            }
+
+          }));
     }
 
   }
@@ -361,6 +411,20 @@ public final class FileTypes {
 
       };
     }
+
+    /**
+     * These sub-types are optional for a submission to be {@link SubmissionState#VALID}.
+     */
+    public static final Set<FileType> CLINICAL_OPTIONAL_FILE_TYPES =
+        new ImmutableSet.Builder<FileType>()
+            // .add(DONOR_TYPE)
+            // .add(SPECIMEN_TYPE)
+            .add(BIOMARKER_TYPE)
+            .add(FAMILY_TYPE)
+            .add(EXPOSURE_TYPE)
+            .add(SURGERY_TYPE)
+            .add(THERAPY_TYPE)
+            .build();
 
   }
 
