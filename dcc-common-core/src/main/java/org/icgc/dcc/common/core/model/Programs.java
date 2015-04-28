@@ -38,10 +38,10 @@ public class Programs {
     BRCA_US,
     CESC_US,
     COAD_US,
-    DBLC_US, // Non-DCC
+    DBLC_US, // PCAWG only
     GBM_US,
     HNSC_US,
-    KICH_US, // Non-DCC
+    KICH_US, // PCAWG only
     KIRC_US,
     KIRP_US,
     LAML_US,
@@ -53,6 +53,7 @@ public class Programs {
     PAAD_US,
     PRAD_US,
     READ_US,
+    SARC_US, // PCAWG only
     SKCM_US,
     STAD_US,
     THCA_US,

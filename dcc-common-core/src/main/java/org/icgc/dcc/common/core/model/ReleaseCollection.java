@@ -58,7 +58,8 @@ public enum ReleaseCollection implements Identifiable {
   MUTATION_COLLECTION(UNDETERMINED, "Mutation", newArrayList(SURROGATE_MUTATION_ID)),
   PATHWAY_COLLECTION(UNDETERMINED, "Pathway", newArrayList(PATHWAY_REACTOME_ID)),
   GENE_SET_COLLECTION(UNDETERMINED, "GeneSet", newArrayList(GENE_SET_ID)),
-  DIAGRAM_COLLECTION(UNDETERMINED, "Diagram", newArrayList(DIAGRAM_ID));
+  DIAGRAM_COLLECTION(UNDETERMINED, "Diagram", newArrayList(DIAGRAM_ID)),
+  FILE_COLLECTION(UNDETERMINED, "File", newArrayList(DIAGRAM_ID)), ;
 
   private final ReleaseDatabase parentDatabase;
 

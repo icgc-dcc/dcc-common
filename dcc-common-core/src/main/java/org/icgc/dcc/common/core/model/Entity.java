@@ -28,6 +28,8 @@ public enum Entity {
   MUTATION,
   TRANSCRIPT,
   CONSEQUENCE,
-  PATHWAY
+  PATHWAY,
+  DIAGRAM,
+  FILE
 
 }
