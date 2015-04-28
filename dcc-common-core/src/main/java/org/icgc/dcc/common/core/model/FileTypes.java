@@ -161,24 +161,11 @@ public final class FileTypes {
             .add(THERAPY_SUBTYPE)
             .build();
 
-    public static final Set<FileSubType> CLINICAL_OPTIONAL_SPECIMEN_SUBTYPES =
-        new ImmutableSet.Builder<FileSubType>()
-            .add(BIOMARKER_SUBTYPE)
-            .add(SURGERY_SUBTYPE)
-            .build();
-
-    public static final Set<FileSubType> CLINICAL_OPTIONAL_ALONE_SUBTYPES =
-        new ImmutableSet.Builder<FileSubType>()
-            .add(FAMILY_SUBTYPE)
-            .add(EXPOSURE_SUBTYPE)
-            .add(THERAPY_SUBTYPE)
-            .build();
-
     public static final Set<FileSubType> CLINICAL_SUBTYPES =
-        new ImmutableSet.Builder<FileSubType>()
-            .addAll(MANDATORY_SUBTYPES)
-            .addAll(CLINICAL_OPTIONAL_SUBTYPES)
-            .build();
+	new ImmutableSet.Builder<FileSubType>()
+	    .addAll(MANDATORY_SUBTYPES)
+	    .addAll(CLINICAL_OPTIONAL_SUBTYPES)
+	    .build();
 
     /**
      * See {@link #usedAsAbbrevatiation()}.
@@ -417,8 +404,6 @@ public final class FileTypes {
      */
     public static final Set<FileType> CLINICAL_OPTIONAL_FILE_TYPES =
         new ImmutableSet.Builder<FileType>()
-            // .add(DONOR_TYPE)
-            // .add(SPECIMEN_TYPE)
             .add(BIOMARKER_TYPE)
             .add(FAMILY_TYPE)
             .add(EXPOSURE_TYPE)
