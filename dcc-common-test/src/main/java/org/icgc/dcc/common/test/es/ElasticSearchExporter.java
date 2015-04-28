@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 
 import lombok.Cleanup;
 import lombok.SneakyThrows;
+import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 import org.elasticsearch.action.search.SearchResponse;
@@ -44,6 +45,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 
 @Slf4j
@@ -86,10 +88,15 @@ public class ElasticSearchExporter {
 
   private Set<String> getTypeNames() {
     ClusterState cs = esClient.admin().cluster().prepareState()
-        .setFilterIndices(indexName).execute().actionGet().getState();
+        .setIndices(indexName).execute().actionGet().getState();
     IndexMetaData imd = cs.getMetaData().index(indexName);
+    
+    val result = ImmutableSet.<String>builder();
+    for (val key : imd.getMappings().keys()) {
+    	result.add(key.value);
+    }
 
-    return imd.getMappings().keySet();
+    return result.build();
   }
 
   private File getExportFile(String typeName) throws IOException {
