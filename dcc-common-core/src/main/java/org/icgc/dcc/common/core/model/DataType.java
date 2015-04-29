@@ -60,7 +60,7 @@ public interface DataType extends Identifiable {
   /**
    * Not really used anywhere (but here for consistency).
    */
-  String CLINICAL_OPTIONAL_TYPE_NAME = "optional";
+  String CLINICAL_SUPPLEMENTAL_TYPE_NAME = "supplemental";
 
   String CLINICAL = "clinical";
 

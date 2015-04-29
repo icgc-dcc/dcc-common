@@ -61,6 +61,7 @@ public final class Tests {
 
   public static final String PROJECT1 = "project1";
   public static final String PROJECT2 = "project2";
+  public static final String PROJECT3 = "project3";
 
   public static final String PROJECTS_JSON_FILE_NAME = EXTENSION.join("projects", JSON);
 

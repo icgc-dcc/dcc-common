@@ -217,6 +217,8 @@ public final class FieldNames {
   public static final String DONOR_SAMPLE_ANALYZED_SAMPLE_ID = "analyzed_sample_id";
   public static final String DONOR_SAMPLE_SEQUENCE_DATA = LoaderFieldNames.AVAILABLE_RAW_SEQUENCE_DATA;
 
+  public static final String DONOR_OPTIONAL = "optional";
+
   /**
    * CGHub field names.
    */
