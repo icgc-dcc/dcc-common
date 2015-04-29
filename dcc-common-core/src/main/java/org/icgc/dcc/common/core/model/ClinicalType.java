@@ -18,7 +18,7 @@
 package org.icgc.dcc.common.core.model;
 
 import static com.google.common.base.Preconditions.checkState;
-import static org.icgc.dcc.common.core.model.FileTypes.FileType.CLINICAL_OPTIONAL_FILE_TYPES;
+import static org.icgc.dcc.common.core.model.FileTypes.FileType.CLINICAL_SUPPLEMENTAL_FILE_TYPES;
 import static org.icgc.dcc.common.core.model.FileTypes.FileType.DONOR_TYPE;
 
 import java.util.Set;
@@ -38,7 +38,7 @@ import org.icgc.dcc.common.core.model.FileTypes.FileType;
 public enum ClinicalType implements DataType, Identifiable {
 
   CLINICAL_CORE_TYPE(FileSubType.DONOR_SUBTYPE.getFullName()),
-  CLINICAL_OPTIONAL_TYPE(CLINICAL_OPTIONAL_TYPE_NAME);
+  CLINICAL_SUPPLEMENTAL_TYPE(CLINICAL_SUPPLEMENTAL_TYPE_NAME);
 
   private ClinicalType(@NonNull final String id) {
     this.id = id;
@@ -73,7 +73,7 @@ public enum ClinicalType implements DataType, Identifiable {
   }
 
   public boolean isOptionalClinicalType() {
-    return this == CLINICAL_OPTIONAL_TYPE;
+    return this == CLINICAL_SUPPLEMENTAL_TYPE;
   }
 
   @Override
@@ -90,8 +90,8 @@ public enum ClinicalType implements DataType, Identifiable {
     if (typeName.equals(CLINICAL_CORE_TYPE.getId())) {
       return CLINICAL_CORE_TYPE;
     }
-    if (typeName.equals(CLINICAL_OPTIONAL_TYPE.getId())) {
-      return CLINICAL_OPTIONAL_TYPE;
+    if (typeName.equals(CLINICAL_SUPPLEMENTAL_TYPE.getId())) {
+      return CLINICAL_SUPPLEMENTAL_TYPE;
     }
 
     throw new IllegalArgumentException(
@@ -99,6 +99,6 @@ public enum ClinicalType implements DataType, Identifiable {
   }
 
   public Set<FileType> getOptionalDataTypeFileTypes() {
-    return CLINICAL_OPTIONAL_FILE_TYPES;
+    return CLINICAL_SUPPLEMENTAL_FILE_TYPES;
   }
 }
