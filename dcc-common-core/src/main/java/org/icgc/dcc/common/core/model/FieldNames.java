@@ -391,6 +391,8 @@ public final class FieldNames {
   public static final String TYPE_COUNT_SUFFIX = "_count";
   public static final String TYPE_EXISTS_SUFFIX = "_exists";
   public static final String AVAILABLE_DATA_TYPES = "_available_data_type";
+  public static final String DONOR_SAMPLE_STUDY = "study";
+  public static final String DONOR_SUMMARY_STUDIES = "_studies";
   public static final String TOTAL_DONOR_COUNT = "_total_donor_count";
   public static final String TOTAL_SPECIMEN_COUNT = "_total_specimen_count";
   public static final String TOTAL_SAMPLE_COUNT = "_total_sample_count";
