@@ -31,6 +31,7 @@ import lombok.NonNull;
 @NoArgsConstructor(access = PRIVATE)
 public final class DccResources {
 
+  public static final String DICTIONARY_VERSION = "0.11c";
   public static final String DICTIONARY_JSON_FILE_NAME = EXTENSION.join("Dictionary", JSON);
   public static final String CODELISTS_JSON_FILE_NAME = EXTENSION.join("CodeList", JSON);
 
