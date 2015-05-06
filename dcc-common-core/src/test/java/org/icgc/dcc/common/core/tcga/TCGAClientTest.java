@@ -22,6 +22,9 @@ import lombok.val;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
 public class TCGAClientTest {
 
   TCGAClient client = new TCGAClient();
@@ -35,11 +38,49 @@ public class TCGAClientTest {
   }
 
   @Test
+  public void testGetUUIDsSingle() throws Exception {
+    val uuids = ImmutableSet.of("TCGA-5T-A9QA-01A-21-A43F-20");
+    val barcodes = client.getUUIDs(uuids);
+
+    assertThat(barcodes).isEqualTo(ImmutableMap.of(
+        "TCGA-5T-A9QA-01A-21-A43F-20", "9e71a150-8fd7-466c-96af-aab29520bcdc"));
+  }
+
+  @Test
+  public void testGetUUIDsMultiple() throws Exception {
+    val uuids = ImmutableSet.of("TCGA-5T-A9QA-01A-21-A43F-20", "TCGA-GC-A3WC-11A-11R-A22V-13");
+    val barcodes = client.getUUIDs(uuids);
+
+    assertThat(barcodes).isEqualTo(ImmutableMap.of(
+        "TCGA-5T-A9QA-01A-21-A43F-20", "9e71a150-8fd7-466c-96af-aab29520bcdc",
+        "TCGA-GC-A3WC-11A-11R-A22V-13", "22c65a63-09f6-483e-85a7-a4f3d315bba4"));
+  }
+
+  @Test
   public void testGetBarcode() throws Exception {
     val uuid = "9e71a150-8fd7-466c-96af-aab29520bcdc";
     val barcode = client.getBarcode(uuid);
 
     assertThat(barcode).isEqualTo("TCGA-5T-A9QA-01A-21-A43F-20");
+  }
+
+  @Test
+  public void testGetBarcodesSingle() throws Exception {
+    val uuids = ImmutableSet.of("9e71a150-8fd7-466c-96af-aab29520bcdc");
+    val barcodes = client.getBarcodes(uuids);
+
+    assertThat(barcodes).isEqualTo(ImmutableMap.of(
+        "9e71a150-8fd7-466c-96af-aab29520bcdc", "TCGA-5T-A9QA-01A-21-A43F-20"));
+  }
+
+  @Test
+  public void testGetBarcodesMultiple() throws Exception {
+    val uuids = ImmutableSet.of("9e71a150-8fd7-466c-96af-aab29520bcdc", "22c65a63-09f6-483e-85a7-a4f3d315bba4");
+    val barcodes = client.getBarcodes(uuids);
+
+    assertThat(barcodes).isEqualTo(ImmutableMap.of(
+        "9e71a150-8fd7-466c-96af-aab29520bcdc", "TCGA-5T-A9QA-01A-21-A43F-20",
+        "22c65a63-09f6-483e-85a7-a4f3d315bba4", "TCGA-GC-A3WC-11A-11R-A22V-13"));
   }
 
 }
