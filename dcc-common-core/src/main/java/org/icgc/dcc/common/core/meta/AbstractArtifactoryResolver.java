@@ -17,6 +17,8 @@
  */
 package org.icgc.dcc.common.core.meta;
 
+import static org.icgc.dcc.common.core.DccResources.DICTIONARY_VERSION;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
@@ -34,7 +36,7 @@ import com.google.common.base.Optional;
 public abstract class AbstractArtifactoryResolver implements Resolver {
 
   private static String getDefaultVersion() {
-    return "0.10a";
+    return DICTIONARY_VERSION;
   }
 
   protected static <T> T read(String fileName, Class<T> type) {
