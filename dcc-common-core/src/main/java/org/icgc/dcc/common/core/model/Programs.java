@@ -38,7 +38,7 @@ public class Programs {
     BRCA_US,
     CESC_US,
     COAD_US,
-    DBLC_US, // PCAWG only
+    DLBC_US, // PCAWG only
     GBM_US,
     HNSC_US,
     KICH_US, // PCAWG only
