@@ -203,6 +203,7 @@ public final class FieldNames {
       "experimental_analysis_performed_sample_count";
   public static final String DONOR_SUMMARY_AGE_AT_DIAGNOSIS_GROUP = "_age_at_diagnosis_group";
   public static final String DONOR_SUMMARY_AFFECTED_GENE_COUNT = "_affected_gene_count";
+  public static final String DONOR_SUMMARY_COMPLETENESS = "_completeness";
 
   public static final String DONOR_GENES = "gene";
   public static final String DONOR_GENE_GENE_ID = LoaderFieldNames.GENE_ID;
