@@ -184,6 +184,7 @@ public final class FieldNames {
   public static final String PROJECT_SUMMARY = "_summary";
   public static final String PROJECT_SUMMARY_REPOSITORY = "repository";
   public static final String PROJECT_SUMMARY_TOTAL_DONOR_COUNT = "_total_donor_count";
+  public static final String PROJECT_SUMMARY_COMPLETE_DONOR_COUNT = "_total_complete_donor_count";
 
   /**
    * Special fields, usually appearing in all clinical files as well as primary/meta experimental files.
@@ -203,7 +204,7 @@ public final class FieldNames {
       "experimental_analysis_performed_sample_count";
   public static final String DONOR_SUMMARY_AGE_AT_DIAGNOSIS_GROUP = "_age_at_diagnosis_group";
   public static final String DONOR_SUMMARY_AFFECTED_GENE_COUNT = "_affected_gene_count";
-  public static final String DONOR_SUMMARY_COMPLETENESS = "_completeness";
+  public static final String DONOR_SUMMARY_COMPLETE = "_complete";
 
   public static final String DONOR_GENES = "gene";
   public static final String DONOR_GENE_GENE_ID = LoaderFieldNames.GENE_ID;
@@ -339,6 +340,7 @@ public final class FieldNames {
   public static final String RELEASE_PROJECT_COUNT = "project_count";
   public static final String RELEASE_PRIMARY_SITE_COUNT = "primary_site_count";
   public static final String RELEASE_DONOR_COUNT = "donor_count";
+  public static final String RELEASE_COMPLETE_DONOR_COUNT = "complete_donor_count";
   public static final String RELEASE_SPECIMEN_COUNT = "specimen_count";
   public static final String RELEASE_SAMPLE_COUNT = "sample_count";
   public static final String RELEASE_SSM_COUNT = "ssm_count";
