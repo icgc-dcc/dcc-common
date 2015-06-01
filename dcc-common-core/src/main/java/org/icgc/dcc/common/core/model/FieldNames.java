@@ -185,6 +185,7 @@ public final class FieldNames {
   public static final String PROJECT_SUMMARY_REPOSITORY = "repository";
   public static final String PROJECT_SUMMARY_TOTAL_DONOR_COUNT = "_total_donor_count";
   public static final String PROJECT_SUMMARY_COMPLETE_DONOR_COUNT = "_total_complete_donor_count";
+  public static final String PROJECT_SUMMARY_COMPLETE = "_complete";
 
   /**
    * Special fields, usually appearing in all clinical files as well as primary/meta experimental files.
