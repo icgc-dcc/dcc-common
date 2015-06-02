@@ -339,6 +339,7 @@ public final class FieldNames {
   public static final String RELEASE_NUMBER = "number";
   public static final String RELEASE_DATE = "date";
   public static final String RELEASE_PROJECT_COUNT = "project_count";
+  public static final String RELEASE_COMPLETE_PROJECT_COUNT = "complete_project_count";
   public static final String RELEASE_PRIMARY_SITE_COUNT = "primary_site_count";
   public static final String RELEASE_DONOR_COUNT = "donor_count";
   public static final String RELEASE_COMPLETE_DONOR_COUNT = "complete_donor_count";
