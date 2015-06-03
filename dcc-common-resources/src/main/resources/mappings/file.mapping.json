@@ -17,11 +17,6 @@
             }
          }
       ],
-      "properties":{
-         "data_types":{
-            "type":"nested"
-         }
-      },
       "date_detection":"false"
    }
 }
