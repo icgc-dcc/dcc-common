@@ -25,11 +25,18 @@ import java.util.stream.StreamSupport;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import com.google.common.collect.ImmutableList;
+
 @NoArgsConstructor(access = PRIVATE)
 public class Streams {
 
   public static <T> Stream<T> stream(@NonNull Iterable<T> iterable) {
     return StreamSupport.stream(iterable.spliterator(), false);
+  }
+
+  @SafeVarargs
+  public static <T> Stream<T> stream(@NonNull T... values) {
+    return ImmutableList.copyOf(values).stream();
   }
 
 }

@@ -370,7 +370,7 @@ public final class FieldNames {
   public static final String DIAGRAM_XML = "xml";
   public static final String DIAGRAM_HIGHLIGHTS = "highlights";
   public static final String DIAGRAM_PROTEIN_MAP = "protein_map";
-  public static final String DIAGRAM_PROTEIN_MAP_PATHWAY_ID = "pathway_id";
+  public static final String DIAGRAM_PROTEIN_MAP_DB_ID = "db_id";
   public static final String DIAGRAM_PROTEIN_MAP_UNIPROT_IDS = "uniprot_ids";
 
   /**
