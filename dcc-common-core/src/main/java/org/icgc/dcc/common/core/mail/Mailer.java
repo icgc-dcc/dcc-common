@@ -68,20 +68,20 @@ public class Mailer {
   private final boolean enabled;
 
   public Mailer() {
-    this.from = "noreply@oicr.on.ca";
-    this.recipient = "***REMOVED***";
-    this.host = "smtp.oicr.on.ca";
-    this.port = "25";
-    this.enabled = true;
+    this.host = DEFAULT_MAIL_HOST;
+    this.port = DEFAULT_MAIL_PORT;
+    this.from = DEFAULT_MAIL_FROM;
+    this.recipient = DEFAULT_MAIL_RECIPIENT;
+    this.enabled = DEFAULT_MAIL_ENABLED;
   }
 
   /**
-   * Send an email to configured recipient with {@code subject} and {@body body}.
+   * Send an email to configured recipient with the supplied {@code subject} and {code body}.
    * <p>
-   * Executes synchronously if the host is not localhost
+   * Executes synchronously if the host is not {@code localhost}.
    * 
-   * @param subject the subject
-   * @param body the message
+   * @param subject the mail subject
+   * @param body the mail message
    */
   @NonNull
   public void sendMail(String subject, String body) {
