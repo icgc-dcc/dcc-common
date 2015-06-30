@@ -66,7 +66,13 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
   private static List<User> convert(List<ResponseUser> source) {
     val result = new ImmutableList.Builder<User>();
     for (val user : source) {
-      result.add(User.builder().openid(user.getOpenid()).build());
+      for (val userInfo : user.getUserinfo()) {
+        result.add(User.builder()
+            .openid(user.getOpenid())
+            .email(userInfo.getEmail())
+            .username(userInfo.getName())
+            .build());
+      }
     }
 
     return result.build();
