@@ -39,12 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import lombok.Cleanup;
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -64,6 +58,12 @@ import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.InputSupplier;
 import com.google.common.io.LineReader;
+
+import lombok.Cleanup;
+import lombok.NonNull;
+import lombok.SneakyThrows;
+import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Handles all hadoop API related methods - TODO: change to use proxy or decorator pattern?
@@ -227,7 +227,8 @@ public class HadoopUtils {
     }
   }
 
-  public static void cp(@NonNull final FileSystem fileSystem, @NonNull final String source, @NonNull final String target) {
+  public static void cp(@NonNull final FileSystem fileSystem, @NonNull final String source,
+      @NonNull final String target) {
     cp(fileSystem, new Path(source), new Path(target));
   }
 
@@ -304,7 +305,7 @@ public class HadoopUtils {
     for (FileStatus fileStatus : listStatus) {
       String filename = fileStatus.getPath().getName();
       if (((fileStatus.isFile() && file) || (fileStatus.isSymlink() && symLink) //
-      || (fileStatus.isDirectory() && dir)) && (null == pattern || pattern.matcher(filename).matches())) {
+          || (fileStatus.isDirectory() && dir)) && (null == pattern || pattern.matcher(filename).matches())) {
         ls.add(fileStatus.getPath());
       }
     }
@@ -378,9 +379,7 @@ public class HadoopUtils {
    */
   @SneakyThrows
   public static Optional<FileStatus> getFileStatus(FileSystem fileSystem, Path path) {
-    return fileSystem.exists(path) ?
-        Optional.of(fileSystem.getFileStatus(path)) :
-        Optional.<FileStatus> absent();
+    return fileSystem.exists(path) ? Optional.of(fileSystem.getFileStatus(path)) : Optional.<FileStatus> absent();
   }
 
   /**
@@ -411,10 +410,8 @@ public class HadoopUtils {
 
     @Cleanup
     InputStreamReader reader = new InputStreamReader(
-        codec == null ?
-            fileSystem
-                .open(inputFile) :
-            codec.createInputStream(fileSystem.open(inputFile)),
+        codec == null ? fileSystem
+            .open(inputFile) : codec.createInputStream(fileSystem.open(inputFile)),
         UTF_8);
 
     val splitter = Separators.getCorrespondingSplitter(separator);
@@ -482,13 +479,9 @@ public class HadoopUtils {
     val codec = factory.getCodec(path);
     val inputStream = open(fileSystem, resolvedPath);
 
-    return codec == null ?
-        inputStream :
-        codec.createInputStream(inputStream);
+    return codec == null ? inputStream : codec.createInputStream(inputStream);
   }
 
-  @SuppressWarnings("unchecked")
-  // TODO: how to get rid of that warning?
   private static List<Path> getSortedPartFiles(
       @NonNull final FileSystem fileSystem,
       @NonNull final Path inputDir) {
