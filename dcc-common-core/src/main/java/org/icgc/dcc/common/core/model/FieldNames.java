@@ -20,9 +20,10 @@ package org.icgc.dcc.common.core.model;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_DONOR_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_MATCHED_SAMPLE_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.SubmissionFieldNames.SUBMISSION_SPECIMEN_ID;
-import lombok.experimental.UtilityClass;
 
 import org.icgc.dcc.common.core.model.FeatureTypes.FeatureType;
+
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class FieldNames {
@@ -184,7 +185,11 @@ public final class FieldNames {
   public static final String PROJECT_SUMMARY = "_summary";
   public static final String PROJECT_SUMMARY_REPOSITORY = "repository";
   public static final String PROJECT_SUMMARY_TOTAL_DONOR_COUNT = "_total_donor_count";
+  public static final String PROJECT_SUMMARY_LIVE_DONOR_COUNT = "_total_live_donor_count";
+  public static final String PROJECT_SUMMARY_STATE = "_state";
+  @Deprecated
   public static final String PROJECT_SUMMARY_COMPLETE_DONOR_COUNT = "_total_complete_donor_count";
+  @Deprecated
   public static final String PROJECT_SUMMARY_COMPLETE = "_complete";
 
   /**
@@ -205,6 +210,8 @@ public final class FieldNames {
       "experimental_analysis_performed_sample_count";
   public static final String DONOR_SUMMARY_AGE_AT_DIAGNOSIS_GROUP = "_age_at_diagnosis_group";
   public static final String DONOR_SUMMARY_AFFECTED_GENE_COUNT = "_affected_gene_count";
+  public static final String DONOR_SUMMARY_STATE = "_state";
+  @Deprecated
   public static final String DONOR_SUMMARY_COMPLETE = "_complete";
 
   public static final String DONOR_GENES = "gene";
@@ -339,9 +346,13 @@ public final class FieldNames {
   public static final String RELEASE_NUMBER = "number";
   public static final String RELEASE_DATE = "date";
   public static final String RELEASE_PROJECT_COUNT = "project_count";
+  public static final String RELEASE_LIVE_PROJECT_COUNT = "live_project_count";
+  @Deprecated
   public static final String RELEASE_COMPLETE_PROJECT_COUNT = "complete_project_count";
   public static final String RELEASE_PRIMARY_SITE_COUNT = "primary_site_count";
   public static final String RELEASE_DONOR_COUNT = "donor_count";
+  public static final String RELEASE_LIVE_DONOR_COUNT = "live_donor_count";
+  @Deprecated
   public static final String RELEASE_COMPLETE_DONOR_COUNT = "complete_donor_count";
   public static final String RELEASE_SPECIMEN_COUNT = "specimen_count";
   public static final String RELEASE_SAMPLE_COUNT = "sample_count";
@@ -401,6 +412,8 @@ public final class FieldNames {
   public static final String DONOR_SAMPLE_STUDY = "study";
   public static final String DONOR_SUMMARY_STUDIES = "_studies";
   public static final String TOTAL_DONOR_COUNT = "_total_donor_count";
+  public static final String TOTAL_LIVE_DONOR_COUNT = "_total_live_donor_count";
+  @Deprecated
   public static final String TOTAL_COMPLETE_DONOR_COUNT = "_total_complete_donor_count";
   public static final String TOTAL_SPECIMEN_COUNT = "_total_specimen_count";
   public static final String TOTAL_SAMPLE_COUNT = "_total_sample_count";
