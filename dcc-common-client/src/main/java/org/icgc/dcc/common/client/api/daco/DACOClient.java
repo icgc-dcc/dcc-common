@@ -89,4 +89,13 @@ public interface DACOClient {
    */
   boolean hasDacoAccess(String userId, UserType userType);
 
+  /**
+   * Checks if {@code userId} is in the list of the approved DACO users. The {@code userId} may be either an
+   * {@code OPENID} or a {@code CUD}.
+   * 
+   * @param userId to be checked. CUD {@code username} or {@code OPENID}
+   * @return <b>true</b> if the {@code userId} is approved, otherwise - <b>false</b>
+   */
+  boolean hasDacoAccess(String userId);
+
 }
