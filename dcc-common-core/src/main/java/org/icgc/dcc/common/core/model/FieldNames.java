@@ -187,10 +187,6 @@ public final class FieldNames {
   public static final String PROJECT_SUMMARY_TOTAL_DONOR_COUNT = "_total_donor_count";
   public static final String PROJECT_SUMMARY_LIVE_DONOR_COUNT = "_total_live_donor_count";
   public static final String PROJECT_SUMMARY_STATE = "_state";
-  @Deprecated
-  public static final String PROJECT_SUMMARY_COMPLETE_DONOR_COUNT = "_total_complete_donor_count";
-  @Deprecated
-  public static final String PROJECT_SUMMARY_COMPLETE = "_complete";
 
   /**
    * Special fields, usually appearing in all clinical files as well as primary/meta experimental files.
@@ -347,13 +343,10 @@ public final class FieldNames {
   public static final String RELEASE_DATE = "date";
   public static final String RELEASE_PROJECT_COUNT = "project_count";
   public static final String RELEASE_LIVE_PROJECT_COUNT = "live_project_count";
-  @Deprecated
-  public static final String RELEASE_COMPLETE_PROJECT_COUNT = "complete_project_count";
   public static final String RELEASE_PRIMARY_SITE_COUNT = "primary_site_count";
+  public static final String RELEASE_LIVE_PRIMARY_SITE_COUNT = "live_primary_site_count";
   public static final String RELEASE_DONOR_COUNT = "donor_count";
   public static final String RELEASE_LIVE_DONOR_COUNT = "live_donor_count";
-  @Deprecated
-  public static final String RELEASE_COMPLETE_DONOR_COUNT = "complete_donor_count";
   public static final String RELEASE_SPECIMEN_COUNT = "specimen_count";
   public static final String RELEASE_SAMPLE_COUNT = "sample_count";
   public static final String RELEASE_SSM_COUNT = "ssm_count";
@@ -413,8 +406,6 @@ public final class FieldNames {
   public static final String DONOR_SUMMARY_STUDIES = "_studies";
   public static final String TOTAL_DONOR_COUNT = "_total_donor_count";
   public static final String TOTAL_LIVE_DONOR_COUNT = "_total_live_donor_count";
-  @Deprecated
-  public static final String TOTAL_COMPLETE_DONOR_COUNT = "_total_complete_donor_count";
   public static final String TOTAL_SPECIMEN_COUNT = "_total_specimen_count";
   public static final String TOTAL_SAMPLE_COUNT = "_total_sample_count";
   public static final String TESTED_DONOR_COUNT_SUFFIX = "_tested_donor_count";
