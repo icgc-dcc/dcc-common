@@ -29,15 +29,15 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import lombok.SneakyThrows;
-import lombok.val;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import lombok.SneakyThrows;
+import lombok.val;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Transport.class)
@@ -51,7 +51,7 @@ public class MailerTest {
   @Before
   public void setUp() {
     mockStatic(Transport.class);
-    this.mailer = new Mailer();
+    this.mailer = Mailer.builder().build();
   }
 
   @Test
