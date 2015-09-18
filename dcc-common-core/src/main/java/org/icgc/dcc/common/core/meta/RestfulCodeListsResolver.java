@@ -33,7 +33,7 @@ import com.google.common.base.Optional;
 @NoArgsConstructor
 public class RestfulCodeListsResolver implements SubmissionSystemCodeListsResolver {
 
-  private String url = DEFAULT_CODELISTS_URL;
+  private String url = DEFAULT_API_URL;
 
   @Override
   public ArrayNode get() {
@@ -51,7 +51,7 @@ public class RestfulCodeListsResolver implements SubmissionSystemCodeListsResolv
   public String getSubmissionSystemUrl(Optional<String> qualifier) {
     checkArgument(!qualifier.isPresent(), "Code lists can not be qualified, '%s' provided", qualifier);
 
-    return url;
+    return url + PATH;
   }
 
 }
