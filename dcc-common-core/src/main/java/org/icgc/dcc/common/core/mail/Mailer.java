@@ -78,11 +78,24 @@ public class Mailer {
   private final boolean enabled;
 
   /**
-   * Supported email formats.
+   * Supported mail formats.
    */
   public enum Format {
     PLAIN,
     HTML
+  }
+
+  /**
+   * Email abstraction.
+   */
+  public interface Email {
+
+    String getSubject();
+
+    String getBody();
+
+    Format getFormat();
+
   }
 
   /**
@@ -92,6 +105,11 @@ public class Mailer {
     return new Builder();
   }
 
+  @NonNull
+  public void sendMail(Email email) {
+    sendMail(email.getSubject(), email.getBody(), email.getFormat());
+  }
+
   /**
    * Send an email to configured recipient with the supplied {@code subject} and {code body}.
    * <p>
@@ -99,9 +117,10 @@ public class Mailer {
    * 
    * @param subject the mail subject
    * @param body the mail message
+   * @param format the mail format
    */
   @NonNull
-  public void sendMail(String subject, String body) {
+  public void sendMail(String subject, String body, Format format) {
     if (!enabled) {
       log.info("Mail not enabled. Skipping...");
       return;
@@ -125,6 +144,19 @@ public class Mailer {
     } catch (Exception e) {
       log.error("An error occured while emailing: ", e);
     }
+  }
+
+  /**
+   * Send an email to configured recipient with the supplied {@code subject} and {code body}.
+   * <p>
+   * Executes synchronously if the host is not {@code localhost}.
+   * 
+   * @param subject the mail subject
+   * @param body the mail message
+   */
+  @NonNull
+  public void sendMail(String subject, String body) {
+    sendMail(subject, body, format);
   }
 
   private MimeMessage message() {
