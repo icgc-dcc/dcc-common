@@ -57,7 +57,7 @@ public class ReportEmail implements Email {
     body.append("<br>");
 
     if (!isSuccess()) {
-      body.append(sectionHeading("Exceptions"));
+      body.append(formatSectionHeading("Exceptions"));
       body.append("<ol>");
       for (val exception : report.getExceptions()) {
         body.append("<li>");
@@ -75,7 +75,7 @@ public class ReportEmail implements Email {
     }
 
     if (!report.getErrors().isEmpty()) {
-      body.append(sectionHeading("Errors"));
+      body.append(formatSectionHeading("Errors"));
       body.append("<ol>");
       for (val error : report.getErrors()) {
         body.append("<li>").append(error).append("</li>");
@@ -84,7 +84,7 @@ public class ReportEmail implements Email {
     }
 
     if (!report.getWarnings().isEmpty()) {
-      body.append(sectionHeading("Warnings"));
+      body.append(formatSectionHeading("Warnings"));
       body.append("<ol>");
       for (val warning : report.getWarnings()) {
         body.append("<li>").append(warning).append("</li>");
@@ -93,7 +93,7 @@ public class ReportEmail implements Email {
     }
 
     if (!report.getInfos().isEmpty()) {
-      body.append(sectionHeading("Info"));
+      body.append(formatSectionHeading("Info"));
       body.append("<ol>");
       for (val info : report.getInfos()) {
         body.append("<li>").append(info).append("</li>");
@@ -102,7 +102,7 @@ public class ReportEmail implements Email {
     }
 
     if (!report.getTimers().isEmpty()) {
-      body.append(sectionHeading("Timers"));
+      body.append(formatSectionHeading("Timers"));
       body.append("<ol>");
       for (val entry : report.getTimers().entrySet()) {
         body.append("<li>");
@@ -119,7 +119,7 @@ public class ReportEmail implements Email {
     return body.toString();
   }
 
-  private String sectionHeading(String title) {
+  private String formatSectionHeading(String title) {
     return "<h2 style='border: 1px solid " + getColor()
         + "; border-left: none; border-right: none; margin-top 7px; margin-bottom: 6px;'>" + title
         + "</h2>";
@@ -139,7 +139,7 @@ public class ReportEmail implements Email {
   }
 
   private boolean isSuccess() {
-    return report.getErrorCount() == 0;
+    return report.getErrorCount() == 0 && report.getExceptionCount() == 0;
   }
 
 }
