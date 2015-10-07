@@ -18,6 +18,7 @@
 package org.icgc.dcc.common.core.util;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static lombok.AccessLevel.PRIVATE;
 import static org.icgc.dcc.common.core.util.Joiners.INDENT;
 import static org.icgc.dcc.common.core.util.Splitters.NEWLINE;
@@ -153,11 +154,25 @@ public final class Jackson {
     return (ObjectNode) node;
   }
 
+  @SneakyThrows
+  public static ObjectNode toObjectNode(@NonNull String row) {
+    checkState(!isNullOrEmpty(row), "Can't convert null or empty string");
+
+    return DEFAULT.readValue(row, ObjectNode.class);
+  }
+
   public static ArrayNode asArrayNode(@NonNull final JsonNode node) {
     checkState(node.isArray(),
         "Expecting a node of type '%s', instead go: '%s'",
         JsonNodeType.ARRAY, node.getNodeType());
     return (ArrayNode) node;
+  }
+
+  @SneakyThrows
+  public static ArrayNode toArrayNode(@NonNull String row) {
+    checkState(!isNullOrEmpty(row), "Can't convert null or empty string");
+
+    return DEFAULT.readValue(row, ArrayNode.class);
   }
 
   @SneakyThrows

@@ -17,7 +17,10 @@
  */
 package org.icgc.dcc.common.core.io;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -90,6 +93,12 @@ public class Files2 {
     }
 
     return in;
+  }
+
+  public static void checkExistsAndReadable(@NonNull String fileName) {
+    val file = new File(fileName);
+    checkState(file.exists(), "File %s does not exist", file.getAbsolutePath());
+    checkState(file.canRead(), "File %s is not readable", file.getAbsolutePath());
   }
 
   private static boolean isGzip(@NonNull final String path) {
