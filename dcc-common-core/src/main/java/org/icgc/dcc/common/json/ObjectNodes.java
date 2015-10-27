@@ -15,39 +15,43 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.meta;
+package org.icgc.dcc.common.json;
 
-import static org.icgc.dcc.common.core.io.Files2.checkExistsAndReadable;
-import static org.icgc.dcc.common.core.io.Files2.getCompressionAgnosticFirstLine;
+import static com.google.common.base.Preconditions.checkArgument;
+import static lombok.AccessLevel.PRIVATE;
+import static org.icgc.dcc.common.json.Jackson.asObjectNode;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 
-import org.icgc.dcc.common.core.meta.Resolver.CodeListsResolver;
-import org.icgc.dcc.common.json.Jackson;
+@NoArgsConstructor(access = PRIVATE)
+public final class ObjectNodes {
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
+  public static ObjectNode mergeObjects(@NonNull ObjectNode targetNode, @NonNull ObjectNode sourceNode) {
+    val result = targetNode.deepCopy();
+    val fieldNames = sourceNode.fieldNames();
 
-/**
- * An implementation of the {@link CodeListsResolver} that reads the code lists from a file.
- */
-@RequiredArgsConstructor
-public class FileCodeListsResolver implements CodeListsResolver {
+    while (fieldNames.hasNext()) {
+      val fieldName = fieldNames.next();
+      val sourceValue = sourceNode.get(fieldName);
 
-  @NonNull
-  private final String codeListsFileName;
+      if (sourceValue.isObject()) {
+        val targetObject = result.path(fieldName);
+        val targetValue = targetObject.isMissingNode() ? sourceValue : mergeObjects(asObjectNode(targetObject),
+            asObjectNode(sourceValue));
+        result.put(fieldName, targetValue);
+        continue;
+      }
 
-  @Override
-  public ArrayNode get() {
-    checkExistsAndReadable(codeListsFileName);
+      checkArgument(result.path(fieldName).isMissingNode(), "Found duplicate field name '%s' in parent object %s",
+          fieldName, result);
+      result.put(fieldName, sourceNode.get(fieldName));
+    }
 
-    return readDictionary(codeListsFileName);
-  }
-
-  private static ArrayNode readDictionary(String codeListsFileName) {
-    val codeLists = getCompressionAgnosticFirstLine(codeListsFileName);
-
-    return Jackson.toArrayNode(codeLists);
+    return result;
   }
 
 }

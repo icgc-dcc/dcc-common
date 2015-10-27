@@ -25,10 +25,9 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.transformValues;
 import static java.util.Collections.sort;
 import static java.util.regex.Pattern.compile;
-
-import static org.icgc.dcc.common.core.util.Jackson.formatPrettyJson;
 import static org.icgc.dcc.common.core.util.Joiners.PATH;
 import static org.icgc.dcc.common.hadoop.fs.HadoopUtils.lsAll;
+import static org.icgc.dcc.common.json.Jackson.formatPrettyJson;
 
 import java.io.File;
 import java.util.Comparator;

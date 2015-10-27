@@ -18,11 +18,13 @@
 package org.icgc.dcc.common.core.meta;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.icgc.dcc.common.core.util.Jackson.DEFAULT;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
+
+import static org.icgc.dcc.common.json.Jackson.DEFAULT;
 
 import org.icgc.dcc.common.core.meta.Resolver.SubmissionSystemResolver.SubmissionSystemCodeListsResolver;
 

@@ -21,8 +21,8 @@ import static com.google.common.collect.Iterables.partition;
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.icgc.dcc.common.core.util.Jackson.DEFAULT;
 import static org.icgc.dcc.common.core.util.Joiners.COMMA;
+import static org.icgc.dcc.common.json.Jackson.DEFAULT;
 
 import java.net.HttpURLConnection;
 import java.net.URL;

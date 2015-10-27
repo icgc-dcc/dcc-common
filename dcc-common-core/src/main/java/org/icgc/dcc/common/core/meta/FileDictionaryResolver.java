@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import org.icgc.dcc.common.core.meta.Resolver.DictionaryResolver;
-import org.icgc.dcc.common.core.util.Jackson;
+import org.icgc.dcc.common.json.Jackson;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Optional;

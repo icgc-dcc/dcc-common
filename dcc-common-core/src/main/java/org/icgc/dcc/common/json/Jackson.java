@@ -15,8 +15,11 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util;
+package org.icgc.dcc.common.json;
 
+import static com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_COMMENTS;
+import static com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_SINGLE_QUOTES;
+import static com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static lombok.AccessLevel.PRIVATE;
@@ -29,10 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.val;
+import org.icgc.dcc.common.core.util.URLs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -45,6 +45,11 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.SneakyThrows;
+import lombok.val;
+
 /**
  * Common object mappers.
  */
@@ -53,6 +58,11 @@ public final class Jackson {
 
   public static final ObjectMapper DEFAULT = new ObjectMapper();
   public static final ObjectWriter PRETTY_WRITTER = DEFAULT.writerWithDefaultPrettyPrinter();
+
+  static final ObjectMapper TEST_MAPPER = new ObjectMapper() //
+      .configure(ALLOW_UNQUOTED_FIELD_NAMES, true) //
+      .configure(ALLOW_SINGLE_QUOTES, true) //
+      .configure(ALLOW_COMMENTS, true);
 
   /**
    * Do not expose outside of this class, see {@link #getRootArray(URL)}.
@@ -173,6 +183,11 @@ public final class Jackson {
     checkState(!isNullOrEmpty(row), "Can't convert null or empty string");
 
     return DEFAULT.readValue(row, ArrayNode.class);
+  }
+
+  @SneakyThrows
+  static JsonNode $(String json) {
+    return TEST_MAPPER.readTree(json);
   }
 
   @SneakyThrows
