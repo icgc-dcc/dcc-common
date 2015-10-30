@@ -43,6 +43,7 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
   private static final String ENTITY_FILTER_PARAM_NAME = "entity-filter";
   private static final String ENTITY_TYPE_PARAM_NAME = "entity-type";
   private static final String ENTITY_TYPE_PARAM_VALUE = "daco";
+  private static final String CLOUD_FILTER_VALUE = "{\"csa\":true}";
   private static final String FILTER_TEMPLATE = "{\"%s\":\"%s\"}";
 
   private final WebResource resourse;
@@ -60,27 +61,6 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
     return convert(resourse.get(ClientResponse.class).getEntity(new GenericType<List<ResponseUser>>() {}));
   }
 
-  private static List<User> convert(List<ResponseUser> source) {
-    val result = new ImmutableList.Builder<User>();
-    for (val user : source) {
-      val userInfo = user.getUserinfo();
-      if (userInfo == null) {
-        result.add(User.builder().openid(user.getOpenid()).build());
-      } else {
-        for (val info : userInfo) {
-          result.add(User.builder()
-              .openid(user.getOpenid())
-              .email(info.getEmail())
-              .username(info.getName())
-              .build());
-        }
-      }
-
-    }
-
-    return result.build();
-  }
-
   @Override
   public List<User> getUser(String openId) {
     checkStringArguments(openId);
@@ -89,20 +69,6 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
         .get(ClientResponse.class);
 
     return convert(clientResponse.getEntity(UserContainer.class));
-  }
-
-  private static List<User> convert(UserContainer source) {
-    val result = new ImmutableList.Builder<User>();
-    for (val user : source.getUser().getUserinfo()) {
-      result.add(User.builder()
-          .openid(source.getUser().getOpenid())
-          .username(user.getUid())
-          .name(user.getName())
-          .email(user.getEmail())
-          .build());
-    }
-
-    return result.build();
   }
 
   @Override
@@ -128,6 +94,58 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
 
     return getUsers().stream()
         .anyMatch(u -> userId.equals(u.getOpenid()) || userId.equals(u.getUsername()));
+  }
+
+  @Override
+  public List<User> getCloudUsers() {
+    val clientResponse = resourse
+        .queryParam(ENTITY_FILTER_PARAM_NAME, CLOUD_FILTER_VALUE)
+        .get(ClientResponse.class);
+
+    return convert(clientResponse.getEntity(new GenericType<List<ResponseUser>>() {}));
+  }
+
+  @Override
+  public boolean hasCloudAccess(String userId) {
+    checkStringArguments(userId);
+
+    return getCloudUsers().stream()
+        .anyMatch(u -> userId.equals(u.getOpenid()) || userId.equals(u.getUsername()));
+  }
+
+  private static List<User> convert(List<ResponseUser> source) {
+    val result = new ImmutableList.Builder<User>();
+    for (val user : source) {
+      val userInfo = user.getUserinfo();
+      if (userInfo == null) {
+        result.add(User.builder().openid(user.getOpenid()).build());
+      } else {
+        for (val info : userInfo) {
+          result.add(User.builder()
+              .openid(user.getOpenid())
+              .email(info.getEmail())
+              .username(info.getName())
+              .build());
+        }
+      }
+
+    }
+
+    return result.build();
+  }
+
+  private static List<User> convert(UserContainer source) {
+    val result = new ImmutableList.Builder<User>();
+    for (val user : source.getUser().getUserinfo()) {
+      result.add(User.builder()
+          .openid(source.getUser().getOpenid())
+          .username(user.getUid())
+          .name(user.getName())
+          .email(user.getEmail())
+          .build());
+    }
+
+    return result.build();
   }
 
   private boolean hasDacoAccessByOpenid(String openId) {

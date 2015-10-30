@@ -42,6 +42,7 @@ public class DACOClientIntegrationTest {
   private static final String CONSUMER_SECRET = "***REMOVED***";
   private static final String ACCESS_TOKEN = "***REMOVED***";
   private static final String ACCESS_SECRET = "***REMOVED***";
+  private static final String VALID_CLOUD_OPENID = "***REMOVED***";
 
   private DACOClient client;
 
@@ -74,6 +75,20 @@ public class DACOClientIntegrationTest {
     }
     catchException(client).getUser("fake");
     assertNoSuchElementException(caughtException());
+  }
+
+  @Test
+  public void getCouldUsersTest() {
+    val cloudUsers = client.getCloudUsers();
+    val hasCloudUser = cloudUsers.stream()
+        .anyMatch(user -> user.getOpenid().equals(VALID_CLOUD_OPENID));
+    assertThat(hasCloudUser).isTrue();
+  }
+
+  @Test
+  public void hasCloudAccessTest() {
+    assertThat(client.hasCloudAccess(VALID_CLOUD_OPENID)).isTrue();
+    assertThat(client.hasCloudAccess("boo")).isFalse();
   }
 
   @Test

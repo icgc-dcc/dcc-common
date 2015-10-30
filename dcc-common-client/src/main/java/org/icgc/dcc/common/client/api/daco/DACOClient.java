@@ -80,6 +80,13 @@ public interface DACOClient {
   List<User> getUsersByType(UserType userType, String userValue);
 
   /**
+   * Returns a list of users that has the cloud access.
+   * 
+   * @see <a href="https://wiki.oicr.on.ca/pages/viewpage.action?pageId=57773222">Filter users endpoint</a>
+   */
+  List<User> getCloudUsers();
+
+  /**
    * Checks if {@code userId} is in the list of the approved DACO users. The {@code userId} may be either an
    * {@code OPENID} or a {@code CUD}.
    * 
@@ -97,5 +104,13 @@ public interface DACOClient {
    * @return <b>true</b> if the {@code userId} is approved, otherwise - <b>false</b>
    */
   boolean hasDacoAccess(String userId);
+
+  /**
+   * Checks if {@code userId} has the cloud access. The {@code userId} may be either an {@code OPENID} or a {@code CUD}.
+   * 
+   * @param userId to be checked. CUD {@code username} or {@code OPENID}
+   * @return <b>true</b> if the {@code userId} has access, otherwise - <b>false</b>
+   */
+  boolean hasCloudAccess(String userId);
 
 }
