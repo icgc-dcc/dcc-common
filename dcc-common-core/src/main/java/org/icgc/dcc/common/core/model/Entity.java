@@ -30,6 +30,7 @@ public enum Entity {
   CONSEQUENCE,
   PATHWAY,
   DIAGRAM,
-  FILE
+  FILE,
+  DRUG
 
 }
