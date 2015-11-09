@@ -22,6 +22,8 @@ import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static org.icgc.dcc.common.core.model.FieldNames.DIAGRAM_ID;
+import static org.icgc.dcc.common.core.model.FieldNames.DRUG_ID;
+import static org.icgc.dcc.common.core.model.FieldNames.FILE_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.GENE_SET_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.MONGO_INTERNAL_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.PATHWAY_REACTOME_ID;
@@ -59,7 +61,8 @@ public enum ReleaseCollection implements Identifiable {
   PATHWAY_COLLECTION(UNDETERMINED, "Pathway", newArrayList(PATHWAY_REACTOME_ID)),
   GENE_SET_COLLECTION(UNDETERMINED, "GeneSet", newArrayList(GENE_SET_ID)),
   DIAGRAM_COLLECTION(UNDETERMINED, "Diagram", newArrayList(DIAGRAM_ID)),
-  FILE_COLLECTION(UNDETERMINED, "File", newArrayList(DIAGRAM_ID)), ;
+  FILE_COLLECTION(UNDETERMINED, "File", newArrayList(FILE_ID)),
+  DRUG_COLLECTION(UNDETERMINED, "Drug", newArrayList(DRUG_ID));
 
   private final ReleaseDatabase parentDatabase;
 
@@ -81,9 +84,7 @@ public enum ReleaseCollection implements Identifiable {
     int size = primaryKey.size();
     checkState(size >= 1,
         "There should always be at least one field in the primary key, instead: '%s'", primaryKey);
-    return size == 1 ?
-        getFirstKey() :
-        MONGO_INTERNAL_ID;
+    return size == 1 ? getFirstKey() : MONGO_INTERNAL_ID;
   }
 
   private String getFirstKey() {

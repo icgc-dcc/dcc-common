@@ -378,6 +378,21 @@ public final class FieldNames {
   public static final String DIAGRAM_PROTEIN_MAP_UNIPROT_IDS = "uniprot_ids";
 
   /**
+   * Drug field names
+   */
+  public static final String DRUG_ID = "zinc_id";
+  public static final String NAME = "name";
+  public static final String IMG_URL = "image_url";
+  public static final String INCHIKEY = "inchikey";
+  public static final String SYNONYMS = "synonyms";
+  public static final String DRUG_CLASS = "drug_class";
+  public static final String ATC_CODES = "atc_codes";
+  public static final String EXTERNAL_REFERENCES = "external_references";
+  public static final String GENES = "genes";
+  public static final String CANCER_TRIAL_COUNT = "cancer_trial_count";
+  public static final String TRIALS = "trials";
+
+  /**
    * File field names
    */
   public static final String FILE_ID = "file_id";
