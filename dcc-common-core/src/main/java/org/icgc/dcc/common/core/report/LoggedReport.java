@@ -61,7 +61,7 @@ public class LoggedReport extends BaseReport {
 
   @Override
   public void addTimer(Stopwatch timer, String name) {
-    log.error("Timer: {} = {}", name, timer);
+    log.info("Timer: {} = {}", name, timer);
   }
 
   @Override
