@@ -22,6 +22,9 @@ import static org.icgc.dcc.common.client.api.daco.DACOClient.UserType.OPENID;
 
 import java.util.List;
 
+import lombok.NonNull;
+import lombok.val;
+
 import org.icgc.dcc.common.client.api.ICGCClientConfig;
 import org.icgc.dcc.common.client.api.daco.DACOClient;
 import org.icgc.dcc.common.client.api.daco.User;
@@ -33,9 +36,6 @@ import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.uri.UriComponent;
 import com.sun.jersey.api.uri.UriComponent.Type;
-
-import lombok.NonNull;
-import lombok.val;
 
 public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient {
 
@@ -118,13 +118,17 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
     for (val user : source) {
       val userInfo = user.getUserinfo();
       if (userInfo == null) {
-        result.add(User.builder().openid(user.getOpenid()).build());
+        result.add(User.builder()
+            .openid(user.getOpenid())
+            .cloudAccess(user.isCloudAccess())
+            .build());
       } else {
         for (val info : userInfo) {
           result.add(User.builder()
               .openid(user.getOpenid())
               .email(info.getEmail())
               .username(info.getName())
+              .cloudAccess(user.isCloudAccess())
               .build());
         }
       }
@@ -136,12 +140,13 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
 
   private static List<User> convert(UserContainer source) {
     val result = new ImmutableList.Builder<User>();
-    for (val user : source.getUser().getUserinfo()) {
+    for (val userInfo : source.getUser().getUserinfo()) {
       result.add(User.builder()
           .openid(source.getUser().getOpenid())
-          .username(user.getUid())
-          .name(user.getName())
-          .email(user.getEmail())
+          .username(userInfo.getUid())
+          .name(userInfo.getName())
+          .email(userInfo.getEmail())
+          .cloudAccess(source.getUser().isCloudAccess())
           .build());
     }
 

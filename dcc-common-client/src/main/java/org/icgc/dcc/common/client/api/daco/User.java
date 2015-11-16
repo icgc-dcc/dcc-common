@@ -33,5 +33,6 @@ public class User {
   String username;
   String name;
   String email;
+  boolean cloudAccess;
 
 }
