@@ -72,6 +72,7 @@ public class DACOClientIntegrationTest {
       assertThat(user.getEmail()).matches(EMAIL_REGEX);
       assertThat(user.getName()).isNotEmpty();
       assertThat(user.getUsername()).matches("\\d+");
+      assertThat(user.isCloudAccess()).isTrue();
     }
     catchException(client).getUser("fake");
     assertNoSuchElementException(caughtException());
