@@ -33,9 +33,20 @@ import lombok.experimental.FieldDefaults;
 public enum IndexType {
 
   /**
+   * Diagram type(s).
+   */
+  DIAGRAM_TYPE(Entity.DIAGRAM, "diagram", Classifier.BASIC),
+
+  /**
+   * Drug type(s).
+   */
+  DRUG_TEXT_TYPE(Entity.DRUG, "drug-text", Classifier.BASIC),
+  DRUG_CENTRIC_TYPE(Entity.DRUG, "drug-centric", Classifier.CENTRIC),
+
+  /**
    * Release type(s).
    */
-  RELEASE_TYPE(Entity.PROJECT, "release", Classifier.BASIC),
+  RELEASE_TYPE(Entity.RELEASE, "release", Classifier.BASIC),
 
   /**
    * Project type(s).
@@ -48,7 +59,7 @@ public enum IndexType {
    */
   DONOR_TYPE(Entity.DONOR, "donor", Classifier.BASIC),
   DONOR_TEXT_TYPE(Entity.DONOR, "donor-text", Classifier.BASIC),
-  DONOR_CENTRIC_TYPE(Entity.DONOR, "donor-centric", Classifier.BASIC),
+  DONOR_CENTRIC_TYPE(Entity.DONOR, "donor-centric", Classifier.CENTRIC),
 
   /**
    * Gene type(s).
@@ -65,7 +76,7 @@ public enum IndexType {
   /**
    * Mutation type(s).
    */
-  MUTATION_TEXT_TYPE(Entity.MUTATION, "mutation-text", Classifier.CENTRIC),
+  MUTATION_TEXT_TYPE(Entity.MUTATION, "mutation-text", Classifier.BASIC),
   MUTATION_CENTRIC_TYPE(Entity.MUTATION, "mutation-centric", Classifier.CENTRIC),
 
   /**
