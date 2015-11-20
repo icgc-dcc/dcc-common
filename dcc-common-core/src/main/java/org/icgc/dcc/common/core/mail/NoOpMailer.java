@@ -17,24 +17,21 @@
  */
 package org.icgc.dcc.common.core.mail;
 
-import org.icgc.dcc.common.core.mail.DefaultMailer.Builder;
 import org.icgc.dcc.common.core.mail.DefaultMailer.Email;
 import org.icgc.dcc.common.core.mail.DefaultMailer.Format;
 
-public interface Mailer {
+public class NoOpMailer implements Mailer {
 
-  public static Builder builder() {
-    return new Builder();
+  @Override
+  public void sendMail(Email email) {
   }
 
-  public static Mailer noOpMailer() {
-    return new NoOpMailer();
+  @Override
+  public void sendMail(String subject, String body) {
   }
 
-  void sendMail(Email email);
-
-  void sendMail(String subject, String body);
-
-  void sendMail(String subject, String body, Format format);
+  @Override
+  public void sendMail(String subject, String body, Format format) {
+  }
 
 }

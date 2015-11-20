@@ -29,6 +29,9 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import lombok.SneakyThrows;
+import lombok.val;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,22 +39,19 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import lombok.SneakyThrows;
-import lombok.val;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Transport.class)
-public class MailerTest {
+public class DefaultMailerTest {
 
   /**
    * Class under test.
    */
-  Mailer mailer;
+  DefaultMailer mailer;
 
   @Before
   public void setUp() {
     mockStatic(Transport.class);
-    this.mailer = Mailer.builder().build();
+    this.mailer = DefaultMailer.builder().build();
   }
 
   @Test
@@ -69,8 +69,8 @@ public class MailerTest {
 
     val message = messages.get(0);
 
-    assertThat(message.getFrom()).contains(address(Mailer.DEFAULT_MAIL_FROM));
-    assertThat(message.getAllRecipients()).contains(address(Mailer.DEFAULT_MAIL_RECIPIENT));
+    assertThat(message.getFrom()).contains(address(DefaultMailer.DEFAULT_MAIL_FROM));
+    assertThat(message.getAllRecipients()).contains(address(DefaultMailer.DEFAULT_MAIL_RECIPIENT));
 
     assertThat(message.getSubject()).endsWith(subject);
     assertThat(message.getContent()).isEqualTo(text);

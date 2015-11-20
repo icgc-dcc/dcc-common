@@ -17,8 +17,8 @@
  */
 package org.icgc.dcc.common.core.report;
 
-import org.icgc.dcc.common.core.mail.Mailer.Email;
-import org.icgc.dcc.common.core.mail.Mailer.Format;
+import org.icgc.dcc.common.core.mail.DefaultMailer.Email;
+import org.icgc.dcc.common.core.mail.DefaultMailer.Format;
 
 import com.google.common.base.Throwables;
 
