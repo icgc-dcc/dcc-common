@@ -1,7 +1,7 @@
 package org.icgc.dcc.common.core.report;
 
-import org.icgc.dcc.common.core.mail.DefaultMailer.Email;
 import org.icgc.dcc.common.core.mail.Mailer;
+import org.icgc.dcc.common.core.mail.Mailer.Email;
 import org.junit.Ignore;
 import org.junit.Test;
 
