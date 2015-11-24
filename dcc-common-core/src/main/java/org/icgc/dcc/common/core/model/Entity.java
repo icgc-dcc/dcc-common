@@ -17,7 +17,7 @@
  */
 package org.icgc.dcc.common.core.model;
 
-public enum Entity {
+public enum Entity implements Identifiable {
 
   RELEASE,
   PROJECT,
@@ -31,6 +31,11 @@ public enum Entity {
   PATHWAY,
   DIAGRAM,
   FILE,
-  DRUG
+  DRUG;
+
+  @Override
+  public String getId() {
+    return this.name().toLowerCase();
+  }
 
 }
