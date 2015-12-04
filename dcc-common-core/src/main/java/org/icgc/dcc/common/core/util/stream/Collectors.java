@@ -17,11 +17,15 @@
  */
 package org.icgc.dcc.common.core.util.stream;
 
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collector;
 
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 @UtilityClass
@@ -41,6 +45,20 @@ public class Collectors {
         (builder, e) -> builder.add(e),
         (b1, b2) -> b1.addAll(b2.build()),
         (builder) -> builder.build());
+  }
+
+  @NonNull
+  public static <T, K, V> Collector<T, ImmutableMap.Builder<K, V>, ImmutableMap<K, V>> toImmutableMap(
+      Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+
+    final BiConsumer<ImmutableMap.Builder<K, V>, T> accumulator =
+        (builder, entry) -> builder.put(keyMapper.apply(entry), valueMapper.apply(entry));
+
+    return Collector.of(
+        ImmutableMap.Builder::new,
+        accumulator,
+        (b1, b2) -> b1.putAll(b2.build()),
+        ImmutableMap.Builder::build);
   }
 
 }
