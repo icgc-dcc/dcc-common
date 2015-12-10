@@ -21,12 +21,11 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.IntStream.rangeClosed;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableList;
-import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableSet;
 import static org.icgc.dcc.common.core.util.stream.Streams.combineCollections;
 import static org.icgc.dcc.common.core.util.stream.Streams.combineCollectionsToSet;
 import static org.icgc.dcc.common.core.util.stream.Streams.combineMaps;
 import static org.icgc.dcc.common.core.util.stream.Streams.parallelStream;
-import static org.icgc.dcc.common.core.util.stream.Streams.toArray;
+import static org.icgc.dcc.common.core.util.stream.Streams.toIntegerArray;
 import static org.icgc.dcc.common.core.util.stream.Streams.toStringArray;
 import static org.junit.rules.ExpectedException.none;
 
@@ -60,12 +59,10 @@ public class StreamsTest {
   private static final List<String> expectedList = rangeClosed(1, 6)
       .boxed().map(String::valueOf)
       .collect(toImmutableList());
-  private static final Set<String> expectedSet = rangeClosed(1, 6)
-      .boxed().map(String::valueOf)
-      .collect(toImmutableSet());
+  private static final Set<String> expectedSet = ImmutableSet.copyOf(expectedList);
 
-  private static final Integer[] aMillionElements = toArray(
-      rangeClosed(1, 1000000).boxed().collect(toImmutableList()), Integer[]::new);
+  private static final Integer[] aMillionElements = toIntegerArray(rangeClosed(1, 1000000)
+      .boxed().collect(toImmutableList()));
 
   @Rule
   public ExpectedException thrown = none();

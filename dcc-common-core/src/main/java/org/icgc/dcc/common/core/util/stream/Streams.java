@@ -59,6 +59,10 @@ public class Streams {
     return toArray(strings, String[]::new);
   }
 
+  public static Integer[] toIntegerArray(@NonNull Iterable<Integer> integers) {
+    return toArray(integers, Integer[]::new);
+  }
+
   /**
    * Caller must guarantee the uniqueness of keys across all maps; otherwise must expect to handle "Duplicate key"
    * IllegalStateException.
