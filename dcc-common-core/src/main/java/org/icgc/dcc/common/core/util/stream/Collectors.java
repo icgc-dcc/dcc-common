@@ -47,9 +47,8 @@ public class Collectors {
         (builder) -> builder.build());
   }
 
-  @NonNull
   public static <T, K, V> Collector<T, ImmutableMap.Builder<K, V>, ImmutableMap<K, V>> toImmutableMap(
-      Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+      @NonNull Function<? super T, ? extends K> keyMapper, @NonNull Function<? super T, ? extends V> valueMapper) {
 
     final BiConsumer<ImmutableMap.Builder<K, V>, T> accumulator =
         (builder, entry) -> builder.put(keyMapper.apply(entry), valueMapper.apply(entry));

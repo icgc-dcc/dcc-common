@@ -17,8 +17,16 @@
  */
 package org.icgc.dcc.common.core.util.stream;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 import static lombok.AccessLevel.PRIVATE;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -31,12 +39,66 @@ import com.google.common.collect.ImmutableList;
 public class Streams {
 
   public static <T> Stream<T> stream(@NonNull Iterable<T> iterable) {
-    return StreamSupport.stream(iterable.spliterator(), false);
+    return stream(iterable, false);
+  }
+
+  public static <T> Stream<T> parallelStream(@NonNull Iterable<T> iterable) {
+    return stream(iterable, true);
   }
 
   @SafeVarargs
   public static <T> Stream<T> stream(@NonNull T... values) {
     return ImmutableList.copyOf(values).stream();
+  }
+
+  public static <T> T[] toArray(@NonNull Iterable<T> iterable, @NonNull IntFunction<T[]> generator) {
+    return stream(iterable).toArray(generator);
+  }
+
+  public static String[] toStringArray(@NonNull Iterable<String> strings) {
+    return toArray(strings, String[]::new);
+  }
+
+  /**
+   * Caller must guarantee the uniqueness of keys across all maps; otherwise must expect to handle "Duplicate key"
+   * IllegalStateException.
+   */
+  public static <K, V> Map<K, V> combineMaps(@NonNull Stream<? extends Map<K, V>> sources) {
+    return sources.map(Map::entrySet)
+        .flatMap(Collection::stream)
+        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  @SafeVarargs
+  public static <K, V> Map<K, V> combineMaps(@NonNull Map<K, V>... sources) {
+    return combineMaps(stream(sources));
+  }
+
+  public static <T> List<T> combineCollections(@NonNull Stream<? extends Collection<T>> sources) {
+    return sources.flatMap(Collection::stream)
+        .collect(toList());
+  }
+
+  @SafeVarargs
+  public static <T> List<T> combineCollections(@NonNull Collection<T>... sources) {
+    return combineCollections(stream(sources));
+  }
+
+  public static <T> Set<T> combineCollectionsToSet(@NonNull Stream<? extends Collection<T>> sources) {
+    return sources.flatMap(Collection::stream)
+        .collect(toSet());
+  }
+
+  @SafeVarargs
+  public static <T> Set<T> combineCollectionsToSet(@NonNull Collection<T>... sources) {
+    return combineCollectionsToSet(stream(sources));
+  }
+
+  /*
+   * Helpers
+   */
+  private static <T> Stream<T> stream(Iterable<T> iterable, boolean inParallel) {
+    return StreamSupport.stream(iterable.spliterator(), inParallel);
   }
 
 }
