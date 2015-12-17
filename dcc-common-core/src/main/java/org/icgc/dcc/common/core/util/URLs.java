@@ -20,6 +20,7 @@ package org.icgc.dcc.common.core.util;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
@@ -65,6 +66,16 @@ public final class URLs {
                 new File(filePath)));
 
     return filePath;
+  }
+
+  public static boolean isUrl(@NonNull String stringRepresentation) {
+    try {
+      new URL(stringRepresentation);
+
+      return true;
+    } catch (MalformedURLException e) {
+      return false;
+    }
   }
 
 }
