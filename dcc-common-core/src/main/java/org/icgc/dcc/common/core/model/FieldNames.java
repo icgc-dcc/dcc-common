@@ -288,7 +288,7 @@ public final class FieldNames {
   public static final String OBSERVATION_CONSEQUENCES_CONSEQUENCE_CANONICAL = "_is_canonical_transcript";
   public static final String OBSERVATION_CONSEQUENCES_TRANSCRIPT_ID = LoaderFieldNames.TRANSCRIPT_ID;
   public static final String OBSERVATION_CONSEQUENCES_GENE_ID = LoaderFieldNames.GENE_ID;
-  public static final String OBSERVATION_CONSEQUENCES_GENE = "gene";
+  public static final String OBSERVATION_GENE = "gene";
   public static final String OBSERVATION_PLATFORM = "platform";
   public static final String OBSERVATION_VALIDATION_STATUS = "validation_status";
   public static final String OBSERVATION_VALIDATION_PLATFORM = "validation_platform";
