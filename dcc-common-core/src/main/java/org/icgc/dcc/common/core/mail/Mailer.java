@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -46,10 +46,10 @@ public class Mailer {
   /**
    * Constants - Defaults.
    */
-  public static final String DEFAULT_MAIL_HOST = "***REMOVED***";
+  public static final String DEFAULT_MAIL_HOST = "";
   public static final String DEFAULT_MAIL_PORT = "25";
   public static final String DEFAULT_MAIL_FROM = "noreply@oicr.on.ca";
-  public static final String DEFAULT_MAIL_RECIPIENT = "***REMOVED***";
+  public static final String DEFAULT_MAIL_RECIPIENT = "";
 
   public static final Format DEFAULT_MAIL_FORMAT = Format.HTML;
   public static final boolean DEFAULT_MAIL_ENABLED = true;

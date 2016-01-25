@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -40,12 +40,12 @@ import com.google.common.collect.ImmutableMap;
 
 public class CUDClientIntegrationTest {
 
-  private static final String WRONG_SERVICE_URL = "https://***REMOVED***/ud_res";
-  private static final String CUD_SERVICE_URL = "https://***REMOVED***/ud_rest/1";
+  private static final String WRONG_SERVICE_URL = "https://<hostname>/ud_res";
+  private static final String CUD_SERVICE_URL = "https://<hostname>/ud_rest/1";
   private static final String APP_ID = System.getProperty("app_id");
-  private static final String CUD_USER = "***REMOVED***";
+  private static final String CUD_USER = "";
   private static final String CUD_USER_2 = "someuser@o.ca";
-  private static final String CUD_PASSWD = "***REMOVED***";
+  private static final String CUD_PASSWD = "";
   private static final String WRONG_TOKEN = "~";
   private static final String INVALID_KEY_MESSAGE = "[500] Invalid key. {\"message\":\"Invalid key\"}";
   private static final String INVALID_TOKEN_MESSAGE =

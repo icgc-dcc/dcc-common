@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -43,15 +43,15 @@ import org.junit.rules.ExpectedException;
 @Slf4j
 public class CGPClientIntegrationTest {
 
-  private static final String NO_API_URL = "http://***REMOVED***/ud_oauth/1/searc";
-  private static final String SERVICE_URL = "https://***REMOVED***/ud_oauth/1/search";
-  private static final String CONSUMER_KEY = "***REMOVED***";
-  private static final String WRONG_CONSUMER_KEY = "***REMOVED***";
-  private static final String CONSUMER_SECRET = "***REMOVED***";
-  private static final String WRONG_CONSUMER_SECRET = "***REMOVED***";
-  private static final String ACCESS_TOKEN = "***REMOVED***";
-  private static final String WRONG_ACCESS_TOKEN = "***REMOVED***";
-  private static final String ACCESS_SECRET = "***REMOVED***";
+  private static final String NO_API_URL = "http://<hostname>/ud_oauth/1/searc";
+  private static final String SERVICE_URL = "https://<hostname>/ud_oauth/1/search";
+  private static final String CONSUMER_KEY = "";
+  private static final String WRONG_CONSUMER_KEY = "hij";
+  private static final String CONSUMER_SECRET = "";
+  private static final String WRONG_CONSUMER_SECRET = "def";
+  private static final String ACCESS_TOKEN = "";
+  private static final String WRONG_ACCESS_TOKEN = "abc";
+  private static final String ACCESS_SECRET = "";
 
   private CGPClient client;
 

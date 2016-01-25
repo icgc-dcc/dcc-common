@@ -15,26 +15,22 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.model;
+package org.icgc.dcc.common.core.meta;
 
-import java.util.Date;
+import static org.assertj.core.api.Assertions.assertThat;
+import lombok.val;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.junit.Test;
 
-/**
- * Possible (data) types for a {@code Field}
- */
-@RequiredArgsConstructor
-@Getter
-public enum ValueType {
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
-  TEXT(String.class, false),
-  INTEGER(Long.class, true),
-  DATETIME(Date.class, false),
-  DECIMAL(Double.class, true);
+public class RestfulCodeListsResolverIntegrationTest {
 
-  private final Class<?> javaType;
-  private final boolean numeric;
+  @Test
+  public void testResolve() {
+    val resolver = new RestfulCodeListsResolver();
+    val codeLists = resolver.get();
+    assertThat(codeLists).hasAtLeastOneElementOfType(ObjectNode.class);
+  }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -482,6 +482,7 @@ public class HadoopUtils {
     return codec == null ? inputStream : codec.createInputStream(inputStream);
   }
 
+  @SuppressWarnings("unchecked")
   private static List<Path> getSortedPartFiles(
       @NonNull final FileSystem fileSystem,
       @NonNull final Path inputDir) {

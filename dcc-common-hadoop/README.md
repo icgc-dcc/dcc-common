@@ -1,12 +1,12 @@
 ICGC DCC - Common Hadoop
 ===
 
-Libary of common classes relating to Hadoop for DCC projects.
+Library of common classes relating to Hadoop for DCC projects.
 
 Build
 ---
 
-From the command line:
+In the repository's root execute from the command line:
 
-	mvn package
+        mvn -am -pl dcc-common-hadoop package
 

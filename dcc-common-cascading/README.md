@@ -1,12 +1,12 @@
-ICGC DCC - Common Hadoop
+ICGC DCC - Common Cascading
 ===
 
-Libary of common classes relating to Hadoop for DCC projects.
+Library of common classes relating to Cascading for DCC projects.
 
 Build
 ---
 
-From the command line:
+In the repository's root execute from the command line:
 
-	mvn package
+        mvn -am -pl dcc-common-cascading package
 

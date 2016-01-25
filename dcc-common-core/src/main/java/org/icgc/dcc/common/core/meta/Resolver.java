@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -46,7 +46,7 @@ public interface Resolver {
   interface SubmissionSystemResolver extends Resolver {
 
     String DEFAULT_SCHEME = "http://";
-    String DEFAULT_HOST = "***REMOVED***";
+    String DEFAULT_HOST = "localhost";
     int DEFAULT_PORT = 5380;
     String DEFAULT_API_PATH = "/ws";
     String DEFAULT_API_URL = DEFAULT_SCHEME + DEFAULT_HOST + ":" + DEFAULT_PORT + DEFAULT_API_PATH;
