@@ -41,7 +41,7 @@ import lombok.val;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Transport.class)
-public class MailerTest {
+public class MailerIntegrationTest {
 
   /**
    * Class under test.

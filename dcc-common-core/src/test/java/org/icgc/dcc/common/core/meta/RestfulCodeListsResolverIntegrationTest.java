@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class RestfulCodeListsResolverTest {
+public class RestfulCodeListsResolverIntegrationTest {
 
   @Test
   public void testResolve() {
