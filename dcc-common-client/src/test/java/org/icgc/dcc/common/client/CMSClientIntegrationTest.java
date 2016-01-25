@@ -30,12 +30,12 @@ import org.junit.rules.ExpectedException;
 
 public class CMSClientIntegrationTest {
 
-  private static final String BETATRA_SESSION_NAME = "***REMOVED***";
-  private static final String SERVICE_URL = "https://***REMOVED***/cms_oauth_coop/1";
-  private static final String CONSUMER_KEY = "***REMOVED***";
-  private static final String CONSUMER_SECRET = "***REMOVED***";
-  private static final String ACCESS_TOKEN = "***REMOVED***";
-  private static final String ACCESS_SECRET = "***REMOVED***";
+  private static final String BETATRA_SESSION_NAME = "";
+  private static final String SERVICE_URL = "https://<hostname>/cms_oauth_coop/1";
+  private static final String CONSUMER_KEY = "";
+  private static final String CONSUMER_SECRET = "";
+  private static final String ACCESS_TOKEN = "";
+  private static final String ACCESS_SECRET = "";
 
   CMSClient client;
 

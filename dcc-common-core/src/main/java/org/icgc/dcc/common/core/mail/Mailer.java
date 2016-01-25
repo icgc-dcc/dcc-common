@@ -46,10 +46,10 @@ public class Mailer {
   /**
    * Constants - Defaults.
    */
-  public static final String DEFAULT_MAIL_HOST = "***REMOVED***";
+  public static final String DEFAULT_MAIL_HOST = "";
   public static final String DEFAULT_MAIL_PORT = "25";
   public static final String DEFAULT_MAIL_FROM = "noreply@oicr.on.ca";
-  public static final String DEFAULT_MAIL_RECIPIENT = "***REMOVED***";
+  public static final String DEFAULT_MAIL_RECIPIENT = "";
 
   public static final Format DEFAULT_MAIL_FORMAT = Format.HTML;
   public static final boolean DEFAULT_MAIL_ENABLED = true;

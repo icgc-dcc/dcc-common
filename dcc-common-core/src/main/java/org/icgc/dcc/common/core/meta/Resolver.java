@@ -46,7 +46,7 @@ public interface Resolver {
   interface SubmissionSystemResolver extends Resolver {
 
     String DEFAULT_SCHEME = "http://";
-    String DEFAULT_HOST = "***REMOVED***";
+    String DEFAULT_HOST = "localhost";
     int DEFAULT_PORT = 5380;
     String DEFAULT_API_PATH = "/ws";
     String DEFAULT_API_URL = DEFAULT_SCHEME + DEFAULT_HOST + ":" + DEFAULT_PORT + DEFAULT_API_PATH;

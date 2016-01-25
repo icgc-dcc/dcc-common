@@ -35,15 +35,15 @@ import org.junit.rules.ExpectedException;
 @Slf4j
 public class ShortUrlClientIntegrationTest {
 
-  private static final String NO_API_URL = "http://***REMOVED***/ud_oauth/1/searc";
-  private static final String SERVICE_URL = "https://***REMOVED***/short/api/1/shorten";
-  private static final String CONSUMER_KEY = "***REMOVED***";
-  private static final String WRONG_CONSUMER_KEY = "***REMOVED***";
-  private static final String CONSUMER_SECRET = "***REMOVED***";
-  private static final String WRONG_CONSUMER_SECRET = "***REMOVED***";
-  private static final String ACCESS_TOKEN = "***REMOVED***";
-  private static final String WRONG_ACCESS_TOKEN = "***REMOVED***";
-  private static final String ACCESS_SECRET = "***REMOVED***";
+  private static final String NO_API_URL = "http://<hostname>/ud_oauth/1/searc";
+  private static final String SERVICE_URL = "https://<hostname>/short/api/1/shorten";
+  private static final String CONSUMER_KEY = "";
+  private static final String WRONG_CONSUMER_KEY = "";
+  private static final String CONSUMER_SECRET = "";
+  private static final String WRONG_CONSUMER_SECRET = "";
+  private static final String ACCESS_TOKEN = "";
+  private static final String WRONG_ACCESS_TOKEN = "";
+  private static final String ACCESS_SECRET = "";
   private static final String SAMPLE_URL = "http://docs.oracle.com/javase/7/docs/api/";
   private static final String URL_REGEX = "^(https?://)?([\\da-z\\.-]+)\\.([a-z\\.]{2,4})/[a-zA-Z]{3,}$";
 

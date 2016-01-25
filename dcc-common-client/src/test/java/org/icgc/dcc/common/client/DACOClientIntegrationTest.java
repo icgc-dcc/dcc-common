@@ -21,6 +21,7 @@ import static com.googlecode.catchexception.CatchException.catchException;
 import static com.googlecode.catchexception.CatchException.caughtException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.icgc.dcc.common.util.ClientConfigAssert.assertThat;
+import lombok.val;
 
 import org.icgc.dcc.common.client.api.ICGCClient;
 import org.icgc.dcc.common.client.api.ICGCClientConfig;
@@ -30,19 +31,17 @@ import org.icgc.dcc.common.client.api.daco.DACOClient.UserType;
 import org.junit.Before;
 import org.junit.Test;
 
-import lombok.val;
-
 public class DACOClientIntegrationTest {
 
   private static final String EMAIL_REGEX = "\\w+[\\w\\.]*@[\\w\\.]*\\.\\w{2,4}";
   private static final String NOT_FOUND_MESSAGE = "An entity with such ID was not found";
-  private static final String VALID_OPENID = "***REMOVED***";
-  private static final String SERVICE_URL = "https://***REMOVED***/ud_oauth/1/search";
-  private static final String CONSUMER_KEY = "***REMOVED***";
-  private static final String CONSUMER_SECRET = "***REMOVED***";
-  private static final String ACCESS_TOKEN = "***REMOVED***";
-  private static final String ACCESS_SECRET = "***REMOVED***";
-  private static final String VALID_CLOUD_OPENID = "***REMOVED***";
+  private static final String VALID_OPENID = "";
+  private static final String SERVICE_URL = "https://<hostname>/ud_oauth/1/search";
+  private static final String CONSUMER_KEY = "";
+  private static final String CONSUMER_SECRET = "";
+  private static final String ACCESS_TOKEN = "";
+  private static final String ACCESS_SECRET = "";
+  private static final String VALID_CLOUD_OPENID = "";
 
   private DACOClient client;
 
@@ -108,7 +107,7 @@ public class DACOClientIntegrationTest {
   public void hasDacoAccessTest() {
     assertThat(client.hasDacoAccess(VALID_OPENID, UserType.OPENID)).isTrue();
     assertThat(client.hasDacoAccess("SomeInvalidOpenId@gmail.com", UserType.OPENID)).isFalse();
-    assertThat(client.hasDacoAccess("***REMOVED***", UserType.CUD)).isTrue();
+    assertThat(client.hasDacoAccess("<cud_user>", UserType.CUD)).isTrue();
     assertThat(client.hasDacoAccess("someAccountWithoutDacoAccess", UserType.CUD)).isFalse();
   }
 
