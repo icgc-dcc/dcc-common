@@ -6,7 +6,7 @@ Common classes for DCC projects
 Build
 ---
 
-From the command line:
+In the repository's root execute from the command line:
 
-	mvn package
+        mvn -am -pl dcc-common-core package
 

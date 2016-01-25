@@ -1,7 +1,7 @@
 ICGC DCC - Common Modules
 ===
 
-Parent project of the ICGC DCC common modules.
+Parent project of the ICGC DCC common modules/libraries.
 
 Build
 ---
@@ -15,6 +15,14 @@ Modules
 
 Sub-system modules:
 
-- [Portal Core](dcc-common-core/README.md)
-- [Portal Client](dcc-common-client/README.md)
-- [Portal Hadoop](dcc-common-hadoop/README.md)
+- [Cascading Libraries](dcc-common-cascading/README.md)
+- [Portal Client Libraries](dcc-common-client/README.md)
+- [Portal Core Libraries](dcc-common-core/README.md)
+- [Hadoop Libraries](dcc-common-hadoop/README.md)
+- [Metadata Libraries](dcc-common-meta/README.md)
+- [Testing Libraries](dcc-common-test/README.md)
+
+Copyright and license
+---
+
+ - [License](LICENSE.md)
