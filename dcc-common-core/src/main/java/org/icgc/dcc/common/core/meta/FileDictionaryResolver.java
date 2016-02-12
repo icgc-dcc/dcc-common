@@ -47,7 +47,7 @@ public class FileDictionaryResolver implements DictionaryResolver {
 
   @Override
   public ObjectNode apply(Optional<String> input) {
-    throw new UnsupportedOperationException();
+    return get();
   }
 
   private static ObjectNode readDictionary(String dictionaryFileName) {
