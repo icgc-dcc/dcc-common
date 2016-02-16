@@ -45,10 +45,6 @@ import static org.icgc.dcc.common.core.util.Strings2.removeTarget;
 import java.util.List;
 import java.util.Set;
 
-import lombok.NonNull;
-import lombok.val;
-import lombok.experimental.UtilityClass;
-
 import org.icgc.dcc.common.core.model.FileTypes.FileSubType;
 import org.icgc.dcc.common.core.model.FileTypes.FileType;
 import org.icgc.dcc.common.core.util.Proposition;
@@ -56,6 +52,10 @@ import org.icgc.dcc.common.core.util.Proposition;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
+
+import lombok.NonNull;
+import lombok.val;
+import lombok.experimental.UtilityClass;
 
 /**
  * Utilities for working with ICGC feature types.
@@ -172,7 +172,7 @@ public class FeatureTypes {
 
             @Override
             public boolean apply(FileType fileType) {
-              return fileType.getDataType() == dataType;
+              return !fileType.isDeprecated() && fileType.getDataType() == dataType;
             }
 
           }));
@@ -210,9 +210,8 @@ public class FeatureTypes {
     }
 
     public Optional<FileType> getSecondaryFileType() {
-      return getCorrespondingFileSubTypes().contains(SECONDARY_SUBTYPE) ?
-          Optional.of(getFileType(SECONDARY_SUBTYPE)) :
-          ABSENT_FILE_TYPE;
+      return getCorrespondingFileSubTypes().contains(SECONDARY_SUBTYPE) ? Optional
+          .of(getFileType(SECONDARY_SUBTYPE)) : ABSENT_FILE_TYPE;
     }
 
     private FileType getFileType(final FileSubType fileSubType) {

@@ -117,8 +117,8 @@ public class SubmissionInputData {
 
       val projectDescription = projectDescriptions.get(projectKey);
       val projectDataDirPath = getProjectDataDir(
-          projectDescription.has(PARENT_DIR_PARAMETER) ?
-              projectDescription.get(PARENT_DIR_PARAMETER).asText() : defaultParentDataDir,
+          projectDescription.has(PARENT_DIR_PARAMETER) ? projectDescription.get(PARENT_DIR_PARAMETER)
+              .asText() : defaultParentDataDir,
           projectKey);
       log.info("Using data dir: '{}'", projectDataDirPath);
 
@@ -181,6 +181,10 @@ public class SubmissionInputData {
       val parameters = newArrayList(projectDescription.fieldNames());
       parameters.remove(PARENT_DIR_PARAMETER);
       for (val fileType : FileType.values()) {
+        if (fileType.isDeprecated()) {
+          continue;
+        }
+
         parameters.remove(getKeyName(fileType));
       }
       checkState(parameters.isEmpty(), "Unknown parameters specified: ", parameters);

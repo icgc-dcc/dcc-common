@@ -186,7 +186,7 @@ public final class FileTypes {
 
             @Override
             public boolean apply(FileType fileType) {
-              return !fileType.deprecated && fileType.getSubType() == subType;
+              return !fileType.isDeprecated() && fileType.getSubType() == subType;
             }
 
           }));
@@ -294,7 +294,7 @@ public final class FileTypes {
 
               @Override
               public boolean apply(FileType input) {
-                return !input.deprecated && DataTypes.isMandatoryType(input.dataType);
+                return !input.isDeprecated() && DataTypes.isMandatoryType(input.dataType);
               }
 
             }));
