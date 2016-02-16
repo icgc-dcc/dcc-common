@@ -17,7 +17,6 @@
  */
 package org.icgc.dcc.common.core.model;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
@@ -33,11 +32,6 @@ import static org.icgc.dcc.common.core.util.Strings2.getFirstCharacter;
 import java.util.List;
 import java.util.Set;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-
 import org.icgc.dcc.common.core.model.DataType.DataTypes;
 import org.icgc.dcc.common.core.model.FeatureTypes.FeatureType;
 
@@ -45,6 +39,11 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.val;
 
 /**
  * Contains names for file schemata (eg. "ssm_p", "cnsm_s", "exp_g", "N/A", ...)
@@ -102,9 +101,7 @@ public final class FileTypes {
 
     @Override
     public String getId() {
-      return usedAsAbbrevatiation() ?
-          getAbbreviation() :
-          getFullName();
+      return usedAsAbbrevatiation() ? getAbbreviation() : getFullName();
     }
 
     public String getAbbreviation() {
@@ -189,7 +186,7 @@ public final class FileTypes {
 
             @Override
             public boolean apply(FileType fileType) {
-              return fileType.getSubType() == subType;
+              return !fileType.deprecated && fileType.getSubType() == subType;
             }
 
           }));
@@ -265,12 +262,29 @@ public final class FileTypes {
     EXP_ARRAY_P_TYPE(FeatureType.EXP_ARRAY_TYPE, FileSubType.PRIMARY_SUBTYPE),
 
     EXP_SEQ_M_TYPE(FeatureType.EXP_SEQ_TYPE, FileSubType.META_SUBTYPE),
-    EXP_SEQ_P_TYPE(FeatureType.EXP_SEQ_TYPE, FileSubType.PRIMARY_SUBTYPE);
+    EXP_SEQ_P_TYPE(FeatureType.EXP_SEQ_TYPE, FileSubType.PRIMARY_SUBTYPE),
 
+    /**
+     * Deprecated values
+     * @see See https://jira.oicr.on.ca/browse/DCC-4543
+     */
+    @Deprecated EXP_G(null, null, true),
+    @Deprecated EXP_M(null, null, true),
+    @Deprecated HSAP_GENE(null, null, true),
+    @Deprecated HSAP_TRANSCRIPT(null, null, true),
+    @Deprecated METH_M(null, null, true),
+    @Deprecated METH_P(null, null, true),
+    @Deprecated METH_S(null, null, true),
+    @Deprecated MIRNA_M(null, null, true),
+    @Deprecated MIRNA_MIRBASE(null, null, true),
+    @Deprecated MIRNA_P(null, null, true),
+    @Deprecated MIRNA_S(null, null, true);
+
+    /**
+     * Constants.
+     */
     private static final String PROBES = "probes";
-
-    private static String TYPE_SUFFIX = "_TYPE";
-
+    private static final String TYPE_SUFFIX = "_TYPE";
     private static final Joiner JOINER = Joiner.on("_");
 
     public static final Set<FileType> MANDATORY_TYPES = newLinkedHashSet(
@@ -280,24 +294,34 @@ public final class FileTypes {
 
               @Override
               public boolean apply(FileType input) {
-                return DataTypes.isMandatoryType(input.dataType);
+                return !input.deprecated && DataTypes.isMandatoryType(input.dataType);
               }
+
             }));
 
     private FileType(DataType type) {
-      this(type, null);
+      this(type, null, false);
     }
 
     private FileType(DataType type, FileSubType subType) {
-      this.dataType = checkNotNull(type);
-      this.subType = subType;
+      this(type, subType, false);
     }
 
+    private FileType(DataType dataType, FileSubType subType, boolean deprecated) {
+      this.dataType = dataType;
+      this.subType = subType;
+      this.deprecated = deprecated;
+    }
+
+    /**
+     * Metadata
+     */
     @Getter
     private final DataType dataType;
-
     @Getter
     private final FileSubType subType;
+    @Getter
+    private final boolean deprecated;
 
     @Override
     public String getId() {

@@ -482,7 +482,6 @@ public class HadoopUtils {
     return codec == null ? inputStream : codec.createInputStream(inputStream);
   }
 
-  @SuppressWarnings("unchecked")
   private static List<Path> getSortedPartFiles(
       @NonNull final FileSystem fileSystem,
       @NonNull final Path inputDir) {
