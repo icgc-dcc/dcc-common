@@ -268,17 +268,17 @@ public final class FileTypes {
      * Deprecated values
      * @see See https://jira.oicr.on.ca/browse/DCC-4543
      */
-    @Deprecated EXP_G(null, null, true),
-    @Deprecated EXP_M(null, null, true),
-    @Deprecated HSAP_GENE(null, null, true),
-    @Deprecated HSAP_TRANSCRIPT(null, null, true),
-    @Deprecated METH_M(null, null, true),
-    @Deprecated METH_P(null, null, true),
-    @Deprecated METH_S(null, null, true),
-    @Deprecated MIRNA_M(null, null, true),
-    @Deprecated MIRNA_MIRBASE(null, null, true),
-    @Deprecated MIRNA_P(null, null, true),
-    @Deprecated MIRNA_S(null, null, true);
+    @Deprecated EXP_G_TYPE(null, null, true),
+    @Deprecated EXP_M_TYPE(null, null, true),
+    @Deprecated HSAP_GENE_TYPE(null, null, true),
+    @Deprecated HSAP_TRANSCRIPT_TYPE(null, null, true),
+    @Deprecated METH_M_TYPE(null, null, true),
+    @Deprecated METH_P_TYPE(null, null, true),
+    @Deprecated METH_S_TYPE(null, null, true),
+    @Deprecated MIRNA_M_TYPE(null, null, true),
+    @Deprecated MIRNA_MIRBASE_TYPE(null, null, true),
+    @Deprecated MIRNA_P_TYPE(null, null, true),
+    @Deprecated MIRNA_S_TYPE(null, null, true);
 
     /**
      * Constants.
