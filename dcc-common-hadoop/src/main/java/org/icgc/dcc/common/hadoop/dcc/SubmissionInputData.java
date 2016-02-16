@@ -36,12 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.icgc.dcc.common.core.model.FileTypes.FileType;
@@ -52,6 +46,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Table;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Parses a JSON file describing where the submission data can be found, in combination with a default parent directory
@@ -132,6 +132,10 @@ public class SubmissionInputData {
       }
 
       for (val fileType : FileType.values()) {
+        if (fileType.isDeprecated()) {
+          continue;
+        }
+
         val keyName = getKeyName(fileType);
         if (projectDescription.has(keyName)) {
           val filePath = projectDescription.get(keyName).asText();
