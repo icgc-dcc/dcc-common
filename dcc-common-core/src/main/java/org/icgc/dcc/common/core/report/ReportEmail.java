@@ -56,7 +56,7 @@ public class ReportEmail implements Email {
     body.append("Finished in ").append("<b>").append(getDuration()).append("</b>");
     body.append("<br>");
 
-    if (!isSuccess()) {
+    if (isError()) {
       body.append(formatSectionHeading("Exceptions"));
       body.append("<ol>");
       for (val exception : report.getExceptions()) {
@@ -131,15 +131,31 @@ public class ReportEmail implements Email {
   }
 
   private String getColor() {
-    return isSuccess() ? "#1a9900" : "red";
+    if (isError()) {
+      return "#FF0000";
+    } else if (isWarning()) {
+      return "#FF9A00";
+    } else {
+      return "#1A9900";
+    }
   }
 
   private String getStatus() {
-    return isSuccess() ? "SUCCESS" : "ERROR";
+    if (isError()) {
+      return "ERROR";
+    } else if (isWarning()) {
+      return "WARNING";
+    } else {
+      return "SUCCESS";
+    }
   }
 
-  private boolean isSuccess() {
-    return report.getErrorCount() == 0 && report.getExceptionCount() == 0;
+  private boolean isError() {
+    return report.getErrorCount() > 0 || report.getExceptionCount() > 0;
+  }
+
+  private boolean isWarning() {
+    return report.getWarningCount() > 0;
   }
 
 }
