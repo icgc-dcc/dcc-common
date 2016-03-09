@@ -19,24 +19,28 @@ package org.icgc.dcc.common.core.util.function;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import org.icgc.dcc.common.core.util.function.Consumers.FourConsumer;
+import org.icgc.dcc.common.core.util.function.Consumers.ThreeConsumer;
 
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @NoArgsConstructor(access = PRIVATE)
-public final class Memoizer<T, U> {
+public final class Binding<T, U> {
 
-  private final Map<T, U> cache = new ConcurrentHashMap<>();
-
-  public static <T, U> Function<T, U> memoize(@NonNull Function<T, U> function) {
-    return new Memoizer<T, U>().doMemoize(function);
+  public static <T, U> Consumer<T> bind(@NonNull BiConsumer<? super T, U> c, U arg2) {
+    return (arg1) -> c.accept(arg1, arg2);
   }
 
-  private Function<T, U> doMemoize(Function<T, U> function) {
-    return input -> cache.computeIfAbsent(input, function::apply);
+  public static <T, U, V> Consumer<T> bind(@NonNull ThreeConsumer<? super T, U, V> c, U arg2, V arg3) {
+    return (arg1) -> c.accept(arg1, arg2, arg3);
+  }
+
+  public static <T, U, V, W> Consumer<T> bind(@NonNull FourConsumer<? super T, U, V, W> c, U arg2, V arg3, W arg4) {
+    return (arg1) -> c.accept(arg1, arg2, arg3, arg4);
   }
 
 }

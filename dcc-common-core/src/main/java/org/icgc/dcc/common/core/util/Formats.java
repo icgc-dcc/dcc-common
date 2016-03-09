@@ -34,7 +34,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
 
 @NoArgsConstructor(access = PRIVATE)
-public final class FormatUtils {
+public final class Formats {
 
   public static String formatBytes(long bytes) {
     return formatBytes(bytes, true);

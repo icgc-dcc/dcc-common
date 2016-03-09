@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.
+ * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.                             
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -19,24 +19,21 @@ package org.icgc.dcc.common.core.util.function;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @NoArgsConstructor(access = PRIVATE)
-public final class Memoizer<T, U> {
+public final class Consumers {
 
-  private final Map<T, U> cache = new ConcurrentHashMap<>();
+  public interface ThreeConsumer<T, U, V> {
 
-  public static <T, U> Function<T, U> memoize(@NonNull Function<T, U> function) {
-    return new Memoizer<T, U>().doMemoize(function);
+    void accept(T t, U u, V v);
+
   }
 
-  private Function<T, U> doMemoize(Function<T, U> function) {
-    return input -> cache.computeIfAbsent(input, function::apply);
+  public interface FourConsumer<T, U, V, W> {
+
+    void accept(T t, U u, V v, W w);
+
   }
 
 }

@@ -21,7 +21,7 @@ import static cascading.flow.hadoop.util.HadoopUtil.deserializeBase64;
 import static cascading.flow.hadoop.util.HadoopUtil.readStateFromDistCache;
 import static org.apache.commons.lang.StringUtils.repeat;
 import static org.apache.hadoop.mapred.JobConf.MAPRED_MAP_TASK_JAVA_OPTS;
-import static org.icgc.dcc.common.core.util.FormatUtils.formatMemory;
+import static org.icgc.dcc.common.core.util.Formats.formatMemory;
 
 import java.io.IOException;
 
