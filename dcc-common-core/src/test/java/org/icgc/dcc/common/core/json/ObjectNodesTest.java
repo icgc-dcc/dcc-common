@@ -1,9 +1,9 @@
-package org.icgc.dcc.common.json;
+package org.icgc.dcc.common.core.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.icgc.dcc.common.json.Jackson.$;
-import static org.icgc.dcc.common.json.Jackson.asObjectNode;
-import static org.icgc.dcc.common.json.ObjectNodes.mergeObjects;
+import static org.icgc.dcc.common.core.json.Jackson.$;
+import static org.icgc.dcc.common.core.json.Jackson.asObjectNode;
+import static org.icgc.dcc.common.core.json.ObjectNodes.mergeObjects;
 
 import org.junit.Test;
 

@@ -19,12 +19,14 @@ package org.icgc.dcc.common.core.meta;
 
 import static org.icgc.dcc.common.core.io.Files2.checkExistsAndReadable;
 import static org.icgc.dcc.common.core.io.Files2.getCompressionAgnosticFirstLine;
+
+import org.icgc.dcc.common.core.json.Jackson;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 import org.icgc.dcc.common.core.meta.Resolver.DictionaryResolver;
-import org.icgc.dcc.common.json.Jackson;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Optional;

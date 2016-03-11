@@ -26,14 +26,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import com.google.common.collect.ImmutableList;
+
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-
-import com.google.common.collect.ImmutableList;
 
 @NoArgsConstructor(access = PRIVATE)
 public class Streams {
@@ -49,6 +50,11 @@ public class Streams {
   @SafeVarargs
   public static <T> Stream<T> stream(@NonNull T... values) {
     return ImmutableList.copyOf(values).stream();
+  }
+
+  public static <T, R> Function<T, Stream<? extends R>> stream(
+      @NonNull Function<? super T, ? extends Iterable<? extends R>> mapper) {
+    return x -> stream(mapper.apply(x));
   }
 
   public static <T> T[] toArray(@NonNull Iterable<T> iterable, @NonNull IntFunction<T[]> generator) {

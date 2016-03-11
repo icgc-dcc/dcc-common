@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 
-import static org.icgc.dcc.common.json.Jackson.DEFAULT;
+import static org.icgc.dcc.common.core.json.Jackson.DEFAULT;
 
 import org.icgc.dcc.common.core.meta.Resolver.SubmissionSystemResolver.SubmissionSystemCodeListsResolver;
 

@@ -17,9 +17,9 @@
  */
 package org.icgc.dcc.common.core.meta;
 
+import static org.icgc.dcc.common.core.json.Jackson.DEFAULT;
 import static org.icgc.dcc.common.core.meta.Resolver.Resolvers.getContent;
 import static org.icgc.dcc.common.core.util.Joiners.PATH;
-import static org.icgc.dcc.common.json.Jackson.DEFAULT;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

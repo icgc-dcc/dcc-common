@@ -17,7 +17,7 @@
  */
 package org.icgc.dcc.common.core.meta.util;
 
-import static org.icgc.dcc.common.json.Jackson.PRETTY_WRITTER;
+import static org.icgc.dcc.common.core.json.Jackson.PRETTY_WRITTER;
 
 import java.util.Locale;
 

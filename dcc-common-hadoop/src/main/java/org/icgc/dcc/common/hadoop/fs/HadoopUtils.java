@@ -25,9 +25,9 @@ import static com.google.common.collect.Iterables.toArray;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.io.ByteStreams.copy;
 import static org.icgc.dcc.common.core.collect.Collections3.sort;
+import static org.icgc.dcc.common.core.json.Jackson.formatPrettyJson;
 import static org.icgc.dcc.common.core.util.Joiners.PATH;
 import static org.icgc.dcc.common.core.util.Separators.DASH;
-import static org.icgc.dcc.common.json.Jackson.formatPrettyJson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
