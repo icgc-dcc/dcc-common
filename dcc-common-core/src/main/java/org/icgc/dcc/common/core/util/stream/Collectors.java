@@ -21,12 +21,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
 
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class Collectors {
@@ -58,6 +58,11 @@ public class Collectors {
         accumulator,
         (b1, b2) -> b1.putAll(b2.build()),
         ImmutableMap.Builder::build);
+  }
+
+  public static <T, K> Collector<T, ImmutableMap.Builder<K, T>, ImmutableMap<K, T>> toImmutableMap(
+      @NonNull Function<? super T, ? extends K> keyMapper) {
+    return toImmutableMap(keyMapper, Function.identity());
   }
 
 }

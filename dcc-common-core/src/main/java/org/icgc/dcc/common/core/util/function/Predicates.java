@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.
+ * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.                             
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -15,17 +15,20 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util;
+package org.icgc.dcc.common.core.util.function;
 
 import static lombok.AccessLevel.PRIVATE;
+
+import java.util.function.Predicate;
+
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
-import com.google.common.base.Predicate;
-
-/**
- * Util methods for {@link Predicate}.
- */
 @NoArgsConstructor(access = PRIVATE)
-public final class Predicates2 {
+public final class Predicates {
+
+  public static <T> Predicate<T> not(@NonNull Predicate<T> t) {
+    return t.negate();
+  }
 
 }

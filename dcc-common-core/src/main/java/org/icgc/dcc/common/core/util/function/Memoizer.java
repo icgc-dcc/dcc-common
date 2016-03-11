@@ -29,6 +29,9 @@ import lombok.NonNull;
 @NoArgsConstructor(access = PRIVATE)
 public final class Memoizer<T, U> {
 
+  /**
+   * State.
+   */
   private final Map<T, U> cache = new ConcurrentHashMap<>();
 
   public static <T, U> Function<T, U> memoize(@NonNull Function<T, U> function) {
