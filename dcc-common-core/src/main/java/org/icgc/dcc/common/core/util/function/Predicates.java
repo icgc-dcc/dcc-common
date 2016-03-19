@@ -19,16 +19,37 @@ package org.icgc.dcc.common.core.util.function;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.val;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class Predicates {
 
-  public static <T> Predicate<T> not(@NonNull Predicate<T> t) {
-    return t.negate();
+  /**
+   * Negates a given predicate.
+   */
+  public static <T> Predicate<T> not(@NonNull Predicate<T> predicate) {
+    return predicate.negate();
+  }
+
+  /**
+   * Returns a predicate that can be used with Java streams to filter unique objects based on a given
+   * {@code keyExtractor}.
+   * <p>
+   * Example:
+   * 
+   * <code>
+   *  list.stream().filter(distinctByKey(Entity::getId)).collect(toImmutableLst());
+   * </code>
+   */
+  public static <T> Predicate<T> distinctByKey(@NonNull Function<? super T, Object> keyExtractor) {
+    val seen = new ConcurrentHashMap<Object, Boolean>();
+    return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
   }
 
 }
