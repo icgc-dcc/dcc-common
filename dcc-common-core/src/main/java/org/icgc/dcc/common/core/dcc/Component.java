@@ -15,12 +15,12 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core;
+package org.icgc.dcc.common.core.dcc;
 
-import static org.icgc.dcc.common.core.EtlInputGeneration.GENERATING;
-import static org.icgc.dcc.common.core.EtlInputGeneration.NA;
-import static org.icgc.dcc.common.core.EtlInputGeneration.REWRITTING;
-import static org.icgc.dcc.common.core.EtlInputGeneration.WRITTING;
+import static org.icgc.dcc.common.core.dcc.EtlInputGeneration.GENERATING;
+import static org.icgc.dcc.common.core.dcc.EtlInputGeneration.NA;
+import static org.icgc.dcc.common.core.dcc.EtlInputGeneration.REWRITTING;
+import static org.icgc.dcc.common.core.dcc.EtlInputGeneration.WRITTING;
 import static org.icgc.dcc.common.core.util.Joiners.PATH;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

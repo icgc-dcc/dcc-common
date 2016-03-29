@@ -22,10 +22,11 @@ import static org.icgc.dcc.common.core.util.Extensions.JSON;
 import static org.icgc.dcc.common.core.util.Joiners.DASH;
 import static org.icgc.dcc.common.core.util.Joiners.EXTENSION;
 import static org.icgc.dcc.common.core.util.Joiners.PATH;
+
+import org.icgc.dcc.common.core.dcc.Component;
+
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-
-import org.icgc.dcc.common.core.Component;
 
 /**
  * Utility methods and constants for tests.

@@ -24,12 +24,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public final class Consumers {
 
+  @FunctionalInterface
   public interface ThreeConsumer<T, U, V> {
 
     void accept(T t, U u, V v);
 
   }
 
+  @FunctionalInterface
   public interface FourConsumer<T, U, V, W> {
 
     void accept(T t, U u, V v, W w);

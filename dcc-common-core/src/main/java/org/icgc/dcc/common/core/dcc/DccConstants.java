@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.                             
+ * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -15,58 +15,20 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util.function;
+package org.icgc.dcc.common.core.dcc;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import org.icgc.dcc.common.core.util.Separators;
 
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
 
+/**
+ * General constants pertaining to DCC applications. Keep to the strict minimum.
+ */
 @NoArgsConstructor(access = PRIVATE)
-public final class Predicates {
+public final class DccConstants {
 
-  /**
-   * Logically negates a given predicate.
-   */
-  public static <T> Predicate<T> not(@NonNull Predicate<T> predicate) {
-    return predicate.negate();
-  }
-
-  /**
-   * Logically ors a given set of predicate.
-   */
-  @SafeVarargs
-  public static <T> Predicate<T> and(@NonNull Predicate<T>... predicates) {
-    return Stream.of(predicates).reduce(Predicate::and).orElse(x -> true);
-  }
-
-  /**
-   * Logically ands a given set of predicate.
-   */
-  @SafeVarargs
-  public static <T> Predicate<T> or(@NonNull Predicate<T>... predicates) {
-    return Stream.of(predicates).reduce(Predicate::or).orElse(x -> false);
-  }
-
-  /**
-   * Returns a predicate that can be used with Java streams to filter unique objects based on a given
-   * {@code keyExtractor}.
-   * <p>
-   * Example:
-   * 
-   * <code>
-   *  list.stream().filter(distinctByKey(Entity::getId)).collect(toImmutableLst());
-   * </code>
-   */
-  public static <T> Predicate<T> distinctByKey(@NonNull Function<? super T, Object> keyExtractor) {
-    val seen = new ConcurrentHashMap<Object, Boolean>();
-    return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
-  }
+  public static final String INPUT_FILES_SEPARATOR = Separators.TAB;
 
 }

@@ -39,10 +39,10 @@ import static org.icgc.dcc.common.hadoop.util.HadoopConstants.SNAPPY_CODEC_PROPE
 
 import java.util.Map;
 
+import org.icgc.dcc.common.core.dcc.AppUtils;
+
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
-
-import org.icgc.dcc.common.core.util.AppUtils;
 
 /**
  * Helper class to set common hadoop properties.

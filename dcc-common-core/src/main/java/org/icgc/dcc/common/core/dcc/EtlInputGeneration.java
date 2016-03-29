@@ -15,17 +15,13 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util;
+package org.icgc.dcc.common.core.dcc;
 
-import static lombok.AccessLevel.PRIVATE;
-import lombok.NoArgsConstructor;
+enum EtlInputGeneration {
+  WRITTING, REWRITTING, GENERATING, NA;
 
-/**
- * General constants pertaining to DCC applications. Keep to the strict minimum.
- */
-@NoArgsConstructor(access = PRIVATE)
-public final class DccConstants {
-
-  public static final String INPUT_FILES_SEPARATOR = Separators.TAB;
+  public boolean isGenerating() {
+    return this != NA;
+  }
 
 }

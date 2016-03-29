@@ -15,13 +15,30 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core;
+package org.icgc.dcc.common.core.dcc;
 
-enum EtlInputGeneration {
-  WRITTING, REWRITTING, GENERATING, NA;
+/**
+ * For very basic utils method, keep this class to a minimum.
+ */
+public class AppUtils {
 
-  public boolean isGenerating() {
-    return this != NA;
+  /**
+   * TODO: consider enum
+   */
+  private static final String ENVIRONMENT_TYPE = "dcc.hadoop.test";
+
+  /**
+   * Simple flag to avoid configuring hadoop properties that will not work when running in pseudo-distributed mode due
+   * to the lack of native libraries.
+   * 
+   * @see https://groups.google.com/a/cloudera.org/forum/#!topic/cdh-user/oBhz-XbuSNI
+   */
+  public static boolean isTestEnvironment() {
+    return System.getProperty(ENVIRONMENT_TYPE) != null;
+  }
+
+  public static void setTestEnvironment() {
+    System.setProperty(ENVIRONMENT_TYPE, "true");
   }
 
 }

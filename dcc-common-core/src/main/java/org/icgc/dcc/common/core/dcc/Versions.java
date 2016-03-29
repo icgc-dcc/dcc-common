@@ -15,7 +15,7 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.icgc.dcc.common.core.util;
+package org.icgc.dcc.common.core.dcc;
 
 import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.collect.Maps.fromProperties;
@@ -27,7 +27,7 @@ import java.util.Properties;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
-public final class VersionUtils {
+public final class Versions {
 
   private static final String LOCAL_VERSION = "?";
 
@@ -38,7 +38,7 @@ public final class VersionUtils {
   }
 
   private static final String VERSION = firstNonNull(
-      VersionUtils.class.getPackage().getImplementationVersion(),
+      Versions.class.getPackage().getImplementationVersion(),
       LOCAL_VERSION);
 
   public static String getVersion() {
@@ -60,7 +60,7 @@ public final class VersionUtils {
   private static Map<String, String> loadScmInfo() {
     Properties properties = new Properties();
     try {
-      properties.load(VersionUtils.class.getClassLoader().getResourceAsStream("git.properties"));
+      properties.load(Versions.class.getClassLoader().getResourceAsStream("git.properties"));
     } catch (Exception e) {
       // Local build
     }

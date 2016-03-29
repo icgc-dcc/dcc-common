@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.
+ * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.                             
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -17,28 +17,40 @@
  */
 package org.icgc.dcc.common.core.util;
 
+import static lombok.AccessLevel.PRIVATE;
+
+import java.util.concurrent.Callable;
+
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
 /**
- * For very basic utils method, keep this class to a minimum.
+ * @see http://web.archive.org/web/20140406000326/http://java8blog.com/post/37385501926/fixing-checked-exceptions-in-
+ * java-8
  */
-public class AppUtils {
+@NoArgsConstructor(access = PRIVATE)
+public final class Throwables {
 
-  /**
-   * TODO: consider enum
-   */
-  private static final String ENVIRONMENT_TYPE = "dcc.hadoop.test";
+  @FunctionalInterface
+  public static interface ExceptionWrapper<E> {
 
-  /**
-   * Simple flag to avoid configuring hadoop properties that will not work when running in pseudo-distributed mode due
-   * to the lack of native libraries.
-   * 
-   * @see https://groups.google.com/a/cloudera.org/forum/#!topic/cdh-user/oBhz-XbuSNI
-   */
-  public static boolean isTestEnvironment() {
-    return System.getProperty(ENVIRONMENT_TYPE) != null;
+    E wrap(Exception e);
+
   }
 
-  public static void setTestEnvironment() {
-    System.setProperty(ENVIRONMENT_TYPE, "true");
+  public static <T> T propagate(@NonNull Callable<T> callable) throws RuntimeException {
+    return propagate(callable, RuntimeException::new);
+  }
+
+  public static <T, E extends Throwable> T propagate(@NonNull Callable<T> callable, ExceptionWrapper<E> wrapper)
+      throws E {
+    try {
+      return callable.call();
+    } catch (RuntimeException e) {
+      throw e;
+    } catch (Exception e) {
+      throw wrapper.wrap(e);
+    }
   }
 
 }

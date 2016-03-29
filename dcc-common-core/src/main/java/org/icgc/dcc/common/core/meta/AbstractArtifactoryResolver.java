@@ -17,7 +17,7 @@
  */
 package org.icgc.dcc.common.core.meta;
 
-import static org.icgc.dcc.common.core.DccResources.DICTIONARY_VERSION;
+import static org.icgc.dcc.common.core.dcc.DccResources.DICTIONARY_VERSION;
 
 import java.net.MalformedURLException;
 import java.net.URL;

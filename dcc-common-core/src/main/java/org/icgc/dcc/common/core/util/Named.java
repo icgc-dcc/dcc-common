@@ -17,7 +17,6 @@
  */
 package org.icgc.dcc.common.core.util;
 
-
 public interface Named {
 
   String getName();
