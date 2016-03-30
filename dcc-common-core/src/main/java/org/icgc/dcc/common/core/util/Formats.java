@@ -22,10 +22,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static lombok.AccessLevel.PRIVATE;
 import static org.joda.time.Duration.standardSeconds;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import lombok.NoArgsConstructor;
-import lombok.val;
 
 import org.joda.time.Duration;
 import org.joda.time.Period;
@@ -33,6 +31,13 @@ import org.joda.time.Period;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterables;
 
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.val;
+
+/**
+ * Common formats.
+ */
 @NoArgsConstructor(access = PRIVATE)
 public final class Formats {
 
@@ -50,11 +55,15 @@ public final class Formats {
     return format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
   }
 
-  public static String formatCount(Iterable<?> iterable) {
+  public static String formatCount(@NonNull Map<?, ?> map) {
+    return formatCount(map.size());
+  }
+
+  public static String formatCount(@NonNull Iterable<?> iterable) {
     return formatCount(Iterables.size(iterable));
   }
 
-  public static String formatCount(Object[] array) {
+  public static String formatCount(@NonNull Object[] array) {
     return formatCount(array.length);
   }
 
@@ -70,11 +79,11 @@ public final class Formats {
     return format("%,.2f", rate);
   }
 
-  public static String formatRate(int count, Stopwatch watch) {
+  public static String formatRate(int count, @NonNull Stopwatch watch) {
     return formatRate(rate(watch, count));
   }
 
-  public static String formatRate(long count, Stopwatch watch) {
+  public static String formatRate(long count, @NonNull Stopwatch watch) {
     return formatRate(rate(watch, count));
   }
 
@@ -86,7 +95,7 @@ public final class Formats {
     return format("%.2f", percent);
   }
 
-  public static String formatDuration(Stopwatch watch) {
+  public static String formatDuration(@NonNull Stopwatch watch) {
     return formatDuration(watch.elapsed(SECONDS));
   }
 

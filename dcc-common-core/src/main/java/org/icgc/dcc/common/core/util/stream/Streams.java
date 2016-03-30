@@ -37,7 +37,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @NoArgsConstructor(access = PRIVATE)
-public class Streams {
+public final class Streams {
 
   public static <T> Stream<T> stream(@NonNull Iterable<T> iterable) {
     return stream(iterable, false);

@@ -18,16 +18,24 @@
 package org.icgc.dcc.common.core.util;
 
 import static lombok.AccessLevel.PRIVATE;
+
 import lombok.NoArgsConstructor;
 
 /**
- * Common extensions.
+ * Common file extensions.
  */
 @NoArgsConstructor(access = PRIVATE)
-public class Extensions {
+public final class Extensions {
 
+  public static final String CSV = "csv";
   public static final String TSV = "tsv";
-  public static final String JSON = "json";
+
   public static final String DOT = "dot";
+
+  public static final String JSON = "json";
+  public static final String JSONL = "jsonl";
+
+  public static final String YAML = "yaml";
+  public static final String YML = "yml";
 
 }

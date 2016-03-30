@@ -17,6 +17,8 @@
  */
 package org.icgc.dcc.common.core.util.stream;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -25,11 +27,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class Collectors {
+@NoArgsConstructor(access = PRIVATE)
+public final class Collectors {
 
   public static <T> Collector<T, ImmutableList.Builder<T>, ImmutableList<T>> toImmutableList() {
     return Collector.of(

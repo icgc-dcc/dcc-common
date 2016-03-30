@@ -21,11 +21,11 @@ import static com.google.common.base.Joiner.on;
 import static com.google.common.collect.ImmutableSet.of;
 import static lombok.AccessLevel.PRIVATE;
 
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 /**
  * Common joiners.
@@ -63,7 +63,6 @@ public final class Joiners {
    * TODO: consider enum rather?
    */
   public static final Splitter getCorrespondingSplitter(@NonNull final Joiner joiner) {
-
     // Basic ones
     if (joiner.equals(WHITESPACE)) {
       return Splitters.WHITESPACE;
