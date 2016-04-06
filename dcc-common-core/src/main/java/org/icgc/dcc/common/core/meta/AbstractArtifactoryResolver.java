@@ -24,14 +24,14 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import lombok.Cleanup;
-import lombok.SneakyThrows;
-import lombok.val;
-
 import org.icgc.dcc.common.core.util.Optionals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
+
+import lombok.Cleanup;
+import lombok.SneakyThrows;
+import lombok.val;
 
 public abstract class AbstractArtifactoryResolver implements Resolver {
 
@@ -59,7 +59,7 @@ public abstract class AbstractArtifactoryResolver implements Resolver {
   }
 
   protected static URL getUrl(Optional<String> optionalVersion) throws MalformedURLException {
-    val basePath = "http://seqwaremaven.oicr.on.ca/artifactory";
+    val basePath = "https://seqwaremaven.oicr.on.ca/artifactory";
     val template = "%s/simple/dcc-dependencies/org/icgc/dcc/dcc-resources/%s/dcc-resources-%s.jar";
     val version = Optionals.defaultValue(optionalVersion, getDefaultVersion());
     URL url = new URL(String.format(template, basePath, version, version));
