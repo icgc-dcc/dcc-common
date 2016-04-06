@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.NonNull;
+import lombok.val;
 
 /**
  * Convenience {@link JsonNode} builder.
@@ -41,11 +42,27 @@ public interface JsonNodeBuilder<J extends JsonNode> {
     return new ObjectNodeBuilder(JsonNodeFactory.instance);
   }
 
+  public static ObjectNodeBuilder object(String k1, String v1) {
+    return object().with(k1, v1);
+  }
+
+  public static ObjectNodeBuilder object(String k1, int v1) {
+    return object().with(k1, v1);
+  }
+
+  public static ObjectNodeBuilder object(String k1, float v1) {
+    return object().with(k1, v1);
+  }
+
   /**
    * Factory method for an {@link ArrayNode} builder.
    */
   public static ArrayNodeBuilder array() {
     return new ArrayNodeBuilder(JsonNodeFactory.instance);
+  }
+
+  public static ArrayNodeBuilder array(String... values) {
+    return array().with(values);
   }
 
   final class ObjectNodeBuilder implements JsonNodeBuilder<ObjectNode> {
@@ -69,7 +86,15 @@ public interface JsonNodeBuilder<J extends JsonNode> {
       return with(field, factory.nullNode());
     }
 
+    public ObjectNodeBuilder withPOJO(@NonNull String field, @NonNull Object pojo) {
+      return with(field, factory.pojoNode(pojo));
+    }
+
     public ObjectNodeBuilder with(@NonNull String field, int value) {
+      return with(field, factory.numberNode(value));
+    }
+
+    public ObjectNodeBuilder with(@NonNull String field, float value) {
       return with(field, factory.numberNode(value));
     }
 
@@ -112,6 +137,37 @@ public interface JsonNodeBuilder<J extends JsonNode> {
 
     public ArrayNodeBuilder with(JsonNode node) {
       thisNode.add(node);
+      return this;
+    }
+
+    public ArrayNodeBuilder with(String value) {
+      thisNode.add(value);
+      return this;
+    }
+
+    public ArrayNodeBuilder with(Integer value) {
+      thisNode.add(value);
+      return this;
+    }
+
+    public ArrayNodeBuilder with(Float value) {
+      thisNode.add(value);
+      return this;
+    }
+
+    public ArrayNodeBuilder with(String... values) {
+      for (val value : values) {
+        thisNode.add(value);
+      }
+
+      return this;
+    }
+
+    public ArrayNodeBuilder with(Iterable<String> values) {
+      for (val value : values) {
+        thisNode.add(value);
+      }
+
       return this;
     }
 
