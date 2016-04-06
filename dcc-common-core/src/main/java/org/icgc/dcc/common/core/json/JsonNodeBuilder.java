@@ -40,7 +40,19 @@ public interface JsonNodeBuilder<J extends JsonNode> {
    */
 
   public static ObjectNodeBuilder object() {
-    return new ObjectNodeBuilder(JsonNodeFactory.instance);
+    return object(JsonNodeFactory.instance);
+  }
+
+  public static ObjectNodeBuilder object(@NonNull String k1, boolean v1) {
+    return object().with(k1, v1);
+  }
+
+  public static ObjectNodeBuilder object(@NonNull String k1, int v1) {
+    return object().with(k1, v1);
+  }
+
+  public static ObjectNodeBuilder object(@NonNull String k1, float v1) {
+    return object().with(k1, v1);
   }
 
   public static ObjectNodeBuilder object(@NonNull String k1, String v1) {
@@ -56,16 +68,12 @@ public interface JsonNodeBuilder<J extends JsonNode> {
     return object(k1, v1, k2, v2).with(k3, v3);
   }
 
-  public static ObjectNodeBuilder object(@NonNull String k1, int v1) {
-    return object().with(k1, v1);
-  }
-
-  public static ObjectNodeBuilder object(@NonNull String k1, float v1) {
-    return object().with(k1, v1);
-  }
-
   public static ObjectNodeBuilder object(@NonNull String k1, JsonNodeBuilder<?> builder) {
     return object().with(k1, builder);
+  }
+
+  public static ObjectNodeBuilder object(JsonNodeFactory factory) {
+    return new ObjectNodeBuilder(factory);
   }
 
   /**
@@ -73,7 +81,15 @@ public interface JsonNodeBuilder<J extends JsonNode> {
    */
 
   public static ArrayNodeBuilder array() {
-    return new ArrayNodeBuilder(JsonNodeFactory.instance);
+    return array(JsonNodeFactory.instance);
+  }
+
+  public static ArrayNodeBuilder array(@NonNull boolean... values) {
+    return array().with(values);
+  }
+
+  public static ArrayNodeBuilder array(@NonNull int... values) {
+    return array().with(values);
   }
 
   public static ArrayNodeBuilder array(@NonNull String... values) {
@@ -82,6 +98,10 @@ public interface JsonNodeBuilder<J extends JsonNode> {
 
   public static ArrayNodeBuilder array(@NonNull JsonNodeBuilder<?>... builders) {
     return array().with(builders);
+  }
+
+  public static ArrayNodeBuilder array(JsonNodeFactory factory) {
+    return new ArrayNodeBuilder(factory);
   }
 
   final class ObjectNodeBuilder implements JsonNodeBuilder<ObjectNode> {
@@ -96,17 +116,13 @@ public interface JsonNodeBuilder<J extends JsonNode> {
      */
     private final ObjectNode thisNode;
 
-    public ObjectNodeBuilder(@NonNull JsonNodeFactory factory) {
+    private ObjectNodeBuilder(@NonNull JsonNodeFactory factory) {
       this.factory = factory;
       this.thisNode = factory.objectNode();
     }
 
     public ObjectNodeBuilder withNull(@NonNull String field) {
       return with(field, factory.nullNode());
-    }
-
-    public ObjectNodeBuilder withPOJO(@NonNull String field, @NonNull Object pojo) {
-      return with(field, factory.pojoNode(pojo));
     }
 
     public ObjectNodeBuilder with(@NonNull String field, int value) {
@@ -121,17 +137,21 @@ public interface JsonNodeBuilder<J extends JsonNode> {
       return with(field, factory.booleanNode(value));
     }
 
+    public ObjectNodeBuilder with(@NonNull String field, String value) {
+      return with(field, factory.textNode(value));
+    }
+
     public ObjectNodeBuilder with(@NonNull String field, JsonNode node) {
       thisNode.set(field, node);
       return this;
     }
 
-    public ObjectNodeBuilder with(@NonNull String field, JsonNodeBuilder<?> builder) {
+    public ObjectNodeBuilder with(@NonNull String field, @NonNull JsonNodeBuilder<?> builder) {
       return with(field, builder.end());
     }
 
-    public ObjectNodeBuilder with(@NonNull String field, String value) {
-      return with(field, factory.textNode(value));
+    public ObjectNodeBuilder withPOJO(@NonNull String field, @NonNull Object pojo) {
+      return with(field, factory.pojoNode(pojo));
     }
 
     @Override
@@ -153,38 +173,20 @@ public interface JsonNodeBuilder<J extends JsonNode> {
      */
     private final ArrayNode thisNode;
 
-    public ArrayNodeBuilder(@NonNull JsonNodeFactory factory) {
+    private ArrayNodeBuilder(@NonNull JsonNodeFactory factory) {
       this.factory = factory;
       this.thisNode = this.factory.arrayNode();
     }
 
-    public ArrayNodeBuilder with(JsonNode node) {
-      thisNode.add(node);
+    public ArrayNodeBuilder with(boolean value) {
+      thisNode.add(value);
       return this;
     }
 
-    public ArrayNodeBuilder with(JsonNode node, JsonNode... nodes) {
-      with(node);
-      for (val n : nodes) {
-        with(n);
-      }
-      return this;
-    }
-
-    public ArrayNodeBuilder with(JsonNodeBuilder<?> node) {
-      return with(node);
-    }
-
-    public ArrayNodeBuilder with(JsonNodeBuilder<?>... builders) {
-      for (val value : builders) {
+    public ArrayNodeBuilder with(@NonNull boolean... values) {
+      for (val value : values) {
         with(value);
       }
-
-      return this;
-    }
-
-    public ArrayNodeBuilder with(String value) {
-      thisNode.add(value);
       return this;
     }
 
@@ -193,12 +195,24 @@ public interface JsonNodeBuilder<J extends JsonNode> {
       return this;
     }
 
+    public ArrayNodeBuilder with(@NonNull int... values) {
+      for (val value : values) {
+        with(value);
+      }
+      return this;
+    }
+
     public ArrayNodeBuilder with(float value) {
       thisNode.add(value);
       return this;
     }
 
-    public ArrayNodeBuilder with(String... values) {
+    public ArrayNodeBuilder with(String value) {
+      thisNode.add(value);
+      return this;
+    }
+
+    public ArrayNodeBuilder with(@NonNull String... values) {
       for (val value : values) {
         thisNode.add(value);
       }
@@ -209,6 +223,30 @@ public interface JsonNodeBuilder<J extends JsonNode> {
     public ArrayNodeBuilder with(@NonNull Iterable<String> values) {
       for (val value : values) {
         thisNode.add(value);
+      }
+
+      return this;
+    }
+
+    public ArrayNodeBuilder with(JsonNode node) {
+      thisNode.add(node);
+      return this;
+    }
+
+    public ArrayNodeBuilder with(@NonNull JsonNode... nodes) {
+      for (val value : nodes) {
+        with(value);
+      }
+      return this;
+    }
+
+    public ArrayNodeBuilder with(JsonNodeBuilder<?> node) {
+      return with(node);
+    }
+
+    public ArrayNodeBuilder with(@NonNull JsonNodeBuilder<?>... builders) {
+      for (val value : builders) {
+        with(value);
       }
 
       return this;
