@@ -24,7 +24,6 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -46,8 +45,8 @@ public final class SSLCertificateValidation {
   public static void disable() {
     val sslContext = SSLContext.getInstance("TLS");
 
-    TrustManager[] trustManagerArray = { new DumbX509TrustManager() };
-    sslContext.init(null, trustManagerArray, null);
+    TrustManager[] trustManagers = { new DumbX509TrustManager() };
+    sslContext.init(null, trustManagers, null);
     HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
     HttpsURLConnection.setDefaultHostnameVerifier(new DumbHostnameVerifier());
   }
@@ -61,8 +60,7 @@ public final class SSLCertificateValidation {
   public static void enable() {
     val sslContext = SSLContext.getInstance("TLS");
 
-    val factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-    sslContext.init(null, factory.getTrustManagers(), null);
+    sslContext.init(null, null, null);
     HttpsURLConnection.setDefaultSSLSocketFactory(DEFAULT_SSL_SOCKET_FACTORY);
     HttpsURLConnection.setDefaultHostnameVerifier(DEFAULT_HOSTNAME_VERIFIER);
   }
