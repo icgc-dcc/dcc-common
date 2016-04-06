@@ -17,12 +17,14 @@
  */
 package org.icgc.dcc.common.core.security;
 
-import static javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier;
-import static javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory;
-import static javax.net.ssl.SSLContext.getInstance;
 import static lombok.AccessLevel.PRIVATE;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -32,15 +34,37 @@ import lombok.val;
 public final class SSLCertificateValidation {
 
   /**
-   * Allow self-signed SSL certificates.
+   * Constants.
+   */
+  private static final HostnameVerifier DEFAULT_HOSTNAME_VERIFIER = HttpsURLConnection.getDefaultHostnameVerifier();
+  private static final SSLSocketFactory DEFAULT_SSL_SOCKET_FACTORY = HttpsURLConnection.getDefaultSSLSocketFactory();
+
+  /**
+   * Globally allow self-signed SSL certificates.
    */
   @SneakyThrows
   public static void disable() {
-    val sslContext = getInstance("TLS");
+    val sslContext = SSLContext.getInstance("TLS");
+
     TrustManager[] trustManagerArray = { new DumbX509TrustManager() };
     sslContext.init(null, trustManagerArray, null);
-    setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-    setDefaultHostnameVerifier(new DumbHostnameVerifier());
+    HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+    HttpsURLConnection.setDefaultHostnameVerifier(new DumbHostnameVerifier());
+  }
+
+  /**
+   * Globally disable self-signed SSL certificates.
+   * <p>
+   * Not tested!
+   */
+  @SneakyThrows
+  public static void enable() {
+    val sslContext = SSLContext.getInstance("TLS");
+
+    val factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+    sslContext.init(null, factory.getTrustManagers(), null);
+    HttpsURLConnection.setDefaultSSLSocketFactory(DEFAULT_SSL_SOCKET_FACTORY);
+    HttpsURLConnection.setDefaultHostnameVerifier(DEFAULT_HOSTNAME_VERIFIER);
   }
 
 }

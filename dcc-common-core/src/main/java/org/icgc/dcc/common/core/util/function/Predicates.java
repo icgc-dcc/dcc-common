@@ -17,6 +17,7 @@
  */
 package org.icgc.dcc.common.core.util.function;
 
+import static java.lang.Boolean.TRUE;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +40,7 @@ public final class Predicates {
   }
 
   /**
-   * Logically ors a given set of predicate.
+   * Logically {@code and}s a given set of predicate.
    */
   @SafeVarargs
   public static <T> Predicate<T> and(@NonNull Predicate<T>... predicates) {
@@ -47,7 +48,7 @@ public final class Predicates {
   }
 
   /**
-   * Logically ands a given set of predicate.
+   * Logically {@code or}s given set of predicate.
    */
   @SafeVarargs
   public static <T> Predicate<T> or(@NonNull Predicate<T>... predicates) {
@@ -66,7 +67,7 @@ public final class Predicates {
    */
   public static <T> Predicate<T> distinctByKey(@NonNull Function<? super T, Object> keyExtractor) {
     val seen = new ConcurrentHashMap<Object, Boolean>();
-    return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    return t -> seen.putIfAbsent(keyExtractor.apply(t), TRUE) == null;
   }
 
 }
