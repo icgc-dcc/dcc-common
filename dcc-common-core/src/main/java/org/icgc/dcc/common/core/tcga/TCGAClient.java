@@ -31,13 +31,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableMap;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.ImmutableMap;
 
 /**
  * See https://wiki.nci.nih.gov/display/TCGA/TCGA+Barcode+to+UUID+Web+Service+User%27s+Guide
@@ -48,14 +48,14 @@ public class TCGAClient {
   /**
    * Constants.
    */
-  private static final String TCGA_BASE_URL = "https://tcga-data.nci.nih.gov";
-  private static final int TCGA_MAX_BATCH_SIZE = 500;;
+  private static final String DEFAULT_TCGA_BASE_URL = "https://tcga-data.nci.nih.gov";
+  private static final int TCGA_MAX_BATCH_SIZE = 500;
 
   @NonNull
   private final String baseUrl;
 
   public TCGAClient() {
-    this(TCGA_BASE_URL);
+    this(DEFAULT_TCGA_BASE_URL);
   }
 
   @NonNull

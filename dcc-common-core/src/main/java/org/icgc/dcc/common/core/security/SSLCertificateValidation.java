@@ -19,6 +19,8 @@ package org.icgc.dcc.common.core.security;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.io.Closeable;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -28,7 +30,16 @@ import javax.net.ssl.TrustManager;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
+/**
+ * This is convenience class to disable <em>all</em> SSL certificate checking / hostname verification within the JVM for
+ * {@code HttpsURLConnection}s. This is typically needed for self-signed certificates which is common for controlled or
+ * testing environments.
+ * <p>
+ * This should <em>only</em> be used in production code as a last resort since it is a very blunt instrument.
+ */
+@Slf4j
 @RequiredArgsConstructor(access = PRIVATE)
 public final class SSLCertificateValidation {
 
@@ -40,29 +51,39 @@ public final class SSLCertificateValidation {
 
   /**
    * Globally allow self-signed SSL certificates.
+   * <p>
+   * Returns a {@link Closeable} to be used with {@code try-with-resources} or Lombok's {@link @Cleanup}
    */
-  @SneakyThrows
-  public static void disable() {
-    val sslContext = SSLContext.getInstance("TLS");
+  public static AutoCloseable disable() {
+    log.warn("*** DISABLING DEFAULT SSL CERTIFICATE CHECKING ***");
+    val socketFactory = createSSLSocketFactory(new DumbX509TrustManager());
+    setHttpsDefaults(socketFactory, new DumbHostnameVerifier());
 
-    TrustManager[] trustManagers = { new DumbX509TrustManager() };
-    sslContext.init(null, trustManagers, null);
-    HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-    HttpsURLConnection.setDefaultHostnameVerifier(new DumbHostnameVerifier());
+    return SSLCertificateValidation::enable;
   }
 
   /**
    * Globally disable self-signed SSL certificates.
-   * <p>
-   * Not tested!
    */
-  @SneakyThrows
   public static void enable() {
+    log.info("Default SSL certificate checking enabled");
+    setHttpsDefaults(DEFAULT_SSL_SOCKET_FACTORY, DEFAULT_HOSTNAME_VERIFIER); // Restore JVM default
+  }
+
+  private static void setHttpsDefaults(SSLSocketFactory sslSocketFactory, HostnameVerifier hostnameVerifier) {
+    HttpsURLConnection.setDefaultSSLSocketFactory(sslSocketFactory);
+    HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+  }
+
+  @SneakyThrows
+  private static SSLSocketFactory createSSLSocketFactory(TrustManager... trustManagers) {
+    // Creates a new instance
     val sslContext = SSLContext.getInstance("TLS");
 
-    sslContext.init(null, null, null);
-    HttpsURLConnection.setDefaultSSLSocketFactory(DEFAULT_SSL_SOCKET_FACTORY);
-    HttpsURLConnection.setDefaultHostnameVerifier(DEFAULT_HOSTNAME_VERIFIER);
+    // A null argument means use the default implementation
+    sslContext.init(null, trustManagers, null);
+
+    return sslContext.getSocketFactory();
   }
 
 }

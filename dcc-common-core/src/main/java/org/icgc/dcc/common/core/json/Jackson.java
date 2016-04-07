@@ -59,9 +59,9 @@ public final class Jackson {
   public static final ObjectMapper DEFAULT = new ObjectMapper();
   public static final ObjectWriter PRETTY_WRITTER = DEFAULT.writerWithDefaultPrettyPrinter();
 
-  static final ObjectMapper TEST_MAPPER = new ObjectMapper() //
-      .configure(ALLOW_UNQUOTED_FIELD_NAMES, true) //
-      .configure(ALLOW_SINGLE_QUOTES, true) //
+  static final ObjectMapper TEST_MAPPER = new ObjectMapper()
+      .configure(ALLOW_UNQUOTED_FIELD_NAMES, true)
+      .configure(ALLOW_SINGLE_QUOTES, true)
       .configure(ALLOW_COMMENTS, true);
 
   /**
