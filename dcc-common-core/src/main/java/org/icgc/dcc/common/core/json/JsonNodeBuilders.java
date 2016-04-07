@@ -17,23 +17,23 @@
  */
 package org.icgc.dcc.common.core.json;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 /**
  * Convenience {@link JsonNode} builder.
  */
-public interface JsonNodeBuilder<J extends JsonNode> {
-
-  /**
-   * Construct and return the instance.
-   */
-  J end();
+@NoArgsConstructor(access = PRIVATE)
+public final class JsonNodeBuilders {
 
   /**
    * Factory methods for an {@link ObjectNode} builder.
@@ -104,21 +104,36 @@ public interface JsonNodeBuilder<J extends JsonNode> {
     return new ArrayNodeBuilder(factory);
   }
 
-  final class ObjectNodeBuilder implements JsonNodeBuilder<ObjectNode> {
+  public interface JsonNodeBuilder<T extends JsonNode> {
 
     /**
-     * Dependencies.
+     * Construct and return the {@link JsonNode} instance.
      */
-    private final JsonNodeFactory factory;
+    T end();
+
+  }
+
+  @RequiredArgsConstructor
+  private static abstract class AbstractNodeBuilder<T extends JsonNode> implements JsonNodeBuilder<T> {
 
     /**
-     * State.
+     * The source of values.
      */
-    private final ObjectNode thisNode;
+    @NonNull
+    protected final JsonNodeFactory factory;
 
-    private ObjectNodeBuilder(@NonNull JsonNodeFactory factory) {
-      this.factory = factory;
-      this.thisNode = factory.objectNode();
+    /**
+     * The value under construction.
+     */
+    @NonNull
+    protected final T node;
+
+  }
+
+  public final static class ObjectNodeBuilder extends AbstractNodeBuilder<ObjectNode> {
+
+    private ObjectNodeBuilder(JsonNodeFactory factory) {
+      super(factory, factory.objectNode());
     }
 
     public ObjectNodeBuilder withNull(@NonNull String field) {
@@ -141,8 +156,8 @@ public interface JsonNodeBuilder<J extends JsonNode> {
       return with(field, factory.textNode(value));
     }
 
-    public ObjectNodeBuilder with(@NonNull String field, JsonNode node) {
-      thisNode.set(field, node);
+    public ObjectNodeBuilder with(@NonNull String field, JsonNode value) {
+      node.set(field, value);
       return this;
     }
 
@@ -156,105 +171,101 @@ public interface JsonNodeBuilder<J extends JsonNode> {
 
     @Override
     public ObjectNode end() {
-      return thisNode;
+      return node;
+    }
+
+    /**
+     * Returns a valid JSON string, so long as {@code POJONode}s not used.
+     */
+    @Override
+    public String toString() {
+      return node.toString();
     }
 
   }
 
-  final class ArrayNodeBuilder implements JsonNodeBuilder<ArrayNode> {
+  public final static class ArrayNodeBuilder extends AbstractNodeBuilder<ArrayNode> {
 
-    /**
-     * Dependencies.
-     */
-    private final JsonNodeFactory factory;
-
-    /**
-     * State.
-     */
-    private final ArrayNode thisNode;
-
-    private ArrayNodeBuilder(@NonNull JsonNodeFactory factory) {
-      this.factory = factory;
-      this.thisNode = this.factory.arrayNode();
+    private ArrayNodeBuilder(JsonNodeFactory factory) {
+      super(factory, factory.arrayNode());
     }
 
     public ArrayNodeBuilder with(boolean value) {
-      thisNode.add(value);
+      node.add(value);
       return this;
     }
 
     public ArrayNodeBuilder with(@NonNull boolean... values) {
-      for (val value : values) {
+      for (val value : values)
         with(value);
-      }
       return this;
     }
 
     public ArrayNodeBuilder with(int value) {
-      thisNode.add(value);
+      node.add(value);
       return this;
     }
 
     public ArrayNodeBuilder with(@NonNull int... values) {
-      for (val value : values) {
+      for (val value : values)
         with(value);
-      }
       return this;
     }
 
     public ArrayNodeBuilder with(float value) {
-      thisNode.add(value);
+      node.add(value);
       return this;
     }
 
     public ArrayNodeBuilder with(String value) {
-      thisNode.add(value);
+      node.add(value);
       return this;
     }
 
     public ArrayNodeBuilder with(@NonNull String... values) {
-      for (val value : values) {
-        thisNode.add(value);
-      }
-
+      for (val value : values)
+        with(value);
       return this;
     }
 
     public ArrayNodeBuilder with(@NonNull Iterable<String> values) {
-      for (val value : values) {
-        thisNode.add(value);
-      }
-
-      return this;
-    }
-
-    public ArrayNodeBuilder with(JsonNode node) {
-      thisNode.add(node);
-      return this;
-    }
-
-    public ArrayNodeBuilder with(@NonNull JsonNode... nodes) {
-      for (val value : nodes) {
+      for (val value : values)
         with(value);
-      }
       return this;
     }
 
-    public ArrayNodeBuilder with(JsonNodeBuilder<?> node) {
-      return with(node);
+    public ArrayNodeBuilder with(JsonNode value) {
+      node.add(value);
+      return this;
+    }
+
+    public ArrayNodeBuilder with(@NonNull JsonNode... values) {
+      for (val value : values)
+        with(value);
+      return this;
+    }
+
+    public ArrayNodeBuilder with(JsonNodeBuilder<?> value) {
+      return with(value);
     }
 
     public ArrayNodeBuilder with(@NonNull JsonNodeBuilder<?>... builders) {
-      for (val value : builders) {
+      for (val value : builders)
         with(value);
-      }
-
       return this;
     }
 
     @Override
     public ArrayNode end() {
-      return thisNode;
+      return node;
+    }
+
+    /**
+     * Returns a valid JSON string, so long as {@code POJONode}s not used.
+     */
+    @Override
+    public String toString() {
+      return node.toString();
     }
 
   }
