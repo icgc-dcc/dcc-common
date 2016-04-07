@@ -128,6 +128,14 @@ public final class JsonNodeBuilders {
     @NonNull
     protected final T node;
 
+    /**
+     * Returns a valid JSON string, so long as {@code POJONode}s not used.
+     */
+    @Override
+    public String toString() {
+      return node.toString();
+    }
+
   }
 
   public final static class ObjectNodeBuilder extends AbstractNodeBuilder<ObjectNode> {
@@ -172,14 +180,6 @@ public final class JsonNodeBuilders {
     @Override
     public ObjectNode end() {
       return node;
-    }
-
-    /**
-     * Returns a valid JSON string, so long as {@code POJONode}s not used.
-     */
-    @Override
-    public String toString() {
-      return node.toString();
     }
 
   }
@@ -246,26 +246,18 @@ public final class JsonNodeBuilders {
     }
 
     public ArrayNodeBuilder with(JsonNodeBuilder<?> value) {
-      return with(value);
+      return with(value.end());
     }
 
     public ArrayNodeBuilder with(@NonNull JsonNodeBuilder<?>... builders) {
-      for (val value : builders)
-        with(value);
+      for (val builder : builders)
+        with(builder);
       return this;
     }
 
     @Override
     public ArrayNode end() {
       return node;
-    }
-
-    /**
-     * Returns a valid JSON string, so long as {@code POJONode}s not used.
-     */
-    @Override
-    public String toString() {
-      return node.toString();
     }
 
   }
