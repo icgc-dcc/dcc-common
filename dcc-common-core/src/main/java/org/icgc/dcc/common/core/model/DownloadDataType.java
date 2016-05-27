@@ -18,10 +18,8 @@
 package org.icgc.dcc.common.core.model;
 
 import static com.google.common.base.Preconditions.checkState;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.CNSM_FIELDS;
-import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.CNSM_FIRST_LEVEL_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.DONOR_EXPOSURE_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.DONOR_FAMILY_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.DONOR_FIELDS;
@@ -35,13 +33,9 @@ import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.MIRNA_SEQ_FI
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.PEXP_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SAMPLE_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SGV_CONTROLLED_FIELDS;
-import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SGV_FIRST_LEVEL_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SPECIMEN_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SSM_CONTROLLED_FIELDS;
-import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SSM_FIRST_LEVEL_FIELDS;
-import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SSM_SECOND_LEVEL_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.STSM_FIELDS;
-import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.STSM_FIRST_LEVEL_FIELDS;
 import static org.icgc.dcc.common.core.util.Separators.EMPTY_STRING;
 import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableList;
 import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableMap;
@@ -74,19 +68,19 @@ public enum DownloadDataType implements Identifiable {
   SPECIMEN(SPECIMEN_FIELDS),
   SAMPLE(SAMPLE_FIELDS),
 
-  CNSM(CNSM_FIELDS, CNSM_FIRST_LEVEL_FIELDS),
+  CNSM(CNSM_FIELDS, true),
   JCN(JCN_FIELDS),
   METH_SEQ(METH_SEQ_FIELDS),
   METH_ARRAY(METH_ARRAY_FIELDS),
   MIRNA_SEQ(MIRNA_SEQ_FIELDS),
-  STSM(STSM_FIELDS, STSM_FIRST_LEVEL_FIELDS),
+  STSM(STSM_FIELDS, true),
   PEXP(PEXP_FIELDS),
   EXP_SEQ(EXP_SEQ_FIELDS),
   EXP_ARRAY(EXP_ARRAY_FIELDS),
 
-  SSM_OPEN(getSsmOpenFields(), SSM_FIRST_LEVEL_FIELDS, getSsmOpenSecondLevelFields()),
-  SSM_CONTROLLED(SSM_CONTROLLED_FIELDS, SSM_FIRST_LEVEL_FIELDS, SSM_SECOND_LEVEL_FIELDS),
-  SGV_CONTROLLED(SGV_CONTROLLED_FIELDS, SGV_FIRST_LEVEL_FIELDS);
+  SSM_OPEN(getSsmOpenFields(), true),
+  SSM_CONTROLLED(SSM_CONTROLLED_FIELDS, true),
+  SGV_CONTROLLED(SGV_CONTROLLED_FIELDS, true);
 
   private static final String CONTROLLED_SUFFIX = "_controlled";
   private static final String OPEN_SUFFIX = "_open";
@@ -103,33 +97,21 @@ public enum DownloadDataType implements Identifiable {
    * ExportJob.<br>
    * <b>NB:</b> The fields must be ordered in the order of the output file.
    */
-  private final Map<String, String> fields;
 
-  /**
-   * Rows in the parquet files have a nested structure. The processing logic 'unwinds' nested fields to make the row
-   * flat. Field levels represent which fields should be used first for projection.<br>
-   * E.g. {@code firstLevelFields} are non-nested fields. {@code secondLevelFields} are first nested fields
-   */
-  private final List<String> firstLevelFields;
-  private final List<String> secondLevelFields;
+  private final Map<String, String> fields;
+  private final boolean secondaryDataType;
 
   private DownloadDataType() {
     this(emptyMap());
   }
 
   private DownloadDataType(@NonNull Map<String, String> fields) {
-    this(fields, emptyList(), emptyList());
+    this(fields, false);
   }
 
-  private DownloadDataType(@NonNull Map<String, String> fields, List<String> firstLevelFields) {
-    this(fields, firstLevelFields, emptyList());
-  }
-
-  private DownloadDataType(@NonNull Map<String, String> fields, List<String> firstLevelFields,
-      List<String> secondLevelFields) {
+  private DownloadDataType(@NonNull Map<String, String> fields, boolean secondaryDataType) {
     this.fields = fields;
-    this.firstLevelFields = firstLevelFields;
-    this.secondLevelFields = secondLevelFields;
+    this.secondaryDataType = secondaryDataType;
   }
 
   @Override
@@ -218,12 +200,6 @@ public enum DownloadDataType implements Identifiable {
     return SSM_CONTROLLED_FIELDS.entrySet().stream()
         .filter(e -> !DownloadDataTypeFields.SSM_CONTROLLED_REMOVE_FIELDS.contains(e.getKey()))
         .collect(toImmutableMap(e -> e.getKey(), e -> e.getValue()));
-  }
-
-  private static List<String> getSsmOpenSecondLevelFields() {
-    return SSM_SECOND_LEVEL_FIELDS.stream()
-        .filter(e -> !DownloadDataTypeFields.SSM_CONTROLLED_REMOVE_FIELDS.contains(e))
-        .collect(toImmutableList());
   }
 
 }
