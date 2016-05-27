@@ -17,16 +17,18 @@
  */
 package org.icgc.dcc.common.core.model;
 
-import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableList;
-import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableMap;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.util.List;
 import java.util.Map;
+
+import lombok.NoArgsConstructor;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+@NoArgsConstructor(access = PRIVATE)
 public final class DownloadDataTypeFields {
 
   public static final Map<String, String> DONOR_FIELDS = ImmutableMap.<String, String> builder()
@@ -225,7 +227,7 @@ public final class DownloadDataTypeFields {
       .put("_project_id", "project_code")
       .put("_specimen_id", "icgc_specimen_id")
       .put("_sample_id", "icgc_sample_id")
-      .put("analyzed_sample_id", "submitted_sample_id,")
+      .put("analyzed_sample_id", "submitted_sample_id")
       .put("analysis_id", "analysis_id")
       .put("junction_id", "junction_id")
       .put("gene_stable_id", "gene_stable_id")
@@ -270,29 +272,26 @@ public final class DownloadDataTypeFields {
       .put("_project_id", "project_code")
       .put("_specimen_id", "icgc_specimen_id")
       .put("_sample_id", "icgc_sample_id")
-      .put("analyzed_sample_id", "submitted_sample_id,")
+      .put("analyzed_sample_id", "submitted_sample_id")
       .put("analysis_id", "analysis_id")
-      .put("mirna_db", "mirna_db")
-      .put("mirna_id", "mirna_id")
-      .put("normalized_read_count", "normalized_read_count")
-      .put("raw_read_count", "raw_read_count")
-      .put("fold_change", "fold_change")
-      .put("is_isomir", "is_isomir")
       .put("chromosome", "chromosome")
       .put("chromosome_start", "chromosome_start")
       .put("chromosome_end", "chromosome_end")
       .put("chromosome_strand", "chromosome_strand")
       .put("assembly_version", "assembly_version")
+      .put("methylation_ratio", "methylation_ratio")
+      .put("methylated_read_count", "methylated_read_count")
+      .put("unmethylated_read_count", "unmethylated_read_count")
       .put("verification_status", "verification_status")
       .put("verification_platform", "verification_platform")
       .put("sequencing_platform", "sequencing_platform")
-      .put("total_read_count", "total_read_count")
+      .put("fraction_wg_cpg_sites_covered", "fraction_wg_cpg_sites_covered")
+      .put("conversion_rate", "conversion_rate")
       .put("experimental_protocol", "experimental_protocol")
-      .put("reference_sample_type", "reference_sample_type")
-      .put("alignment_algorithm", "alignment_algorithm")
-      .put("normalization_algorithm", "normalization_algorithm")
-      .put("other_analysis_algorithm", "other_analysis_algorithm")
       .put("sequencing_strategy", "sequencing_strategy")
+      .put("base_quality_score_threshold", "base_quality_score_threshold")
+      .put("alignment_algorithm", "alignment_algorithm")
+      .put("other_analysis_algorithm", "other_analysis_algorithm")
       .put("raw_data_repository", "raw_data_repository")
       .put("raw_data_accession", "raw_data_accession")
       .build();
@@ -325,7 +324,7 @@ public final class DownloadDataTypeFields {
       .put("_project_id", "project_code")
       .put("_specimen_id", "icgc_specimen_id")
       .put("_sample_id", "icgc_sample_id")
-      .put("analyzed_sample_id", "submitted_sample_id,")
+      .put("analyzed_sample_id", "submitted_sample_id")
       .put("analysis_id", "analysis_id")
       .put("mirna_db", "mirna_db")
       .put("mirna_id", "mirna_id")
@@ -357,7 +356,7 @@ public final class DownloadDataTypeFields {
       .put("_project_id", "project_code")
       .put("_specimen_id", "icgc_specimen_id")
       .put("_sample_id", "icgc_sample_id")
-      .put("analyzed_sample_id", "submitted_sample_id,")
+      .put("analyzed_sample_id", "submitted_sample_id")
       .put("matched_sample_id", "submitted_matched_sample_id")
       .put("variant_type", "variant_type")
       .put("sv_id", "sv_id")
@@ -451,7 +450,7 @@ public final class DownloadDataTypeFields {
       .put("_project_id", "project_code")
       .put("_specimen_id", "icgc_specimen_id")
       .put("_sample_id", "icgc_sample_id")
-      .put("analyzed_sample_id", "submitted_sample_id,")
+      .put("analyzed_sample_id", "submitted_sample_id")
       .put("analysis_id", "analysis_id")
       .put("antibody_id", "antibody_id")
       .put("gene_name", "gene_name")
@@ -548,7 +547,6 @@ public final class DownloadDataTypeFields {
       .put("seq_coverage", "seq_coverage")
       .put("raw_data_repository", "raw_data_repository")
       .put("raw_data_accession", "raw_data_accession")
-      .put("note", "note")
       .build();
 
   public static final List<String> SGV_FIRST_LEVEL_FIELDS = ImmutableList.<String> builder()
@@ -635,8 +633,6 @@ public final class DownloadDataTypeFields {
       .put("initial_data_release_date", "initial_data_release_date")
       .build();
 
-  public static final Map<String, String> SSM_OPEN_FIELDS = getSsmOpenFields();
-
   public static final List<String> SSM_FIRST_LEVEL_FIELDS = ImmutableList.<String> builder()
       .add("_mutation_id")
       .add("_donor_id")
@@ -683,21 +679,7 @@ public final class DownloadDataTypeFields {
       .add("initial_data_release_date")
       .build();
 
-  public static final List<String> SSM_OPEN_SECOND_LEVEL_FIELDS = getSsmOpenSecondLevelFields();
-
   public static final ImmutableSet<String> SSM_CONTROLLED_REMOVE_FIELDS = ImmutableSet.of("control_genotype",
       "tumour_genotype", "expressed_allele");
-
-  private static Map<String, String> getSsmOpenFields() {
-    return SSM_CONTROLLED_FIELDS.entrySet().stream()
-        .filter(e -> !SSM_CONTROLLED_REMOVE_FIELDS.contains(e.getKey()))
-        .collect(toImmutableMap(e -> e.getKey(), e -> e.getValue()));
-  }
-
-  private static List<String> getSsmOpenSecondLevelFields() {
-    return SSM_SECOND_LEVEL_FIELDS.stream()
-        .filter(e -> !SSM_CONTROLLED_REMOVE_FIELDS.contains(e))
-        .collect(toImmutableList());
-  }
 
 }

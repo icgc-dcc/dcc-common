@@ -39,13 +39,13 @@ import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SGV_FIRST_LE
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SPECIMEN_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SSM_CONTROLLED_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SSM_FIRST_LEVEL_FIELDS;
-import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SSM_OPEN_FIELDS;
-import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SSM_OPEN_SECOND_LEVEL_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SSM_SECOND_LEVEL_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.STSM_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.STSM_FIRST_LEVEL_FIELDS;
 import static org.icgc.dcc.common.core.util.Separators.EMPTY_STRING;
 import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableList;
+import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableMap;
+import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableSet;
 import static org.icgc.dcc.common.core.util.stream.Streams.stream;
 
 import java.util.List;
@@ -84,7 +84,7 @@ public enum DownloadDataType implements Identifiable {
   EXP_SEQ(EXP_SEQ_FIELDS),
   EXP_ARRAY(EXP_ARRAY_FIELDS),
 
-  SSM_OPEN(SSM_OPEN_FIELDS, SSM_FIRST_LEVEL_FIELDS, SSM_OPEN_SECOND_LEVEL_FIELDS),
+  SSM_OPEN(getSsmOpenFields(), SSM_FIRST_LEVEL_FIELDS, getSsmOpenSecondLevelFields()),
   SSM_CONTROLLED(SSM_CONTROLLED_FIELDS, SSM_FIRST_LEVEL_FIELDS, SSM_SECOND_LEVEL_FIELDS),
   SGV_CONTROLLED(SGV_CONTROLLED_FIELDS, SGV_FIRST_LEVEL_FIELDS);
 
@@ -93,6 +93,10 @@ public enum DownloadDataType implements Identifiable {
 
   public static final Set<DownloadDataType> CLINICAL = ImmutableSet.of(DONOR, DONOR_FAMILY, DONOR_THERAPY,
       DONOR_EXPOSURE, SPECIMEN, SAMPLE);
+
+  private static final Set<DownloadDataType> CLINICAL_SUBTYPES = CLINICAL.stream()
+      .filter(dt -> dt != DONOR)
+      .collect(toImmutableSet());
 
   /**
    * A mapping between field names of output archives consumed by the portal users and field names produced by the ETL
@@ -158,6 +162,10 @@ public enum DownloadDataType implements Identifiable {
         .collect(toImmutableList());
   }
 
+  public boolean isClinicalSubtype() {
+    return CLINICAL_SUBTYPES.contains(this);
+  }
+
   public static boolean hasClinicalDataTypes(@NonNull Set<DownloadDataType> dataTypes) {
     return Sets.intersection(CLINICAL, dataTypes)
         .isEmpty() == false;
@@ -204,6 +212,18 @@ public enum DownloadDataType implements Identifiable {
     checkState(controlled.size() == 1, "Failed to resolve controlled from %s", name);
 
     return controlled.get(0);
+  }
+
+  private static Map<String, String> getSsmOpenFields() {
+    return SSM_CONTROLLED_FIELDS.entrySet().stream()
+        .filter(e -> !DownloadDataTypeFields.SSM_CONTROLLED_REMOVE_FIELDS.contains(e.getKey()))
+        .collect(toImmutableMap(e -> e.getKey(), e -> e.getValue()));
+  }
+
+  private static List<String> getSsmOpenSecondLevelFields() {
+    return SSM_SECOND_LEVEL_FIELDS.stream()
+        .filter(e -> !DownloadDataTypeFields.SSM_CONTROLLED_REMOVE_FIELDS.contains(e))
+        .collect(toImmutableList());
   }
 
 }
