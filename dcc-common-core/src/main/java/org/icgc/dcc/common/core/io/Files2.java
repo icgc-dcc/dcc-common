@@ -26,13 +26,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.icgc.dcc.common.core.util.Separators;
+
 import lombok.Cleanup;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
-
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.icgc.dcc.common.core.util.Separators;
 
 /**
  * Util methods for files (compressed or not).
@@ -47,6 +47,10 @@ public class Files2 {
 
   private static final String GZIP_MEDIA_TYPE = "application/x-" + GZIP;
   private static final String BZIP2_MEDIA_TYPE = "application/x-" + BZIP2;
+
+  public static File getHomeDir() {
+    return new File(System.getProperty("user.home"));
+  }
 
   /**
    * Compression formats supported: gzip and bzip2.
@@ -69,11 +73,8 @@ public class Files2 {
         new InputStreamReader(
 
             // TODO: use cleaner mechanism (tika?)
-            isGzip(path) ?
-                new GZIPInputStream(fileInputStream) :
-                isBzip2(path) ?
-                    new BZip2CompressorInputStream(fileInputStream) :
-                    fileInputStream));
+            isGzip(path) ? new GZIPInputStream(
+                fileInputStream) : isBzip2(path) ? new BZip2CompressorInputStream(fileInputStream) : fileInputStream));
   }
 
   @SneakyThrows

@@ -61,7 +61,7 @@ public class BufferedReport extends BaseReport {
     super.addInfo(info, args);
 
     if (infoCount <= maxEntries) {
-      infos.add(String.format(info, args));
+      infos.add(formatMessage(info, args));
     }
   }
 
@@ -70,7 +70,7 @@ public class BufferedReport extends BaseReport {
     super.addWarning(warning, args);
 
     if (warningCount <= maxEntries) {
-      warnings.add(String.format(warning, args));
+      warnings.add(formatMessage(warning, args));
     }
   }
 
@@ -79,7 +79,7 @@ public class BufferedReport extends BaseReport {
     super.addError(error, args);
 
     if (errorCount <= maxEntries) {
-      errors.add(String.format(error, args));
+      errors.add(formatMessage(error, args));
     }
   }
 
@@ -100,6 +100,18 @@ public class BufferedReport extends BaseReport {
   @Override
   public void addTimer(Stopwatch timer) {
     addTimer(timer, "main");
+  }
+
+  private static String formatMessage(String message, Object... args) {
+    if (args.length == 0) {
+      return message;
+    }
+
+    try {
+      return String.format(message, args);
+    } catch (Exception e) {
+      return message;
+    }
   }
 
 }

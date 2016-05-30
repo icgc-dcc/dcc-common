@@ -96,6 +96,18 @@ public final class JsonNodeBuilders {
     return array().with(values);
   }
 
+  public static ArrayNodeBuilder array(@NonNull Iterable<String> values) {
+    return array().with(values);
+  }
+
+  public static ArrayNodeBuilder array(JsonNode value) {
+    return array().with(value);
+  }
+
+  public static ArrayNodeBuilder array(@NonNull JsonNode... values) {
+    return array().with(values);
+  }
+
   public static ArrayNodeBuilder array(@NonNull JsonNodeBuilder<?>... builders) {
     return array().with(builders);
   }
@@ -214,6 +226,12 @@ public final class JsonNodeBuilders {
 
     public ArrayNodeBuilder with(float value) {
       node.add(value);
+      return this;
+    }
+
+    public ArrayNodeBuilder with(float... values) {
+      for (val value : values)
+        with(value);
       return this;
     }
 

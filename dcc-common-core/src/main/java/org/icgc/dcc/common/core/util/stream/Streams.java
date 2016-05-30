@@ -23,6 +23,7 @@ import static java.util.stream.Collectors.toSet;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,12 +40,12 @@ import lombok.NonNull;
 @NoArgsConstructor(access = PRIVATE)
 public final class Streams {
 
-  public static <T> Stream<T> stream(@NonNull Iterable<T> iterable) {
-    return stream(iterable, false);
+  public static <T> Stream<T> stream(@NonNull Iterator<T> iterator) {
+    return stream(() -> iterator, false);
   }
 
-  public static <T> Stream<T> parallelStream(@NonNull Iterable<T> iterable) {
-    return stream(iterable, true);
+  public static <T> Stream<T> stream(@NonNull Iterable<T> iterable) {
+    return stream(iterable, false);
   }
 
   @SafeVarargs
@@ -55,6 +56,10 @@ public final class Streams {
   public static <T, R> Function<T, Stream<? extends R>> stream(
       @NonNull Function<? super T, ? extends Iterable<? extends R>> mapper) {
     return x -> stream(mapper.apply(x));
+  }
+
+  public static <T> Stream<T> parallelStream(@NonNull Iterable<T> iterable) {
+    return stream(iterable, true);
   }
 
   public static <T> T[] toArray(@NonNull Iterable<T> iterable, @NonNull IntFunction<T[]> generator) {
