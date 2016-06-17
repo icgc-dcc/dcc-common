@@ -43,6 +43,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
 
 import lombok.Getter;
@@ -60,7 +61,10 @@ public class TCGAClient {
   /**
    * Constants
    */
-  private static final String DEFAULT_API_URL = "https://gdc-api.nci.nih.gov/legacy";
+
+  // Requires both of these for ICGC
+  private static final String CURRENT_API_URL = "https://gdc-api.nci.nih.gov";
+  private static final String LEGACY_API_URL = "https://gdc-api.nci.nih.gov/legacy";
 
   private static final int MAX_ATTEMPTS = 10;
   private static final int MAX_CASES = 1_000_000; // This is known to be greater than the max that exist
@@ -78,17 +82,11 @@ public class TCGAClient {
           "samples.portions.analytes.aliquots.submitter_id");
 
   /**
-   * Configuration.
+   * State.
    */
-  @NonNull
-  private final String url;
   @Getter(lazy = true, value = PRIVATE)
   @Accessors(fluent = true)
   private final BiMap<String, String> mapping = createMapping(); // UUID -> barcode
-
-  public TCGAClient() {
-    this(DEFAULT_API_URL);
-  }
 
   @NonNull
   public String getUUID(String barcode) {
@@ -157,11 +155,20 @@ public class TCGAClient {
   }
 
   private Iterator<JsonNode> readCases() {
+    log.info("Reading current cases...");
+    val currentCases = readCases(CURRENT_API_URL);
+    log.info("Reading legacy cases...");
+    val legacyCases = readCases(LEGACY_API_URL);
+
+    return Iterators.concat(currentCases, legacyCases);
+  }
+
+  private Iterator<JsonNode> readCases(String api) {
     val params = Maps.<String, Object> newLinkedHashMap();
     params.put("size", MAX_CASES);
     params.put("fields", COMMA.join(FIELD_NAMES));
 
-    val request = "/cases" + "?" + Joiner.on('&').withKeyValueSeparator("=").join(params);
+    val request = api + "/cases" + "?" + Joiner.on('&').withKeyValueSeparator("=").join(params);
 
     int attempts = 0;
     while (++attempts <= MAX_ATTEMPTS) {
@@ -179,8 +186,8 @@ public class TCGAClient {
   }
 
   @SneakyThrows
-  private HttpURLConnection openConnection(String path) throws SocketTimeoutException {
-    val request = new URL(url + path);
+  private HttpURLConnection openConnection(String url) throws SocketTimeoutException {
+    val request = new URL(url);
 
     log.debug("Request: {}", request);
     val connection = (HttpsURLConnection) request.openConnection();
