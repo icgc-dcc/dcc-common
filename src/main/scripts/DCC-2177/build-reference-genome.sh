@@ -12,7 +12,7 @@
 #   ./build-reference-genome.sh -u <username> -p -v <version>
 #
 # Download latest:
-#	curl -g 'http://seqwaremaven.oicr.on.ca/artifactory/dcc-dependencies/org/icgc/dcc/dcc-reference-genome/[RELEASE]/dcc-reference-genome-[RELEASE].tar.gz' | tar zvx
+#	curl -g 'https://artifacts.oicr.on.ca/artifactory/dcc-dependencies/org/icgc/dcc/dcc-reference-genome/[RELEASE]/dcc-reference-genome-[RELEASE].tar.gz' | tar zvx
 #
 
 usage(){
@@ -67,7 +67,7 @@ fi
 #
 
 # Maven artifact location
-artifact_server=http://seqwaremaven.oicr.on.ca/artifactory
+artifact_server=https://artifacts.oicr.on.ca/artifactory
 artifact_repository=dcc-dependencies
 artifact_name=dcc-reference-genome
 artifact_path=org/icgc/dcc/$artifact_name
