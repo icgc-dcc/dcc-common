@@ -17,147 +17,210 @@
  */
 package org.icgc.dcc.common.core.tcga;
 
-import static com.google.common.collect.Iterables.partition;
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.net.HttpHeaders.ACCEPT;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static lombok.AccessLevel.PRIVATE;
 import static org.icgc.dcc.common.core.json.Jackson.DEFAULT;
+import static org.icgc.dcc.common.core.util.Formats.formatCount;
 import static org.icgc.dcc.common.core.util.Joiners.COMMA;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Joiner;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
+import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 
-/**
- * See https://wiki.nci.nih.gov/display/TCGA/TCGA+Barcode+to+UUID+Web+Service+User%27s+Guide
- */
+@Slf4j
 @RequiredArgsConstructor
 public class TCGAClient {
 
   /**
-   * Constants.
+   * Constants
    */
-  private static final String DEFAULT_TCGA_BASE_URL = "https://tcga-data.nci.nih.gov";
-  private static final int TCGA_MAX_BATCH_SIZE = 500;
+  private static final String DEFAULT_API_URL = "https://gdc-api.nci.nih.gov/legacy";
 
+  private static final int MAX_ATTEMPTS = 10;
+  private static final int MAX_CASES = 1_000_000; // This is known to be greater than the max that exist
+  private static final int READ_TIMEOUT = (int) SECONDS.toMillis(60);
+
+  private static final String APPLICATION_JSON = "application/json";
+
+  private static final List<String> FIELD_NAMES =
+      ImmutableList.of(
+          "case_id",
+          "submitter_id",
+          "samples.sample_id",
+          "samples.submitter_id",
+          "samples.portions.analytes.aliquots.aliquot_id",
+          "samples.portions.analytes.aliquots.submitter_id");
+
+  /**
+   * Configuration.
+   */
   @NonNull
-  private final String baseUrl;
+  private final String url;
+  @Getter(lazy = true, value = PRIVATE)
+  @Accessors(fluent = true)
+  private final BiMap<String, String> mapping = createMapping(); // UUID -> barcode
 
   public TCGAClient() {
-    this(DEFAULT_TCGA_BASE_URL);
+    this(DEFAULT_API_URL);
   }
 
   @NonNull
   public String getUUID(String barcode) {
-    val mappingUrl = getBarcodeMappingURL(barcode);
-    val mapping = getMapping(mappingUrl);
-
-    return getMappingUUID(mapping);
+    return mapping().inverse().get(barcode);
   }
 
   @NonNull
   public Map<String, String> getUUIDs(Set<String> barcodes) {
-    return getIDs(
-        getBarcodesMappingsURL(),
-        barcodes,
-        (JsonNode mapping) -> mapping.get("barcode").textValue(),
-        (JsonNode mapping) -> mapping.get("uuid").textValue());
+    val uuids = ImmutableMap.<String, String> builder();
+    for (val barcode : barcodes) {
+      val uuid = getUUID(barcode);
+      checkState(uuid != null, "Could not find UUID for barcode '%s'", barcode);
+
+      uuids.put(barcode, uuid);
+    }
+
+    return uuids.build();
   }
 
   @NonNull
   public String getBarcode(String uuid) {
-    val mappingUrl = getUUIDMappingURL(uuid);
-    val mapping = getMapping(mappingUrl);
-
-    return getMappingBarcode(mapping);
+    return mapping().get(uuid);
   }
 
   @NonNull
   public Map<String, String> getBarcodes(Set<String> uuids) {
-    return getIDs(
-        getUUIDMappingsURL(),
-        uuids,
-        (JsonNode mapping) -> mapping.get("uuid").textValue(),
-        (JsonNode mapping) -> mapping.get("barcode").textValue());
+    val barcodes = ImmutableMap.<String, String> builder();
+    for (val uuid : uuids) {
+      val barcode = getBarcode(uuid);
+      checkState(barcode != null, "Could not find barcode for UUID '%s'", uuid);
+
+      barcodes.put(uuid, barcode);
+    }
+
+    return barcodes.build();
   }
 
-  public Map<String, String> getIDs(String mappingsUrl, Set<String> ids, Function<JsonNode, String> key,
-      Function<JsonNode, String> value) {
-    val map = ImmutableMap.<String, String> builder();
-    for (val batch : getBatches(ids)) {
-      val mappings = getMappings(mappingsUrl, batch);
-      val node = mappings.path("uuidMapping");
-      if (node.isArray()) {
-        for (val mapping : node) {
-          map.put(key.apply(mapping), value.apply(mapping));
+  private BiMap<String, String> createMapping() {
+    log.info("Creating UUID <-> barcode mapping...");
+    val watch = Stopwatch.createStarted();
+    val cases = readCases();
+
+    // Allow for lookup by barcode or UUID value
+    val mapping = HashBiMap.<String, String> create();
+    int caseCount = 0;
+    while (cases.hasNext()) {
+      caseCount++;
+      val caze = cases.next();
+
+      mapping.put(caze.get("case_id").textValue(), caze.get("submitter_id").textValue());
+      for (val sample : caze.path("samples")) {
+        mapping.put(sample.get("sample_id").textValue(), sample.get("submitter_id").textValue());
+
+        for (val portion : sample.path("portions")) {
+          for (val analyte : portion.path("analytes")) {
+            for (val aliquot : analyte.path("aliquots")) {
+              mapping.put(aliquot.get("aliquot_id").textValue(), aliquot.get("submitter_id").textValue());
+            }
+          }
         }
-      } else {
-        map.put(key.apply(node), value.apply(node));
       }
     }
 
-    return map.build();
+    log.info("Finished creating {} mappings from {} cases in {}", formatCount(mapping), formatCount(caseCount), watch);
+    return mapping;
   }
 
-  private static Iterable<List<String>> getBatches(Set<String> barcodes) {
-    return partition(barcodes, TCGA_MAX_BATCH_SIZE);
-  }
+  private Iterator<JsonNode> readCases() {
+    val params = Maps.<String, Object> newLinkedHashMap();
+    params.put("size", MAX_CASES);
+    params.put("fields", COMMA.join(FIELD_NAMES));
 
-  private String getBarcodeMappingURL(String barcode) {
-    return getMappingURL("/barcode" + "/" + barcode);
-  }
+    val request = "/cases" + "?" + Joiner.on('&').withKeyValueSeparator("=").join(params);
 
-  private String getBarcodesMappingsURL() {
-    return getMappingURL("/barcode/batch");
-  }
+    int attempts = 0;
+    while (++attempts <= MAX_ATTEMPTS) {
+      try {
+        val connection = openConnection(request);
+        val response = readResponse(connection);
 
-  private String getUUIDMappingURL(String uuid) {
-    return getMappingURL("/uuid" + "/" + uuid);
-  }
+        return response;
+      } catch (SocketTimeoutException e) {
+        log.warn("Socket timeout for {} after {} attempt(s)", request, attempts);
+      }
+    }
 
-  private String getUUIDMappingsURL() {
-    return getMappingURL("/uuid/batch");
-  }
-
-  private String getMappingURL(String path) {
-    return baseUrl + "/uuid/uuidws/mapping" + "/json" + path;
-  }
-
-  private static String getMappingUUID(JsonNode mapping) {
-    return mapping.path("uuidMapping").path("uuid").asText();
-  }
-
-  private static String getMappingBarcode(JsonNode mapping) {
-    return mapping.path("barcode").asText();
+    throw new IllegalStateException("Could not get " + request);
   }
 
   @SneakyThrows
-  private static JsonNode getMapping(String url) {
-    return DEFAULT.readTree(new URL(url));
+  private HttpURLConnection openConnection(String path) throws SocketTimeoutException {
+    val request = new URL(url + path);
+
+    log.debug("Request: {}", request);
+    val connection = (HttpsURLConnection) request.openConnection();
+    connection.setRequestProperty(ACCEPT, APPLICATION_JSON);
+    connection.setReadTimeout(READ_TIMEOUT);
+    connection.setConnectTimeout(READ_TIMEOUT);
+
+    return connection;
   }
 
   @SneakyThrows
-  private static JsonNode getMappings(String url, Iterable<String> ids) {
-    val body = COMMA.join(ids);
-    val connection = (HttpURLConnection) new URL(url).openConnection();
-    connection.setRequestMethod("POST");
-    connection.setRequestProperty(CONTENT_TYPE, "text/plain");
-    connection.setRequestProperty(CONTENT_LENGTH, Integer.toString(body.length()));
-    connection.setDoOutput(true);
-    connection.getOutputStream().write(body.getBytes(UTF_8));
+  private static Iterator<JsonNode> readResponse(HttpURLConnection connection) {
+    try {
+      connection.connect();
+      val actualResponseCode = connection.getResponseCode();
+      val actualContentType = connection.getContentType();
 
-    return DEFAULT.readTree(connection.getInputStream());
+      val expectedResponseCode = 200;
+      val expectedContentType = APPLICATION_JSON;
+
+      checkState(actualResponseCode == expectedResponseCode && expectedContentType.equals(actualContentType),
+          "Expected %s reponse code with content type '%s' from %s but got %s reponse code with content type '%s' instead.",
+          expectedResponseCode, expectedContentType, connection.getURL(), actualResponseCode, actualContentType);
+
+      // Stream parse for speed and memory efficiency
+      val parser = DEFAULT.getFactory().createParser(connection.getInputStream());
+
+      while (true) {
+        parser.nextToken();
+        if ("hits".equals(parser.getCurrentName())) {
+          parser.nextToken();
+          parser.nextToken();
+          break;
+        }
+      }
+
+      return parser.readValuesAs(JsonNode.class);
+    } catch (IOException e) {
+      throw new RuntimeException("Error trying to read response from " + connection.getURL() + ": ", e);
+    }
   }
 
 }

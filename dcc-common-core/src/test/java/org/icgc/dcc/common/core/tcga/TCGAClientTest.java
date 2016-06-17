@@ -18,69 +18,75 @@
 package org.icgc.dcc.common.core.tcga;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import lombok.val;
 
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import lombok.val;
+
 public class TCGAClientTest {
 
-  TCGAClient client = new TCGAClient();
+  /**
+   * CUT.
+   * <p>
+   * Static because will data will be cached for reuse.
+   */
+  private static TCGAClient client = new TCGAClient();
 
   @Test
   public void testGetUUID() throws Exception {
-    val barcode = "TCGA-5T-A9QA-01A-21-A43F-20";
+    val barcode = "TCGA-EB-A85I";
     val uuid = client.getUUID(barcode);
 
-    assertThat(uuid).isEqualTo("9e71a150-8fd7-466c-96af-aab29520bcdc");
+    assertThat(uuid).isEqualTo("50dc9c63-c491-4afc-ab12-74b40eba58b6");
   }
 
   @Test
   public void testGetUUIDsSingle() throws Exception {
-    val uuids = ImmutableSet.of("TCGA-5T-A9QA-01A-21-A43F-20");
-    val barcodes = client.getUUIDs(uuids);
+    val barcodes = ImmutableSet.of("TCGA-EB-A85I");
+    val uuids = client.getUUIDs(barcodes);
 
-    assertThat(barcodes).isEqualTo(ImmutableMap.of(
-        "TCGA-5T-A9QA-01A-21-A43F-20", "9e71a150-8fd7-466c-96af-aab29520bcdc"));
+    assertThat(uuids).isEqualTo(ImmutableMap.of(
+        "TCGA-EB-A85I", "50dc9c63-c491-4afc-ab12-74b40eba58b6"));
   }
 
   @Test
   public void testGetUUIDsMultiple() throws Exception {
-    val uuids = ImmutableSet.of("TCGA-5T-A9QA-01A-21-A43F-20", "TCGA-GC-A3WC-11A-11R-A22V-13");
-    val barcodes = client.getUUIDs(uuids);
+    val barcodes = ImmutableSet.of("TCGA-EB-A85I", "TCGA-VM-A8CD-10A-01D-A366-01");
+    val uuids = client.getUUIDs(barcodes);
 
-    assertThat(barcodes).isEqualTo(ImmutableMap.of(
-        "TCGA-5T-A9QA-01A-21-A43F-20", "9e71a150-8fd7-466c-96af-aab29520bcdc",
-        "TCGA-GC-A3WC-11A-11R-A22V-13", "22c65a63-09f6-483e-85a7-a4f3d315bba4"));
+    assertThat(uuids).isEqualTo(ImmutableMap.of(
+        "TCGA-EB-A85I", "50dc9c63-c491-4afc-ab12-74b40eba58b6",
+        "TCGA-VM-A8CD-10A-01D-A366-01", "8477135d-aaf2-45c5-ab1d-f642fa93d03f"));
   }
 
   @Test
   public void testGetBarcode() throws Exception {
-    val uuid = "9e71a150-8fd7-466c-96af-aab29520bcdc";
+    val uuid = "50dc9c63-c491-4afc-ab12-74b40eba58b6";
     val barcode = client.getBarcode(uuid);
 
-    assertThat(barcode).isEqualTo("TCGA-5T-A9QA-01A-21-A43F-20");
+    assertThat(barcode).isEqualTo("TCGA-EB-A85I");
   }
 
   @Test
   public void testGetBarcodesSingle() throws Exception {
-    val uuids = ImmutableSet.of("9e71a150-8fd7-466c-96af-aab29520bcdc");
+    val uuids = ImmutableSet.of("50dc9c63-c491-4afc-ab12-74b40eba58b6");
     val barcodes = client.getBarcodes(uuids);
 
     assertThat(barcodes).isEqualTo(ImmutableMap.of(
-        "9e71a150-8fd7-466c-96af-aab29520bcdc", "TCGA-5T-A9QA-01A-21-A43F-20"));
+        "50dc9c63-c491-4afc-ab12-74b40eba58b6", "TCGA-EB-A85I"));
   }
 
   @Test
   public void testGetBarcodesMultiple() throws Exception {
-    val uuids = ImmutableSet.of("9e71a150-8fd7-466c-96af-aab29520bcdc", "22c65a63-09f6-483e-85a7-a4f3d315bba4");
+    val uuids = ImmutableSet.of("50dc9c63-c491-4afc-ab12-74b40eba58b6", "8477135d-aaf2-45c5-ab1d-f642fa93d03f");
     val barcodes = client.getBarcodes(uuids);
 
     assertThat(barcodes).isEqualTo(ImmutableMap.of(
-        "9e71a150-8fd7-466c-96af-aab29520bcdc", "TCGA-5T-A9QA-01A-21-A43F-20",
-        "22c65a63-09f6-483e-85a7-a4f3d315bba4", "TCGA-GC-A3WC-11A-11R-A22V-13"));
+        "50dc9c63-c491-4afc-ab12-74b40eba58b6", "TCGA-EB-A85I",
+        "8477135d-aaf2-45c5-ab1d-f642fa93d03f", "TCGA-VM-A8CD-10A-01D-A366-01"));
   }
 
 }
