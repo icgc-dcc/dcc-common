@@ -153,14 +153,25 @@ public enum DownloadDataType implements Identifiable {
         .isEmpty() == false;
   }
 
-  public static DownloadDataType from(@NonNull String name, boolean controlled) {
+  public static DownloadDataType from(@NonNull String canonicalName, boolean controlled) {
     val dataTypes = stream(values())
-        .filter(dt -> dt.getCanonicalName().equals(name) && dt.isControlled() == controlled)
+        .filter(dt -> dt.getCanonicalName().equals(canonicalName))
         .collect(toImmutableList());
-    checkState(dataTypes.size() == 1, "Failed to resolve DownloadDataType from name '%s' and controlled '%s'. "
-        + "Found data types: %s", name, controlled, dataTypes);
+    checkState(dataTypes.size() > 0 && dataTypes.size() < 3, "Failed to resolve DownloadDataType from name '%s' and "
+        + "controlled '%s'. Found data types: %s", canonicalName, controlled, dataTypes);
 
-    return dataTypes.get(0);
+    if (dataTypes.size() == 1) {
+      return dataTypes.get(0);
+    }
+
+    val controlledDataType = dataTypes.stream()
+        .filter(dt -> dt.isControlled() == controlled)
+        .collect(toImmutableList());
+
+    checkState(controlledDataType.size() == 1, "Failed to resolve DownloadDataType from name '%s' and "
+        + "controlled '%s'. Found data types: %s", canonicalName, controlled, controlledDataType);
+
+    return controlledDataType.get(0);
   }
 
   /**

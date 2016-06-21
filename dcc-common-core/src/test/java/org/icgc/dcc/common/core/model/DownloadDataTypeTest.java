@@ -17,13 +17,26 @@
  */
 package org.icgc.dcc.common.core.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 
 public class DownloadDataTypeTest {
 
   @Test
   public void initTest() {
-    DownloadDataType.canCreateFrom("donor");
+    assertThat(DownloadDataType.canCreateFrom("donor")).isFalse();
+    assertThat(DownloadDataType.canCreateFrom("DONOR")).isTrue();
+  }
+
+  @Test
+  public void testFrom() throws Exception {
+    assertThat(DownloadDataType.from("donor", false)).isEqualTo(DownloadDataType.DONOR);
+    assertThat(DownloadDataType.from("donor", true)).isEqualTo(DownloadDataType.DONOR);
+    assertThat(DownloadDataType.from("ssm", true)).isEqualTo(DownloadDataType.SSM_CONTROLLED);
+    assertThat(DownloadDataType.from("ssm", false)).isEqualTo(DownloadDataType.SSM_OPEN);
+    assertThat(DownloadDataType.from("sgv", true)).isEqualTo(DownloadDataType.SGV_CONTROLLED);
+    assertThat(DownloadDataType.from("sgv", false)).isEqualTo(DownloadDataType.SGV_CONTROLLED);
   }
 
 }
