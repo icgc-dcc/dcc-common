@@ -218,6 +218,36 @@ public final class FileTests {
 		return outputFile;
 	}
 
+	@SneakyThrows
+	public static void copyDirectory(@NonNull File srcDir, @NonNull File destDir) {
+		checkState(srcDir.exists(), "%s does not exists.", srcDir);
+		checkState(srcDir.isDirectory(), "%s exists, but not a directory.", srcDir);
+		ensureExistence(destDir);
+
+		File[] dirFiles = srcDir.listFiles();
+		if (dirFiles != null) {
+			for (val file : dirFiles) {
+				val outputFile = getOutputFile(file, destDir);
+				if (file.isDirectory()) {
+					copyDirectory(file, outputFile);
+				} else {
+					log.debug("Copying {} to {} ...", file, outputFile);
+					Files.copy(file, outputFile);
+				}
+			}
+		}
+	}
+
+	private static File getOutputFile(File file, File destDir) {
+		return new File(destDir, file.getName());
+	}
+
+	private static void ensureExistence(File destDir) {
+		if (destDir.exists() == false && destDir.mkdirs() == false) {
+			log.warn("Failed to create directory: {}", destDir);
+		}
+	}
+
 	private static boolean isPartFile(String name) {
 		return name.startsWith("part-");
 	}
