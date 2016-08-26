@@ -15,28 +15,47 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.model;
+package org.icgc.dcc.common.test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.io.File;
 
-import org.junit.Test;
+import lombok.val;
 
-public class DownloadDataTypeTest {
+import org.icgc.dcc.common.test.file.FileTests;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
-  @Test
-  public void initTest() {
-    assertThat(DownloadDataType.canCreateFrom("donor")).isFalse();
-    assertThat(DownloadDataType.canCreateFrom("DONOR")).isTrue();
-  }
+public abstract class AbstractTest {
 
-  @Test
-  public void testFrom() throws Exception {
-    assertThat(DownloadDataType.from("donor", false)).isEqualTo(DownloadDataType.DONOR);
-    assertThat(DownloadDataType.from("donor", true)).isEqualTo(DownloadDataType.DONOR);
-    assertThat(DownloadDataType.from("ssm", true)).isEqualTo(DownloadDataType.SSM_CONTROLLED);
-    assertThat(DownloadDataType.from("ssm", false)).isEqualTo(DownloadDataType.SSM_OPEN);
-    assertThat(DownloadDataType.from("sgv", true)).isEqualTo(DownloadDataType.SGV_CONTROLLED);
-    assertThat(DownloadDataType.from("sgv", false)).isEqualTo(DownloadDataType.SGV_CONTROLLED);
-  }
+	/**
+	 * Constants.
+	 */
+	protected static final String TEST_FIXTURES_DIR = "src/test/resources/fixtures";
+	protected static final String INPUT_TEST_FIXTURES_DIR = TEST_FIXTURES_DIR + "/input";
+
+	protected File workingDir;
+
+	/**
+	 * State.
+	 */
+	@Rule
+	public TemporaryFolder tmp = new TemporaryFolder();
+
+	@Before
+	public void setUp() {
+		this.workingDir = tmp.newFolder("working");
+	}
+
+	protected void prepareInput() {
+		val srcDir = new File(INPUT_TEST_FIXTURES_DIR);
+		val destDir = workingDir;
+		FileTests.copyDirectory(srcDir, destDir);
+	}
+
+	protected void prepareInput(File destDir) {
+		val srcDir = new File(INPUT_TEST_FIXTURES_DIR);
+		FileTests.copyDirectory(srcDir, destDir);
+	}
 
 }
