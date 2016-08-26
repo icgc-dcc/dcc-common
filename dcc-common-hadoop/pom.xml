@@ -134,10 +134,12 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
           <artifactId>apacheds-kerberos-codec</artifactId>
           <groupId>org.apache.directory.server</groupId>
         </exclusion>
+        <!-- Needed by cascading
         <exclusion>
           <artifactId>commons-codec</artifactId>
           <groupId>commons-codec</groupId>
         </exclusion>
+         -->
         <exclusion>
           <artifactId>xmlenc</artifactId>
           <groupId>xmlenc</groupId>

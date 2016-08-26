@@ -177,8 +177,8 @@ public class TCGAClient {
         val response = readResponse(connection);
 
         return response;
-      } catch (SocketTimeoutException e) {
-        log.warn("Socket timeout for {} after {} attempt(s)", request, attempts);
+      } catch (Exception e) {
+        log.warn("Exception for {} after {} attempt(s): {}", request, attempts, e.getMessage());
       }
     }
 
