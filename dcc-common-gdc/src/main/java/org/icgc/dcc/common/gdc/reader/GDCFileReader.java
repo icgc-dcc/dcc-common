@@ -17,19 +17,15 @@
  */
 package org.icgc.dcc.common.gdc.reader;
 
-import static org.icgc.dcc.common.core.json.JsonNodeBuilders.array;
-import static org.icgc.dcc.common.core.json.JsonNodeBuilders.object;
 import static org.icgc.dcc.common.core.util.stream.Streams.stream;
-import static org.icgc.dcc.common.gdc.client.GDCClient.Query.query;
-import static org.icgc.dcc.common.gdc.core.GDCProjects.getProjectsIds;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.icgc.dcc.common.gdc.client.GDCClient;
+import org.icgc.dcc.common.gdc.client.GDCClient.Query;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.ImmutableList;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -44,70 +40,13 @@ import lombok.val;
 public class GDCFileReader {
 
   /**
-   * Constants.
-   */
-  private static final int PAGE_SIZE = 10000;
-
-  private static final List<String> FIELD_NAMES =
-      ImmutableList.of(
-          "access",
-          "state",
-          "file_name",
-          "data_type",
-          "data_category",
-          "md5sum",
-          "updated_datetime",
-          "data_format",
-          "file_size",
-          "file_id",
-          "platform",
-          "annotations.annotation_id",
-          "archive.archive_id",
-          "experimental_strategy",
-          "center.name",
-          "submitter_id",
-          "cases.case_id",
-          "cases.submitter_id",
-          "cases.project.project_id",
-          "cases.project.name",
-          "cases.project.primary_site",
-          "cases.samples.sample_type",
-          "cases.samples.sample_id",
-          "cases.samples.submitter_id",
-          "cases.samples.portions.analytes.aliquots.aliquot_id",
-          "cases.samples.portions.analytes.aliquots.submitter_id",
-          "index_files.file_id",
-          "index_files.data_format",
-          "index_files.file_size",
-          "index_files.file_name",
-          "index_files.md5sum",
-          "index_files.updated_datetime",
-          "analysis.workflow_type",
-          "analysis.analysis_id",
-          "analysis.updated_datetime");
-
-  private static ObjectNode PROJECT_FILTER =
-      object()
-          .with("op", "in")
-          .with("content",
-              object()
-                  .with("field", "cases.project.project_id")
-                  .with("value", array().with(getProjectsIds())))
-          .end();
-
-  /**
    * Dependencies.
    */
   @NonNull
   private final GDCClient client;
 
-  public Stream<ObjectNode> readFiles() {
-    val pages = new GDCPageIterator(client,
-        query()
-            .size(PAGE_SIZE)
-            .fields(FIELD_NAMES)
-            .filters(PROJECT_FILTER)
-            .build());
+  public Stream<ObjectNode> readFiles(Query query) {
+    val pages = new GDCFilePageIterator(client, query);
 
     return stream(pages).flatMap(List::stream);
   }

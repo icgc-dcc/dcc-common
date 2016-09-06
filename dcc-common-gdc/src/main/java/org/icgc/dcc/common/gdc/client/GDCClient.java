@@ -240,7 +240,8 @@ public class GDCClient {
       @Override
       @SneakyThrows
       public String toString() {
-        return lazy.call();
+        val result = lazy.call();
+        return result.substring(0, 1000);
       }
 
     };

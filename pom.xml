@@ -46,6 +46,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
     <module>dcc-common-cascading</module>
     <module>dcc-common-ega</module>
     <module>dcc-common-gdc</module>
+    <module>dcc-common-tcga</module>
     <module>dcc-common-test</module>
   </modules>
 
