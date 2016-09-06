@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.icgc.dcc.common.gdc.client.GDCClient;
-import org.icgc.dcc.common.gdc.reader.GDCFileReader;
+import org.icgc.dcc.common.gdc.reader.GDCReader;
 import org.icgc.dcc.common.tcga.core.TCGAMappings;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -49,15 +49,15 @@ public class TCGAClient {
   private static final String CURRENT_API_URL = "https://gdc-api.nci.nih.gov";
   private static final String LEGACY_API_URL = "https://gdc-api.nci.nih.gov/legacy";
 
-  private static final int PAGE_SIZE = 50_000;
+  private static final int PAGE_SIZE = 1000;
   private static final List<String> FIELD_NAMES =
       ImmutableList.of(
-          "cases.case_id",
-          "cases.submitter_id",
-          "cases.samples.sample_id",
-          "cases.samples.submitter_id",
-          "cases.samples.portions.analytes.aliquots.aliquot_id",
-          "cases.samples.portions.analytes.aliquots.submitter_id");
+          "case_id",
+          "submitter_id",
+          "samples.sample_id",
+          "samples.submitter_id",
+          "samples.portions.analytes.aliquots.aliquot_id",
+          "samples.portions.analytes.aliquots.submitter_id");
 
   /**
    * State.
@@ -65,51 +65,49 @@ public class TCGAClient {
   public TCGAMappings getMappings() {
     log.info("Creating UUID <-> barcode mapping...");
     val watch = Stopwatch.createStarted();
-    val files = readFiles();
+    val cases = readCases();
 
     // Allow for lookup by barcode or UUID value
     log.info("Adding mappings...");
     val mapping = HashBiMap.<String, String> create();
-    files.forEach((file) -> addMappings(mapping, file));
+    cases.forEach((caze) -> addMappings(mapping, caze));
 
     log.info("Finished creating {} mappings in {}", formatCount(mapping), watch);
     return new TCGAMappings(mapping);
   }
 
-  private void addMappings(BiMap<String, String> mapping, ObjectNode file) {
-    for (val caze : file.path("cases")) {
-      // Add donor id mapping
-      mapping.put(caze.get("case_id").textValue(), caze.get("submitter_id").textValue());
-      for (val sample : caze.path("samples")) {
-        // Add specimen id mapping
-        mapping.put(sample.get("sample_id").textValue(), sample.get("submitter_id").textValue());
+  private void addMappings(BiMap<String, String> mapping, ObjectNode caze) {
+    // Add donor id mapping
+    mapping.put(caze.get("case_id").textValue(), caze.get("submitter_id").textValue());
+    for (val sample : caze.path("samples")) {
+      // Add specimen id mapping
+      mapping.put(sample.get("sample_id").textValue(), sample.get("submitter_id").textValue());
 
-        for (val portion : sample.path("portions")) {
-          for (val analyte : portion.path("analytes")) {
-            for (val aliquot : analyte.path("aliquots")) {
-              // Add sample id mapping
-              mapping.put(aliquot.get("aliquot_id").textValue(), aliquot.get("submitter_id").textValue());
-            }
+      for (val portion : sample.path("portions")) {
+        for (val analyte : portion.path("analytes")) {
+          for (val aliquot : analyte.path("aliquots")) {
+            // Add sample id mapping
+            mapping.put(aliquot.get("aliquot_id").textValue(), aliquot.get("submitter_id").textValue());
           }
         }
       }
     }
   }
 
-  private Stream<ObjectNode> readFiles() {
-    log.info("Reading current files...");
-    val currentFiles = readFiles(CURRENT_API_URL);
-    log.info("Reading legacy files...");
-    val legacyFiles = readFiles(LEGACY_API_URL);
+  private Stream<ObjectNode> readCases() {
+    log.info("Reading current cases...");
+    val currentFiles = readCases(CURRENT_API_URL);
+    log.info("Reading legacy cases...");
+    val legacyFiles = readCases(LEGACY_API_URL);
 
     return Stream.concat(legacyFiles, currentFiles);
   }
 
-  private Stream<ObjectNode> readFiles(String apiUrl) {
-    val reader = new GDCFileReader(new GDCClient(apiUrl));
+  private Stream<ObjectNode> readCases(String apiUrl) {
+    val reader = new GDCReader(new GDCClient(apiUrl)::getCases);
     val query = query().fields(FIELD_NAMES).size(PAGE_SIZE).build();
 
-    return reader.readFiles(query);
+    return reader.read(query);
   }
 
 }

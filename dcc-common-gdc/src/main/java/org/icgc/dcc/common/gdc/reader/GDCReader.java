@@ -20,10 +20,11 @@ package org.icgc.dcc.common.gdc.reader;
 import static org.icgc.dcc.common.core.util.stream.Streams.stream;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.icgc.dcc.common.gdc.client.GDCClient;
 import org.icgc.dcc.common.gdc.client.GDCClient.Query;
+import org.icgc.dcc.common.gdc.client.GDCClient.Result;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -37,16 +38,13 @@ import lombok.val;
  * @see https://wiki.oicr.on.ca/pages/viewpage.action?pageId=66946440
  */
 @RequiredArgsConstructor
-public class GDCFileReader {
+public class GDCReader {
 
-  /**
-   * Dependencies.
-   */
   @NonNull
-  private final GDCClient client;
+  private final Function<Query, Result> call;
 
-  public Stream<ObjectNode> readFiles(Query query) {
-    val pages = new GDCFilePageIterator(client, query);
+  public Stream<ObjectNode> read(Query query) {
+    val pages = new GDCPageIterator(query, call);
 
     return stream(pages).flatMap(List::stream);
   }

@@ -19,24 +19,24 @@ package org.icgc.dcc.common.gdc.reader;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
-import org.icgc.dcc.common.gdc.client.GDCClient;
 import org.icgc.dcc.common.gdc.client.GDCClient.Pagination;
 import org.icgc.dcc.common.gdc.client.GDCClient.Query;
+import org.icgc.dcc.common.gdc.client.GDCClient.Result;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import lombok.NonNull;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-class GDCFilePageIterator implements Iterator<List<ObjectNode>> {
+class GDCPageIterator implements Iterator<List<ObjectNode>> {
 
   /**
    * Dependencies.
    */
-  private final GDCClient client;
+  private Function<Query, Result> call;
 
   /**
    * Configuration.
@@ -49,8 +49,8 @@ class GDCFilePageIterator implements Iterator<List<ObjectNode>> {
   private int from;
   private Pagination pagination;
 
-  public GDCFilePageIterator(@NonNull GDCClient client, @NonNull Query query) {
-    this.client = client;
+  public GDCPageIterator(Query query, Function<Query, Result> call) {
+    this.call = call;
     this.query = query;
     this.from = query.getFrom();
   }
@@ -70,7 +70,7 @@ class GDCFilePageIterator implements Iterator<List<ObjectNode>> {
 
   @Override
   public List<ObjectNode> next() {
-    val page = client.getFiles(query.toBuilder().from(from).build());
+    val page = call.apply(query.toBuilder().from(from).build());
 
     // Advance
     pagination = page.getPagination();

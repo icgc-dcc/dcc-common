@@ -85,7 +85,19 @@ public class GDCClient {
   }
 
   public Result getFiles(@NonNull Query query) {
-    val response = readFiles(query, query.getSize(), query.getFrom());
+    return get("/files", query);
+  }
+
+  public JsonNode getCasesMapping() {
+    return getMapping("/cases");
+  }
+
+  public Result getCases(@NonNull Query query) {
+    return get("/cases", query);
+  }
+
+  private Result get(String path, @NonNull Query query) {
+    val response = read(path, query, query.getSize(), query.getFrom());
 
     val pagination = getPagination(response);
     val hits = getHits(response);
@@ -98,7 +110,7 @@ public class GDCClient {
     return new Result(pagination, results.build());
   }
 
-  private JsonNode readFiles(Query query, int size, int from) {
+  private JsonNode read(String path, Query query, int size, int from) {
     val params = Maps.<String, Object> newLinkedHashMap();
 
     params.put("size", size);
@@ -113,7 +125,7 @@ public class GDCClient {
       params.put("expand", COMMA.join(query.getExpands()));
     }
 
-    val request = "/files" + "?" + Joiner.on('&').withKeyValueSeparator("=").join(params);
+    val request = path + "?" + Joiner.on('&').withKeyValueSeparator("=").join(params);
 
     int attempts = 0;
     while (++attempts <= MAX_ATTEMPTS) {
