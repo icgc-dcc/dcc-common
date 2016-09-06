@@ -17,11 +17,8 @@
  */
 package org.icgc.dcc.common.tcga.client;
 
-import static org.icgc.dcc.common.core.json.JsonNodeBuilders.array;
-import static org.icgc.dcc.common.core.json.JsonNodeBuilders.object;
 import static org.icgc.dcc.common.core.util.Formats.formatCount;
 import static org.icgc.dcc.common.gdc.client.GDCClient.Query.query;
-import static org.icgc.dcc.common.gdc.core.GDCProjects.getProjectsIds;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -61,15 +58,6 @@ public class TCGAClient {
           "cases.samples.submitter_id",
           "cases.samples.portions.analytes.aliquots.aliquot_id",
           "cases.samples.portions.analytes.aliquots.submitter_id");
-
-  private static ObjectNode PROJECT_FILTER =
-      object()
-          .with("op", "in")
-          .with("content",
-              object()
-                  .with("field", "cases.project.project_id")
-                  .with("value", array().with(getProjectsIds())))
-          .end();
 
   /**
    * State.
@@ -119,7 +107,7 @@ public class TCGAClient {
 
   private Stream<ObjectNode> readFiles(String apiUrl) {
     val reader = new GDCFileReader(new GDCClient(apiUrl));
-    val query = query().fields(FIELD_NAMES).filters(PROJECT_FILTER).size(PAGE_SIZE).build();
+    val query = query().fields(FIELD_NAMES).size(PAGE_SIZE).build();
 
     return reader.readFiles(query);
   }

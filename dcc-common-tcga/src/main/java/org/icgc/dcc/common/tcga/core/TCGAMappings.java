@@ -17,8 +17,6 @@
  */
 package org.icgc.dcc.common.tcga.core;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -55,7 +53,6 @@ public class TCGAMappings implements Iterable<Entry<String, String>> {
     val uuids = ImmutableMap.<String, String> builder();
     for (val barcode : barcodes) {
       val uuid = getUUID(barcode);
-      checkState(uuid != null, "Could not find UUID for barcode '%s'", barcode);
 
       uuids.put(barcode, uuid);
     }
@@ -73,7 +70,6 @@ public class TCGAMappings implements Iterable<Entry<String, String>> {
     val barcodes = ImmutableMap.<String, String> builder();
     for (val uuid : uuids) {
       val barcode = getBarcode(uuid);
-      checkState(barcode != null, "Could not find barcode for UUID '%s'", uuid);
 
       barcodes.put(uuid, barcode);
     }
