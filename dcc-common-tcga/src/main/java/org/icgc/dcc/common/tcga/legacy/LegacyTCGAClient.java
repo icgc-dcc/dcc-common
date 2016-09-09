@@ -41,7 +41,10 @@ import lombok.val;
 
 /**
  * See https://wiki.nci.nih.gov/display/TCGA/TCGA+Barcode+to+UUID+Web+Service+User%27s+Guide
+ * <p>
+ * No longer available since the sundowning of TCGA.
  */
+@Deprecated
 @RequiredArgsConstructor
 public class LegacyTCGAClient {
 

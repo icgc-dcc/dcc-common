@@ -23,6 +23,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.NoArgsConstructor;
 
+/**
+ * Accessors for working with EGA mapping files.
+ */
 @NoArgsConstructor(access = PRIVATE)
 public final class EGAMappings {
 

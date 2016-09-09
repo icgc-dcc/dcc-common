@@ -38,6 +38,9 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
 
+/**
+ * Reads an EGA mapping file into an in-memory representation.
+ */
 public class EGAMappingReader {
 
   @SneakyThrows

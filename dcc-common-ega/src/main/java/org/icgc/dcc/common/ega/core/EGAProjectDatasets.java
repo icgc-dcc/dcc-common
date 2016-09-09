@@ -27,6 +27,11 @@ import com.google.common.collect.ImmutableList;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+/**
+ * Curated list of project code to EGA study / dataset mappings.
+ * <p>
+ * Required since not fully derivable from EGA metadata (yet).
+ */
 @NoArgsConstructor(access = PRIVATE)
 public final class EGAProjectDatasets {
 

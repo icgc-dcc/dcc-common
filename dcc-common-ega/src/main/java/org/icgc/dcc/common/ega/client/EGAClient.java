@@ -22,7 +22,9 @@ import static com.google.common.net.HttpHeaders.ACCEPT;
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.icgc.dcc.common.core.json.Jackson.DEFAULT;
@@ -36,6 +38,7 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -44,23 +47,39 @@ import javax.net.ssl.TrustManagerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.Synchronized;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Client for the EGA API.
+ * <p>
+ * Currently only covers metadata related endpoints.
+ * 
+ * @see https://www.ebi.ac.uk/ega/about/your_EGA_account/download_streaming_client#API_overview
+ */
 @Slf4j
+@NotThreadSafe
 @RequiredArgsConstructor
 public class EGAClient {
 
   /**
-   * Constants
+   * Constants - Defaults
    */
   private static final String DEFAULT_API_URL = "https://ega.ebi.ac.uk/ega/rest/access/v2";
+  private static final boolean DEFAULT_RECONNECT = true;
+  private static final boolean DEFAULT_RETRY_NOT_AUTHORIZED = false;
+
+  /**
+   * Constants - General
+   */
   private static final SSLSocketFactory SSL_SOCKET_FACTORY = createSSLSocketFactory();
 
   private static final int MAX_ATTEMPTS = 50;
@@ -69,8 +88,20 @@ public class EGAClient {
   private static final String METHOD_POST = "POST";
   private static final String APPLICATION_JSON = "application/json";
 
+  public EGAClient() {
+    this(System.getProperty("ega.username"), System.getProperty("ega.password"));
+  }
+
   public EGAClient(String userName, String password) {
-    this(DEFAULT_API_URL, userName, password);
+    this(DEFAULT_API_URL, userName, password, DEFAULT_RECONNECT, DEFAULT_RETRY_NOT_AUTHORIZED);
+  }
+
+  public EGAClient(String userName, String password, boolean reconnect) {
+    this(DEFAULT_API_URL, userName, password, reconnect, DEFAULT_RETRY_NOT_AUTHORIZED);
+  }
+
+  public EGAClient(String userName, String password, boolean reconnect, boolean retryNotAuthorized) {
+    this(DEFAULT_API_URL, userName, password, reconnect, retryNotAuthorized);
   }
 
   /**
@@ -82,26 +113,29 @@ public class EGAClient {
   private final String userName;
   @NonNull
   private final String password;
-
-  private final boolean reconnect = true;
+  private final boolean reconnect; // Pretty much always needed
+  private final boolean retryNotAuthorized; // Useful for when server is in a flakey state
 
   /**
    * State.
    */
+  @Getter(onMethod = @__(@Synchronized))
   private String sessionId;
-  @Getter
+  @Getter(onMethod = @__(@Synchronized))
   private int timeoutCount;
-  @Getter
+  @Getter(onMethod = @__(@Synchronized))
   private int reconnectCount;
-  @Getter
+  @Getter(onMethod = @__(@Synchronized))
   private int errorCount;
 
   @SneakyThrows
+  @Synchronized
   public void login() {
     int attempts = 0;
     while (++attempts <= MAX_ATTEMPTS) {
       try {
-        val connection = openConnection("/users/login");
+        val path = "/users/login";
+        val connection = openConnection(path);
         connection.setRequestMethod(METHOD_POST);
         connection.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
         connection.setDoOutput(true);
@@ -111,7 +145,7 @@ public class EGAClient {
         connection.getOutputStream().write(request.getBytes(UTF_8));
 
         val response = readResponse(connection);
-        checkCode(response);
+        checkResponse(path, response);
 
         this.sessionId = getSessionId(response);
 
@@ -124,35 +158,19 @@ public class EGAClient {
     throw new IllegalStateException("Could login with user " + userName);
   }
 
+  @Synchronized
   public List<String> getDatasetIds() {
     return get("/datasets", new TypeReference<List<String>>() {});
   }
 
-  public List<ObjectNode> getDataset(@NonNull String datasetId) {
-    return get("/datasets/" + datasetId, new TypeReference<List<ObjectNode>>() {});
-  }
-
+  @Synchronized
   public List<ObjectNode> getDatasetFiles(@NonNull String datasetId) {
     return get("/datasets/" + datasetId + "/files", new TypeReference<List<ObjectNode>>() {});
   }
 
-  public ObjectNode getFile(@NonNull String fileId) {
-    return get("/files/" + fileId, new TypeReference<ObjectNode>() {});
-  }
-
-  @SneakyThrows
-  private HttpURLConnection openConnection(String path) throws SocketTimeoutException {
-    val connection = (HttpsURLConnection) new URL(url + path).openConnection();
-    connection.setRequestProperty(ACCEPT, APPLICATION_JSON);
-    connection.setReadTimeout(READ_TIMEOUT);
-    connection.setConnectTimeout(READ_TIMEOUT);
-    connection.setSSLSocketFactory(SSL_SOCKET_FACTORY);
-
-    return connection;
-  }
-
-  private boolean isSessionActive() {
-    return sessionId != null;
+  @Synchronized
+  public ArrayNode getFile(@NonNull String fileId) {
+    return get("/files/" + fileId, new TypeReference<ArrayNode>() {});
   }
 
   private <T> T get(String path, TypeReference<T> responseType) {
@@ -166,15 +184,16 @@ public class EGAClient {
         val response = readResponse(connection);
         val code = getCode(response);
 
-        if ((isSessionExpired(code) /* || isNotAuthorized(code) */) && reconnect) {
+        if (isRetryLogin(code)) {
           log.warn("Lost session, reconnecting... {}", response);
           reconnectCount++;
           login();
 
+          // Recurse
           return get(path, responseType);
         }
 
-        checkCode(response);
+        checkResponse(path, response);
         return DEFAULT.convertValue(getResult(response), responseType);
       } catch (SocketTimeoutException e) {
         timeoutCount++;
@@ -192,9 +211,36 @@ public class EGAClient {
     throw new IllegalStateException("Could not get " + path);
   }
 
-  private static void checkCode(JsonNode response) {
+  @SneakyThrows
+  private HttpURLConnection openConnection(String path) throws SocketTimeoutException {
+    val connection = (HttpsURLConnection) new URL(url + path).openConnection();
+    connection.setRequestProperty(ACCEPT, APPLICATION_JSON);
+    connection.setReadTimeout(READ_TIMEOUT);
+    connection.setConnectTimeout(READ_TIMEOUT);
+    connection.setSSLSocketFactory(SSL_SOCKET_FACTORY);
+
+    return connection;
+  }
+
+  private boolean isSessionActive() {
+    return sessionId != null;
+  }
+
+  private boolean isRetryLogin(int code) {
+    return (isSessionExpired(code) || retryNotAuthorized && isNotAuthorized(code)) && reconnect;
+  }
+
+  private static void checkResponse(String path, JsonNode response) {
     val code = getCode(response);
-    checkState(isOk(code), "Expected OK response, got %s: %s", code, response);
+    if (isNotAuthorized(code)) {
+      throw new EGANotAuthorizedException("Not authorized to access entity at path %s: %s", path, response);
+    }
+    if (isNotFound(code)) {
+      throw new EGAEntityNotFoundException("Could not find entity at path %s: %s", path, response);
+    }
+    if (!isOk(code)) {
+      throw new EGAClientException("Expected OK response for path %s, got %s: %s", path, code, response);
+    }
   }
 
   @SneakyThrows
@@ -222,9 +268,12 @@ public class EGAClient {
     return code == HTTP_OK;
   }
 
-  @SuppressWarnings("unused")
+  private static boolean isNotFound(final int code) {
+    return code == HTTP_NOT_FOUND;
+  }
+
   private static boolean isNotAuthorized(int code) {
-    return code == 401;
+    return code == HTTP_UNAUTHORIZED;
   }
 
   private static boolean isSessionExpired(int code) {

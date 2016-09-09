@@ -23,6 +23,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.Value;
 
+/**
+ * Aggregate metadata from various EGA files.
+ */
 @Value
 public class EGAMetadata {
 

@@ -15,30 +15,72 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+// @formatter:off
 package org.icgc.dcc.common.ega.model;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Maps;
-
-import lombok.Value;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 /**
- * Metadata tarball in-memory representation.
+ * Accession types supported by EGA.
+ *
+ * @see http://www.ebi.ac.uk/ena/submit/read-data-format#accession_number_format
+ * @see http://www.ebi.ac.uk/ena/submit/metadata-model
  */
-@Value
-public class EGAMetadataArchive {
+@Getter
+@RequiredArgsConstructor
+public enum EGAAccessionType {
 
-  final String datasetId;
+  SUBMISSION("EGA Submission", "EGA",  11),
+  SAMPLE    ("EGA Sample",     "EGAN", 11),
+  STUDY     ("EGA Study",      "EGAS", 11),
+  EXPERIMENT("EGA Experiment", "EGAX", 11),
+  RUN       ("EGA Run",        "EGAR", 11),
+  ANALYSIS  ("EGA Analysis",   "EGAZ", 11),
+  DAC       ("EGA DAC",        "EGAC", 11),
+  POLICY    ("EGA Policy",     "EGAC", 11),
+  DATASET   ("EGA Data Set",   "EGAD", 11),
+  FILE      ("EGA File",       "EGAF", 11);
 
-  final Map<String, List<ObjectNode>> mappings = Maps.newHashMap();
+  /**
+   * The object type to which the accession type applies.
+   */
+  private final String metadataObject;
 
-  final Map<String, ObjectNode> studies = Maps.newHashMap();
-  final Map<String, ObjectNode> samples = Maps.newHashMap();
-  final Map<String, ObjectNode> experiments = Maps.newHashMap();
-  final Map<String, ObjectNode> runs = Maps.newHashMap();
-  final Map<String, ObjectNode> analysis = Maps.newHashMap();
+  /**
+   * The prefix of an ID.
+   * <p>
+   * e.g. {@code EGAF00000000001}
+   */
+  private final String prefix;
+
+  /**
+   * The number of digits formatted.
+   * <p>
+   * e.g. For {@code EGAF00000000001} it would be 11
+   */
+  private final int digits;
+
+  public boolean isFile() {
+    return this == FILE;
+  }
+  
+  public boolean matches(String accession) {
+    return Pattern.matches(prefix + "\\d{" + digits + "}", accession);
+  }
+  
+  public static Optional<EGAAccessionType> from(@NonNull String accession) {
+    for (EGAAccessionType value : values()) {
+      val match = value.matches(accession);
+      if (match) return Optional.of(value);
+    }
+
+    return Optional.empty();
+  }
 
 }

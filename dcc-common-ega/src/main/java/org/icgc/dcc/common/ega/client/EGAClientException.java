@@ -15,30 +15,12 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.model;
+package org.icgc.dcc.common.ega.client;
 
-import java.util.List;
-import java.util.Map;
+public class EGAClientException extends RuntimeException {
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Maps;
-
-import lombok.Value;
-
-/**
- * Metadata tarball in-memory representation.
- */
-@Value
-public class EGAMetadataArchive {
-
-  final String datasetId;
-
-  final Map<String, List<ObjectNode>> mappings = Maps.newHashMap();
-
-  final Map<String, ObjectNode> studies = Maps.newHashMap();
-  final Map<String, ObjectNode> samples = Maps.newHashMap();
-  final Map<String, ObjectNode> experiments = Maps.newHashMap();
-  final Map<String, ObjectNode> runs = Maps.newHashMap();
-  final Map<String, ObjectNode> analysis = Maps.newHashMap();
+  public EGAClientException(String format, Object... args) {
+    super(String.format(format, args));
+  }
 
 }

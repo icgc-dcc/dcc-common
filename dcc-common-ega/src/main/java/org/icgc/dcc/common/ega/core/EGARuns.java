@@ -23,6 +23,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.NoArgsConstructor;
 
+/**
+ * Accessors for working with EGA run files.
+ */
 @NoArgsConstructor(access = PRIVATE)
 public final class EGARuns {
 

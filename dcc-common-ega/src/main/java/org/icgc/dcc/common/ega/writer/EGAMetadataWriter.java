@@ -46,6 +46,8 @@ import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * Utility for writing all EGA metadata to a JSONL file.
+ * 
  * @see https://www.ebi.ac.uk/ega/dacs/EGAC00001000010
  */
 @Slf4j

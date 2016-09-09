@@ -31,6 +31,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Lazily reads all metadata for ICGC associated projects into a stream.
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class EGAMetadataReader {

@@ -44,6 +44,9 @@ import lombok.SneakyThrows;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Reads a remote EGA metadata tarball into a {@link EGAMetadataArchive}.
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class EGAMetadataArchiveReader {

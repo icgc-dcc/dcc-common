@@ -19,9 +19,12 @@ package org.icgc.dcc.common.ega.utils;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.XML;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +35,9 @@ import com.google.common.io.CharStreams;
 import lombok.SneakyThrows;
 import lombok.val;
 
+/**
+ * Utility to read an XML file into a {@link ObjectNode}, overcoming Jackson's limitations to doing so natively.
+ */
 public class XMLObjectNodeReader {
 
   /**
@@ -41,12 +47,18 @@ public class XMLObjectNodeReader {
 
   @SneakyThrows
   public ObjectNode read(InputStream inputStream) {
+    val json = readJson(inputStream);
+
+    return JSON_MAPPER.convertValue(json, ObjectNode.class);
+  }
+
+  public JSONObject readJson(InputStream inputStream) throws IOException, JSONException {
     // Can't use jackson-dataformat-xml because of lack of repeating elements support, etc.
     val reader = new InputStreamReader(inputStream, UTF_8);
     val xml = CharStreams.toString(reader);
-    val json = XML.toJSONObject(xml);
 
-    return JSON_MAPPER.convertValue(json, ObjectNode.class);
+    // Use json.org
+    return XML.toJSONObject(xml);
   }
 
 }
