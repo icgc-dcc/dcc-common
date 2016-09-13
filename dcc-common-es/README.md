@@ -1,12 +1,12 @@
-ICGC DCC - Common Elasticsearch
-===
+# ICGC DCC - Common Elasticsearch
 
 Elasticsearch tools for DCC projects
 
-Build
----
+##Build
 
 In the repository's root execute from the command line:
 
-        mvn -am -pl dcc-common-es package
+```shell
+mvn -am -pl dcc-common-es package
+```
 

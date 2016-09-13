@@ -17,8 +17,8 @@
  */
 package org.icgc.dcc.dcc.common.es.impl;
 
-public interface EsDocumentType {
+public interface DocumentType {
 
-	String getIndexType();
+  String getIndexType();
 
 }

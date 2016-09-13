@@ -36,7 +36,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.icgc.dcc.dcc.common.es.core.DocumentWriter;
 import org.icgc.dcc.dcc.common.es.json.JacksonFactory;
-import org.icgc.dcc.dcc.common.es.model.EsDocument;
+import org.icgc.dcc.dcc.common.es.model.Document;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -45,92 +45,92 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  * Output destination for {@link DefaultDocument} instances to be written.
  */
 @Slf4j
-public class EsDocumentWriter implements DocumentWriter {
+public class DefaultDocumentWriter implements DocumentWriter {
 
-	/**
-	 * Constants.
-	 */
-	public static final ByteSizeValue BULK_SIZE = new ByteSizeValue(36, MB);
-	private static final ObjectWriter BINARY_WRITER = JacksonFactory.getObjectWriter();
+  /**
+   * Constants.
+   */
+  public static final ByteSizeValue BULK_SIZE = new ByteSizeValue(36, MB);
+  private static final ObjectWriter BINARY_WRITER = JacksonFactory.getObjectWriter();
 
-	/**
-	 * Meta data.
-	 */
-	@Getter
-	private final String indexName;
+  /**
+   * Meta data.
+   */
+  @Getter
+  private final String indexName;
 
-	/**
-	 * Helps to track log records related to this particular writer.
-	 */
-	private final String writerId;
+  /**
+   * Helps to track log records related to this particular writer.
+   */
+  private final String writerId;
 
-	/**
-	 * Batching state.
-	 */
-	@Getter
-	private final IndexingState indexingState;
-	private final BulkProcessor processor;
+  /**
+   * Batching state.
+   */
+  @Getter
+  private final IndexingState indexingState;
+  private final BulkProcessor processor;
 
-	// Holding a reference to the client to be able to close it, as the caller might not have reference to it.
-	private final Client client;
+  // Holding a reference to the client to be able to close it, as the caller might not have reference to it.
+  private final Client client;
 
-	/**
-	 * Status.
-	 */
-	private int documentCount;
+  /**
+   * Status.
+   */
+  private int documentCount;
 
-	public EsDocumentWriter(Client client, String indexName, IndexingState indexingState, BulkProcessor bulkProcessor,
-			String writerId) {
-		this.indexName = indexName;
-		this.writerId = writerId;
-		this.indexingState = indexingState;
-		this.processor = bulkProcessor;
-		this.client = client;
-		log.info("[{}] Created ES document writer.", writerId);
-	}
+  public DefaultDocumentWriter(Client client, String indexName, IndexingState indexingState, BulkProcessor bulkProcessor,
+      String writerId) {
+    this.indexName = indexName;
+    this.writerId = writerId;
+    this.indexingState = indexingState;
+    this.processor = bulkProcessor;
+    this.client = client;
+    log.info("[{}] Created ES document writer.", writerId);
+  }
 
-	@Override
-	public void write(@NonNull EsDocument document) throws IOException {
-		byte[] source = createSource(document.getSource());
-		write(document.getId(), document.getType(), source);
-	}
+  @Override
+  public void write(@NonNull Document document) throws IOException {
+    byte[] source = createSource(document.getSource());
+    write(document.getId(), document.getType(), source);
+  }
 
-	protected void write(String id, EsDocumentType type, byte[] source) {
-		if (isBigDocument(source.length)) {
-			processor.flush();
-		}
+  protected void write(String id, DocumentType type, byte[] source) {
+    if (isBigDocument(source.length)) {
+      processor.flush();
+    }
 
-		val request = createRequest(id, type, source);
-		processor.add(request);
-		documentCount++;
-	}
+    val request = createRequest(id, type, source);
+    processor.add(request);
+    documentCount++;
+  }
 
-	@Override
-	public void close() throws IOException {
-		// Initiate an index request which will set the pendingBulkRequest
-		processor.flush();
+  @Override
+  public void close() throws IOException {
+    // Initiate an index request which will set the pendingBulkRequest
+    processor.flush();
 
-		log.info("[{}] Closing bulk processor...", writerId);
-		indexingState.waitForPendingRequests();
-		processor.close();
-		client.close();
-		log.info("[{}] Finished indexing {} documents", writerId, formatCount(documentCount));
-	}
+    log.info("[{}] Closing bulk processor...", writerId);
+    indexingState.waitForPendingRequests();
+    processor.close();
+    client.close();
+    log.info("[{}] Finished indexing {} documents", writerId, formatCount(documentCount));
+  }
 
-	protected static byte[] createSource(Object document) {
-		try {
-			return BINARY_WRITER.writeValueAsBytes(document);
-		} catch (JsonProcessingException e) {
-			throw propagate(e);
-		}
-	}
+  protected static byte[] createSource(Object document) {
+    try {
+      return BINARY_WRITER.writeValueAsBytes(document);
+    } catch (JsonProcessingException e) {
+      throw propagate(e);
+    }
+  }
 
-	private IndexRequest createRequest(String id, EsDocumentType type, byte[] source) {
-		return indexRequest(indexName).type(type.getIndexType()).id(id).contentType(SMILE).source(source);
-	}
+  private IndexRequest createRequest(String id, DocumentType type, byte[] source) {
+    return indexRequest(indexName).type(type.getIndexType()).id(id).contentType(SMILE).source(source);
+  }
 
-	private static boolean isBigDocument(int length) {
-		return length > BULK_SIZE.getBytes();
-	}
+  private static boolean isBigDocument(int length) {
+    return length > BULK_SIZE.getBytes();
+  }
 
 }

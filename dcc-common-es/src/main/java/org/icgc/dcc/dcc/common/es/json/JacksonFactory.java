@@ -29,11 +29,11 @@ import com.fasterxml.jackson.dataformat.smile.SmileFactory;
 @NoArgsConstructor(access = PRIVATE)
 public final class JacksonFactory {
 
-	public static final ObjectWriter getObjectWriter() {
-		val factory = new SmileFactory();
-		val mapper = new ObjectMapper(factory);
+  public static final ObjectWriter getObjectWriter() {
+    val factory = new SmileFactory();
+    val mapper = new ObjectMapper(factory);
 
-		return mapper.writerWithType(ObjectNode.class);
-	}
+    return mapper.writerWithType(ObjectNode.class);
+  }
 
 }

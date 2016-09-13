@@ -20,18 +20,18 @@ package org.icgc.dcc.dcc.common.es.model;
 import lombok.NonNull;
 import lombok.Value;
 
-import org.icgc.dcc.dcc.common.es.impl.EsDocumentType;
+import org.icgc.dcc.dcc.common.es.impl.DocumentType;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Value
-public class EsDocument {
+public class Document {
 
-	@NonNull
-	String id;
-	@NonNull
-	ObjectNode source;
-	@NonNull
-	EsDocumentType type;
+  @NonNull
+  String id;
+  @NonNull
+  ObjectNode source;
+  @NonNull
+  DocumentType type;
 
 }

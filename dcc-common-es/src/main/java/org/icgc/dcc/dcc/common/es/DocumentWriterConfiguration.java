@@ -24,7 +24,7 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true)
 public class DocumentWriterConfiguration {
 
-	String esUrl;
-	String indexName;
+  String esUrl;
+  String indexName;
 
 }

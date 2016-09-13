@@ -19,6 +19,6 @@ package org.icgc.dcc.dcc.common.es.core;
 
 public class ExhausedRetryException extends RuntimeException {
 
-	private static final long serialVersionUID = -9143528145208407354L;
+  private static final long serialVersionUID = -9143528145208407354L;
 
 }

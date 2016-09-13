@@ -83,7 +83,6 @@ public class BulkProcessorListener implements Listener {
     log.warn("[{}] Encountered exception during bulk load: {}", writerId, getExceptionMessage(failure));
     retryRequest(executionId, request);
     log.debug("{}", indexingState);
-
   }
 
   private void retryRequest(long executionId, BulkRequest request) {
