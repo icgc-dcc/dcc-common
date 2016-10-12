@@ -49,7 +49,7 @@ public final class DocumentWriterFactory {
   private static final int BULK_ACTIONS = -1; // Unlimited
 
   public static DocumentWriter createDocumentWriter(DocumentWriterConfiguration configuration) {
-    val client = configuration.client != null ? configuration.client : newTransportClient(configuration.esUrl(), true);
+    val client = configuration.client() != null ? configuration.client() : newClient(configuration.esUrl(), true);
     val writerId = createWriterId();
     val indexingState = new IndexingState(writerId);
     val clusterStateVerifier = new ClusterStateVerifier(client, configuration.indexName(), writerId, indexingState);
@@ -59,7 +59,7 @@ public final class DocumentWriterFactory {
   }
 
   @SuppressWarnings("resource")
-  private static Client newTransportClient(@NonNull String esUri, boolean sniff) {
+  private static Client newClient(@NonNull String esUri, boolean sniff) {
     val host = getHost(esUri);
     val port = getPort(esUri);
     val address = new InetSocketTransportAddress(host, port);
