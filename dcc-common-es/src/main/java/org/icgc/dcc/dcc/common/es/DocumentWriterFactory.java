@@ -23,12 +23,6 @@ import static org.elasticsearch.action.bulk.BulkProcessor.builder;
 import java.net.URI;
 import java.util.Random;
 
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
-
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -41,6 +35,12 @@ import org.icgc.dcc.dcc.common.es.impl.ClusterStateVerifier;
 import org.icgc.dcc.dcc.common.es.impl.DefaultDocumentWriter;
 import org.icgc.dcc.dcc.common.es.impl.IndexingState;
 
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.SneakyThrows;
+import lombok.val;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
 public final class DocumentWriterFactory {
@@ -49,7 +49,7 @@ public final class DocumentWriterFactory {
   private static final int BULK_ACTIONS = -1; // Unlimited
 
   public static DocumentWriter createDocumentWriter(DocumentWriterConfiguration configuration) {
-    val client = newTransportClient(configuration.esUrl(), true);
+    val client = configuration.client() != null ? configuration.client() : newClient(configuration.esUrl(), true);
     val writerId = createWriterId();
     val indexingState = new IndexingState(writerId);
     val clusterStateVerifier = new ClusterStateVerifier(client, configuration.indexName(), writerId, indexingState);
@@ -59,7 +59,7 @@ public final class DocumentWriterFactory {
   }
 
   @SuppressWarnings("resource")
-  private static TransportClient newTransportClient(@NonNull String esUri, boolean sniff) {
+  private static Client newClient(@NonNull String esUri, boolean sniff) {
     val host = getHost(esUri);
     val port = getPort(esUri);
     val address = new InetSocketTransportAddress(host, port);
@@ -106,8 +106,9 @@ public final class DocumentWriterFactory {
   }
 
   private static BulkProcessor createProcessor(Client client, BulkProcessorListener listener) {
-    val bulkProcessor = builder(client, listener).setBulkActions(BULK_ACTIONS).setBulkSize(DefaultDocumentWriter.BULK_SIZE)
-        .setConcurrentRequests(0).build();
+    val bulkProcessor =
+        builder(client, listener).setBulkActions(BULK_ACTIONS).setBulkSize(DefaultDocumentWriter.BULK_SIZE)
+            .setConcurrentRequests(0).build();
 
     // Need to give back reference to bulkProcessor as it's reused for re-indexing of failed requests.
     listener.setProcessor(bulkProcessor);

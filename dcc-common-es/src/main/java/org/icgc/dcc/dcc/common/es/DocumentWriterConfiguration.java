@@ -17,6 +17,8 @@
  */
 package org.icgc.dcc.dcc.common.es;
 
+import org.elasticsearch.client.Client;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -26,5 +28,6 @@ public class DocumentWriterConfiguration {
 
   String esUrl;
   String indexName;
+  Client client;
 
 }
