@@ -21,14 +21,15 @@ import lombok.Value;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.icgc.dcc.common.client.api.daco.DACOUser;
 
 @Value
 public class UserContainer {
 
-  ResponseUser user;
+  DACOUser user;
 
   @JsonCreator
-  public UserContainer(@JsonProperty("user") ResponseUser user) {
+  public UserContainer(@JsonProperty("user") DACOUser user) {
     this.user = user;
   }
 

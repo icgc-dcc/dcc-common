@@ -27,6 +27,7 @@ import lombok.val;
 
 import org.icgc.dcc.common.client.api.ICGCClientConfig;
 import org.icgc.dcc.common.client.api.daco.DACOClient;
+import org.icgc.dcc.common.client.api.daco.DACOUser;
 import org.icgc.dcc.common.client.api.daco.User;
 import org.icgc.dcc.common.client.impl.BaseOAuthICGCClient;
 
@@ -58,7 +59,14 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
 
   @Override
   public List<User> getUsers() {
-    return convert(resourse.get(ClientResponse.class).getEntity(new GenericType<List<ResponseUser>>() {}));
+    return convert(resourse.get(ClientResponse.class).getEntity(new GenericType<List<DACOUser>>() {}));
+  }
+
+  @Override
+  public List<DACOUser> getDACOUsers() {
+    return resourse
+        .get(ClientResponse.class)
+        .getEntity(new GenericType<List<DACOUser>>() {});
   }
 
   @Override
@@ -78,7 +86,7 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
         .queryParam(ENTITY_FILTER_PARAM_NAME, getFilter(userType, userValue))
         .get(ClientResponse.class);
 
-    return convert(clientResponse.getEntity(new GenericType<List<ResponseUser>>() {}));
+    return convert(clientResponse.getEntity(new GenericType<List<DACOUser>>() {}));
   }
 
   @Override
@@ -102,7 +110,7 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
         .queryParam(ENTITY_FILTER_PARAM_NAME, CLOUD_FILTER_VALUE)
         .get(ClientResponse.class);
 
-    return convert(clientResponse.getEntity(new GenericType<List<ResponseUser>>() {}));
+    return convert(clientResponse.getEntity(new GenericType<List<DACOUser>>() {}));
   }
 
   @Override
@@ -113,7 +121,7 @@ public class DefaultDACOClient extends BaseOAuthICGCClient implements DACOClient
         .anyMatch(u -> userId.equals(u.getOpenid()) || userId.equals(u.getUsername()));
   }
 
-  private static List<User> convert(List<ResponseUser> source) {
+  private static List<User> convert(List<DACOUser> source) {
     val result = new ImmutableList.Builder<User>();
     for (val user : source) {
       val userInfo = user.getUserinfo();

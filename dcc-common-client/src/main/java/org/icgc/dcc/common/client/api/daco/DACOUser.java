@@ -15,7 +15,7 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.client.impl.daco;
+package org.icgc.dcc.common.client.api.daco;
 
 import java.util.List;
 
@@ -24,8 +24,11 @@ import lombok.Value;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+/**
+ * An actual response from the DACO API is represented by this model.
+ */
 @Value
-public class ResponseUser {
+public class DACOUser {
 
   @Value
   public static class Userinfo {
@@ -47,19 +50,16 @@ public class ResponseUser {
   }
 
   String openid;
-  String openidEmail;
   boolean cloudAccess;
   List<Userinfo> userinfo;
 
   @JsonCreator
-  public ResponseUser(
+  public DACOUser(
       @JsonProperty("openid") String openid,
-      @JsonProperty("email") String openidEmail,
       @JsonProperty("csa") boolean cloudAccess,
       @JsonProperty("userinfo") List<Userinfo> userinfo)
   {
     this.openid = openid;
-    this.openidEmail = openidEmail;
     this.cloudAccess = cloudAccess;
     this.userinfo = userinfo;
   }
