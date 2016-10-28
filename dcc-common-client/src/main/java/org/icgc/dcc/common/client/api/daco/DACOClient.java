@@ -58,6 +58,13 @@ public interface DACOClient {
   List<User> getUsers();
 
   /**
+   * Gets all approved DACO users (OpenID list) with their CUD users.
+   * 
+   * @see <a href="https://wiki.oicr.on.ca/pages/viewpage.action?pageId=57773218">Search - All DACO Approved Users</a>
+   */
+  List<DACOUser> getDACOUsers();
+
+  /**
    * Gets approved DACO users by {@code openId}. As multiple accounts can share the same OpenID a list of users is
    * returned
    * 

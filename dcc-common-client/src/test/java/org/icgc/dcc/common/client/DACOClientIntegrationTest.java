@@ -65,6 +65,12 @@ public class DACOClientIntegrationTest {
   }
 
   @Test
+  public void getDACOUsersTest() {
+    val dacoUsers = client.getDACOUsers();
+    assertThat(dacoUsers).isNotEmpty();
+  }
+
+  @Test
   public void getUserTest() {
     for (val user : client.getUser(VALID_OPENID)) {
       assertThat(user.getOpenid()).isNotEmpty();
