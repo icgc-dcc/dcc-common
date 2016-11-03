@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.
+ * Copyright (c) 2016 The Ontario Institute for Cancer Research. All rights reserved.                             
  *                                                                                                               
  * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * You should have received a copy of the GNU General Public License along with                                  
@@ -15,22 +15,15 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.client.impl.daco;
+package org.icgc.dcc.dcc.common.es.core;
 
-import lombok.Value;
+import java.io.Closeable;
+import java.io.IOException;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.icgc.dcc.common.client.api.daco.DACOUser;
+import org.icgc.dcc.dcc.common.es.model.Document;
 
-@Value
-public class UserContainer {
+public interface DocumentWriter extends Closeable {
 
-  DACOUser user;
-
-  @JsonCreator
-  public UserContainer(@JsonProperty("user") DACOUser user) {
-    this.user = user;
-  }
+  void write(Document document) throws IOException;
 
 }
