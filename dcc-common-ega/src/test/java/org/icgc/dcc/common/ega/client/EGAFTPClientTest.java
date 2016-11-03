@@ -17,8 +17,7 @@
  */
 package org.icgc.dcc.common.ega.client;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import org.icgc.dcc.common.ega.reader.EGAMetadataArchiveReader;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -27,19 +26,23 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Ignore("For development only")
-public class EGAClientTest {
+public class EGAFTPClientTest {
 
   @Test
-  public void testDatasetIds() {
-    val client = new EGAClient();
-    client.login();
+  public void testGetDatasetIds() throws Exception {
+    val client = new EGAFTPClient();
 
-    val datasetIds = client.getDatasetIds();
-    assertThat(datasetIds).isNotEmpty();
+    val dataSetIds = client.getDatasetIds();
+    log.info("dataSetIds: {}", dataSetIds);
 
-    int i = 0;
-    for (val datasetId : datasetIds) {
-      log.info("{}. {}", ++i, datasetId);
+    for (val dataSetId : dataSetIds) {
+      log.info("Reading: {}", dataSetId);
+      val url = client.getMetadataURL(dataSetId);
+      log.info("URL: {}", url);
+
+      val reader = new EGAMetadataArchiveReader();
+      val archive = reader.read(dataSetId, url);
+      log.info("Dataset: {}", archive);
     }
   }
 

@@ -33,7 +33,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.icgc.dcc.common.core.io.ForwardingInputStream;
 import org.icgc.dcc.common.ega.model.EGAMetadataArchive;
-import org.icgc.dcc.common.ega.utils.XMLObjectNodeReader;
+import org.icgc.dcc.common.ega.util.XMLObjectNodeReader;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -74,8 +74,13 @@ public class EGAMetadataArchiveReader {
 
   @SneakyThrows
   public EGAMetadataArchive read(@NonNull String datasetId) {
+    return read(datasetId, getArchiveUrl(datasetId));
+  }
+
+  @SneakyThrows
+  public EGAMetadataArchive read(String datasetId, URL url) {
     @Cleanup
-    val tarball = readTarball(datasetId);
+    val tarball = readTarball(url, datasetId);
 
     TarArchiveEntry entry = null;
     val archive = new EGAMetadataArchive(datasetId);
@@ -129,9 +134,8 @@ public class EGAMetadataArchiveReader {
     return MAPPING_READER.read(mappingId, new ForwardingInputStream(inputStream, false));
   }
 
-  private TarArchiveInputStream readTarball(String datasetId) throws IOException {
+  private TarArchiveInputStream readTarball(URL url, String datasetId) throws IOException {
     int attempts = 0;
-    val url = getArchiveUrl(datasetId);
     while (++attempts <= MAX_ATTEMPTS) {
       try {
         val connection = url.openConnection();
@@ -186,8 +190,7 @@ public class EGAMetadataArchiveReader {
   }
 
   private static boolean isMappingFile(TarArchiveEntry entry) {
-    return entry.isFile() && entry.getName().toLowerCase().endsWith(".map")
-        && !entry.getName().contains("Run_Sample_meta_info"); // They changed the delimiter here so excluding for now.
+    return entry.isFile() && entry.getName().toLowerCase().endsWith(".map");
   }
 
   private static boolean isStudy(TarArchiveEntry entry) {

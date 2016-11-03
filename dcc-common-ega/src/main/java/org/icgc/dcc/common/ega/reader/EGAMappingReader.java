@@ -46,14 +46,19 @@ public class EGAMappingReader {
   @SneakyThrows
   public List<ObjectNode> read(@NonNull String mappingId, @NonNull InputStream inputStream) {
     val lines = readLines(inputStream);
-
+    val headers = getHeaders(mappingId);
     try {
-      return lines.map(TAB::splitToList)
-          .map(toObjectNode(getHeaders(mappingId)))
+      return lines.map(line -> parseLine(headers, line))
+          .filter(fields -> fields.size() == headers.size()) // Run_Sample_meta_info can be formatted multiple ways
+          .map(toObjectNode(headers))
           .collect(toImmutableList());
     } catch (Exception e) {
       throw new IllegalStateException("Error processing " + mappingId, e);
     }
+  }
+
+  private List<String> parseLine(List<String> headers, String line) {
+    return TAB.splitToList(line);
   }
 
   @SuppressWarnings("resource")

@@ -26,8 +26,10 @@ import static org.icgc.dcc.common.core.json.Jackson.DEFAULT;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import org.icgc.dcc.common.ega.client.EGAClient;
+import org.icgc.dcc.common.ega.client.EGAFTPClient;
 import org.icgc.dcc.common.ega.core.EGAProjectDatasets;
 import org.icgc.dcc.common.ega.model.EGAMetadata;
 import org.icgc.dcc.common.ega.model.EGAMetadataArchive;
@@ -41,6 +43,7 @@ import com.google.common.collect.Lists;
 
 import lombok.Cleanup;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +54,7 @@ import lombok.extern.slf4j.Slf4j;
  * @see https://www.ebi.ac.uk/ega/dacs/EGAC00001000010
  */
 @Slf4j
+@RequiredArgsConstructor
 public class EGAMetadataWriter {
 
   /**
@@ -59,14 +63,23 @@ public class EGAMetadataWriter {
   private static final ObjectMapper MAPPER = DEFAULT.configure(AUTO_CLOSE_TARGET, false);
   private static final EGAMetadataArchiveReader ARCHIVE_READER = new EGAMetadataArchiveReader();
 
+  /**
+   * Dependencies.
+   */
+  private final EGAClient client;
+  private final EGAFTPClient ftp;
+
+  public EGAMetadataWriter() {
+    this(createEGAClient(), createEGAFTPClient());
+  }
+
   @SneakyThrows
   public void write(@NonNull File file) {
     val watch = Stopwatch.createStarted();
 
     @Cleanup
     val writer = new FileWriter(file);
-    val client = createEGAClient();
-    val datasetIds = client.getDatasetIds();
+    val datasetIds = getDatasetIds();
     val effectiveDatasetIds = newTreeSet(datasetIds);
     if (effectiveDatasetIds.size() != datasetIds.size()) {
       log.warn("Data sets include duplicates: {}", datasetIds);
@@ -98,9 +111,22 @@ public class EGAMetadataWriter {
     checkState(errors.isEmpty(), "Error writing %s: %s", file, errors);
   }
 
+  protected List<String> getDatasetIds() {
+    return client.getDatasetIds();
+  }
+
+  protected EGAMetadataArchive getMetadataArchive(String datasetId) {
+    if (ftp.hasDatasetId(datasetId)) {
+      val url = ftp.getMetadataURL(datasetId);
+      return ARCHIVE_READER.read(datasetId, url);
+    } else {
+      return ARCHIVE_READER.read(datasetId);
+    }
+  }
+
   private void writeDataset(String datasetId, EGAClient client, FileWriter writer)
       throws IOException, JsonGenerationException, JsonMappingException {
-    val metadata = readDataset(datasetId);
+    val metadata = getMetadataArchive(datasetId);
     val files = client.getDatasetFiles(datasetId);
     val projectCodes = EGAProjectDatasets.getDatasetProjectCodes(datasetId);
 
@@ -108,18 +134,15 @@ public class EGAMetadataWriter {
     MAPPER.writeValue(writer, record);
   }
 
-  private EGAMetadataArchive readDataset(String datasetId) {
-    return ARCHIVE_READER.read(datasetId);
-  }
-
-  private EGAClient createEGAClient() {
-    val userName = System.getProperty("ega.username");
-    val password = System.getProperty("ega.password");
-    val client = new EGAClient(userName, password);
-
+  private static EGAClient createEGAClient() {
+    val client = new EGAClient();
     client.login();
 
     return client;
+  }
+
+  private static EGAFTPClient createEGAFTPClient() {
+    return new EGAFTPClient();
   }
 
 }
