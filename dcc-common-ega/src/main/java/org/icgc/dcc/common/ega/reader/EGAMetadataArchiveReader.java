@@ -186,7 +186,8 @@ public class EGAMetadataArchiveReader {
   }
 
   private static boolean isMappingFile(TarArchiveEntry entry) {
-    return entry.isFile() && entry.getName().toLowerCase().endsWith(".map");
+    return entry.isFile() && entry.getName().toLowerCase().endsWith(".map")
+        && !entry.getName().contains("Run_Sample_meta_info"); // They changed the delimiter here so excluding for now.
   }
 
   private static boolean isStudy(TarArchiveEntry entry) {
