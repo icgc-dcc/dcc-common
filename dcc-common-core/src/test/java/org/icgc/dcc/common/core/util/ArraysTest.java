@@ -15,67 +15,24 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util.function;
+package org.icgc.dcc.common.core.util;
 
-import static java.lang.Boolean.TRUE;
-import static lombok.AccessLevel.PRIVATE;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import org.junit.Test;
 
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
+public class ArraysTest {
 
-@NoArgsConstructor(access = PRIVATE)
-public final class Predicates {
-
-  public static <T> Predicate<T> isNotNull() {
-    return x -> x != null;
+  @Test
+  public void testFindExists() throws Exception {
+    Integer result = Arrays.find(x -> x != 1, null, 1, 2, 3, 4);
+    assertThat(result).isEqualTo(2);
   }
 
-  public static <T> Predicate<T> isNull() {
-    return x -> x == null;
-  }
-
-  /**
-   * Logically negates a given predicate.
-   */
-  public static <T> Predicate<T> not(@NonNull Predicate<T> predicate) {
-    return predicate.negate();
-  }
-
-  /**
-   * Logically {@code and}s a given set of predicate.
-   */
-  @SafeVarargs
-  public static <T> Predicate<T> and(@NonNull Predicate<T>... predicates) {
-    return Stream.of(predicates).reduce(Predicate::and).orElse(x -> true);
-  }
-
-  /**
-   * Logically {@code or}s given set of predicate.
-   */
-  @SafeVarargs
-  public static <T> Predicate<T> or(@NonNull Predicate<T>... predicates) {
-    return Stream.of(predicates).reduce(Predicate::or).orElse(x -> false);
-  }
-
-  /**
-   * Returns a predicate that can be used with Java streams to filter unique objects based on a given
-   * {@code keyExtractor}.
-   * <p>
-   * Example:
-   * 
-   * <code>
-   *  list.stream().filter(distinctByKey(Entity::getId)).collect(toImmutableLst());
-   * </code>
-   */
-  public static <T> Predicate<T> distinctByKey(@NonNull Function<? super T, Object> keyExtractor) {
-    val seen = new ConcurrentHashMap<Object, Boolean>();
-    return t -> seen.putIfAbsent(keyExtractor.apply(t), TRUE) == null;
+  @Test
+  public void testFindDoesNotExist() throws Exception {
+    Integer result = Arrays.find(x -> x == 5, null, 1, 2, 3, 4);
+    assertThat(result).isNull();
   }
 
 }

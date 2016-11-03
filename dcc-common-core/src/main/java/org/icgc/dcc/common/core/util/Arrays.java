@@ -15,67 +15,22 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.core.util.function;
+package org.icgc.dcc.common.core.util;
 
-import static java.lang.Boolean.TRUE;
 import static lombok.AccessLevel.PRIVATE;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
 
 @NoArgsConstructor(access = PRIVATE)
-public final class Predicates {
+public final class Arrays {
 
-  public static <T> Predicate<T> isNotNull() {
-    return x -> x != null;
-  }
-
-  public static <T> Predicate<T> isNull() {
-    return x -> x == null;
-  }
-
-  /**
-   * Logically negates a given predicate.
-   */
-  public static <T> Predicate<T> not(@NonNull Predicate<T> predicate) {
-    return predicate.negate();
-  }
-
-  /**
-   * Logically {@code and}s a given set of predicate.
-   */
   @SafeVarargs
-  public static <T> Predicate<T> and(@NonNull Predicate<T>... predicates) {
-    return Stream.of(predicates).reduce(Predicate::and).orElse(x -> true);
-  }
-
-  /**
-   * Logically {@code or}s given set of predicate.
-   */
-  @SafeVarargs
-  public static <T> Predicate<T> or(@NonNull Predicate<T>... predicates) {
-    return Stream.of(predicates).reduce(Predicate::or).orElse(x -> false);
-  }
-
-  /**
-   * Returns a predicate that can be used with Java streams to filter unique objects based on a given
-   * {@code keyExtractor}.
-   * <p>
-   * Example:
-   * 
-   * <code>
-   *  list.stream().filter(distinctByKey(Entity::getId)).collect(toImmutableLst());
-   * </code>
-   */
-  public static <T> Predicate<T> distinctByKey(@NonNull Function<? super T, Object> keyExtractor) {
-    val seen = new ConcurrentHashMap<Object, Boolean>();
-    return t -> seen.putIfAbsent(keyExtractor.apply(t), TRUE) == null;
+  public static <T> T find(Predicate<T> predicate, T defaultValue, T... values) {
+    return Iterables.find(ImmutableList.copyOf(values), predicate, defaultValue);
   }
 
 }

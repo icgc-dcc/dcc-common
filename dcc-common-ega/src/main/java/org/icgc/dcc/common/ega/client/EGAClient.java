@@ -38,7 +38,6 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -66,7 +65,6 @@ import lombok.extern.slf4j.Slf4j;
  * @see https://www.ebi.ac.uk/ega/about/your_EGA_account/download_streaming_client#API_overview
  */
 @Slf4j
-@NotThreadSafe
 @RequiredArgsConstructor
 public class EGAClient {
 
@@ -152,6 +150,9 @@ public class EGAClient {
         return;
       } catch (IllegalStateException e) {
         log.warn("Invalid login after {} attempt(s): {}", attempts, e.getMessage());
+      } catch (Exception e) {
+        log.error("Error logging in: {}", e.getMessage());
+        throw e;
       }
     }
 
