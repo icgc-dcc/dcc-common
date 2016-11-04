@@ -31,6 +31,7 @@ public class EGAMetadata {
 
   String datasetId;
   ObjectNode dataset;
+
   List<String> projectCodes;
   List<ObjectNode> files;
 

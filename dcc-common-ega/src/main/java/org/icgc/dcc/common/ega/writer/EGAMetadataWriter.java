@@ -118,7 +118,7 @@ public class EGAMetadataWriter {
   }
 
   private ObjectNode getDataset(String datasetId) {
-    return (ObjectNode) new EGACatalogClient().getDataset(datasetId).getResponse().getResult().path(0);
+    return (ObjectNode) new EGACatalogClient().getDataset(datasetId);
   }
 
   private EGAMetadataArchive getMetadataArchive(String datasetId) {

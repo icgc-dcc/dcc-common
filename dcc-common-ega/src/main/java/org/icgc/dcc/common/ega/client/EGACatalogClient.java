@@ -17,25 +17,32 @@
  */
 package org.icgc.dcc.common.ega.client;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.icgc.dcc.common.core.json.Jackson.DEFAULT;
 
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.Value;
 import lombok.val;
 
 /**
- * EGA catalog API client for https://egatest.crg.eu/metadata/v2
+ * EGA catalog API client.
+ * <p>
+ * The catalog API is currently in test.
  */
 @RequiredArgsConstructor
 public class EGACatalogClient {
@@ -43,11 +50,15 @@ public class EGACatalogClient {
   /**
    * Constants.
    */
-  // https://ega.crg.eu/requesterportal/v2/
+  @SuppressWarnings("unused")
+  private static final String ALTERNATE_API_URL = "https://ega.crg.eu/requesterportal/v2/";
   private static final String DEFAULT_API_URL = "https://egatest.crg.eu/metadata/v2/";
 
-  private static final int READ_TIMEOUT = (int) SECONDS.toMillis(10);
+  private static final int READ_TIMEOUT = (int) SECONDS.toMillis(30);
 
+  /**
+   * Configuration
+   */
   @NonNull
   private final String url;
 
@@ -55,35 +66,78 @@ public class EGACatalogClient {
     this(DEFAULT_API_URL);
   }
 
-  public CatalogResponse getDAC(@NonNull String dacId) {
-    return get("dacs/" + dacId);
+  public ObjectNode getDAC(@NonNull String dacId) {
+    return get("dacs", dacId);
   }
 
-  public CatalogResponse getDataset(@NonNull String datasetId) {
-    return get("datasets/" + datasetId);
+  public ObjectNode getDataset(@NonNull String datasetId) {
+    return get("datasets", datasetId);
   }
 
-  public CatalogResponse getFilesByDataset(@NonNull String datasetId) {
-    return get("files?queryBy=dataset&queryId=" + datasetId);
+  public ArrayNode getFilesByDataset(@NonNull String datasetId) {
+    return list("files", query().limit(0).queryBy("dataset").queryId(datasetId));
   }
 
-  private CatalogResponse get(String path) {
-    val connection = openConnection(path);
-    return readResponse(connection);
+  private ObjectNode get(String resource, String id) {
+    return (ObjectNode) read(resource + "/" + id).path(0);
+  }
+
+  private ArrayNode list(String path, Query.QueryBuilder builder) {
+    val query = builder.build();
+    val map = Maps.<String, Object> newLinkedHashMap();
+    if (query.getLimit() != null) {
+      map.put("limit", query.getLimit());
+    }
+    if (query.getSkip() != null) {
+      map.put("skip", query.getSkip());
+    }
+    if (query.getQueryBy() != null) {
+      map.put("queryBy", query.getQueryBy());
+    }
+    if (query.getQueryId() != null) {
+      map.put("queryId", query.getQueryId());
+    }
+    val params = Joiner.on('&').withKeyValueSeparator("=").join(map);
+
+    val parts = Sets.<String> newLinkedHashSet();
+    parts.add(path);
+    if (!isNullOrEmpty(params)) {
+      parts.add(params);
+    }
+    val url = Joiner.on('?').join(parts);
+
+    return read(url);
   }
 
   @SneakyThrows
-  private HttpURLConnection openConnection(String path) {
+  private ArrayNode read(String path) {
     val connection = (HttpsURLConnection) new URL(url + path).openConnection();
     connection.setReadTimeout(READ_TIMEOUT);
     connection.setConnectTimeout(READ_TIMEOUT);
+    val response = DEFAULT.readValue(connection.getInputStream(), CatalogResponse.class);
 
-    return connection;
+    val header = response.getHeader();
+
+    if (!"200".equals(header.getCode())) {
+      throw new IllegalStateException("Error getting " + path + ": " + header);
+    }
+
+    return response.getResponse().getResult();
   }
 
-  @SneakyThrows
-  private static CatalogResponse readResponse(URLConnection connection) {
-    return DEFAULT.readValue(connection.getInputStream(), CatalogResponse.class);
+  private static Query.QueryBuilder query() {
+    return Query.builder();
+  }
+
+  @Value
+  @Builder
+  public static class Query {
+
+    Integer skip;
+    Integer limit;
+    String queryBy;
+    String queryId;
+
   }
 
   @Data
