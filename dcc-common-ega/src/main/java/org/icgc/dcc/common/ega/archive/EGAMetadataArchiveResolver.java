@@ -15,68 +15,67 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.reader;
+package org.icgc.dcc.common.ega.archive;
 
-import static com.google.common.collect.Sets.newTreeSet;
-import static org.icgc.dcc.common.ega.core.EGAProjectDatasets.getDatasetProjectCodes;
+import java.net.URL;
 
-import java.util.stream.Stream;
-
-import org.icgc.dcc.common.ega.archive.EGAMetadataArchiveResolver;
-import org.icgc.dcc.common.ega.client.EGAClient;
-import org.icgc.dcc.common.ega.model.EGAMetadata;
+import org.icgc.dcc.common.ega.client.EGAFTPClient;
 import org.icgc.dcc.common.ega.model.EGAMetadataArchive;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.val;
-import lombok.extern.slf4j.Slf4j;
 
-/**
- * Lazily reads all metadata for ICGC associated projects into a stream.
- */
-@Slf4j
 @RequiredArgsConstructor
-public class EGAMetadataReader {
+public class EGAMetadataArchiveResolver {
+
+  /**
+   * Constants.
+   */
+  public static final String DEFAULT_API_URL = "http://ega.ebi.ac.uk/ega/rest/download/v2";
+  private static final EGAMetadataArchiveReader ARCHIVE_READER = new EGAMetadataArchiveReader();
+
+  /**
+   * Configuration.
+   */
+  @NonNull
+  private final String apiUrl;
 
   /**
    * Dependencies.
    */
   @NonNull
-  private final EGAClient client;
-  @NonNull
-  private final EGAMetadataArchiveResolver archiveResolver;
+  private final EGAFTPClient ftp;
 
-  public Stream<EGAMetadata> readMetadata() {
-    val datasetIds = client.getDatasetIds();
-    val effectiveDatasetIds = newTreeSet(datasetIds);
-    if (effectiveDatasetIds.size() != datasetIds.size()) {
-      log.warn("Data sets include duplicates: {}", datasetIds);
+  public EGAMetadataArchiveResolver() {
+    this(DEFAULT_API_URL);
+  }
+
+  public EGAMetadataArchiveResolver(EGAFTPClient ftp) {
+    this(DEFAULT_API_URL, ftp);
+  }
+
+  public EGAMetadataArchiveResolver(String apiUrl) {
+    this(apiUrl, new EGAFTPClient());
+  }
+
+  public EGAMetadataArchive resolveArchive(@NonNull String datasetId) {
+    val url = resolveUrl(datasetId);
+    return ARCHIVE_READER.read(datasetId, url);
+  }
+
+  protected URL resolveUrl(String datasetId) {
+    if (ftp.hasDatasetId(datasetId)) {
+      return ftp.getMetadataURL(datasetId);
+    } else {
+      return getArchiveUrl(datasetId);
     }
-
-    return effectiveDatasetIds.stream().map(this::readDataset).filter(this::isNonNull);
   }
 
-  public EGAMetadata readDataset(String datasetId) {
-    try {
-      val metadata = readArchive(datasetId);
-      val files = client.getDatasetFiles(datasetId);
-      val projectCodes = getDatasetProjectCodes(datasetId);
-
-      return new EGAMetadata(datasetId, null, projectCodes, files, metadata);
-    } catch (Exception e) {
-      log.error("Exception reading dataset " + datasetId, e);
-    }
-
-    return null;
-  }
-
-  private EGAMetadataArchive readArchive(String datasetId) {
-    return archiveResolver.resolveArchive(datasetId);
-  }
-
-  private boolean isNonNull(EGAMetadata metadata) {
-    return metadata != null;
+  @SneakyThrows
+  private URL getArchiveUrl(String datasetId) {
+    return new URL(apiUrl + "/metadata/" + datasetId);
   }
 
 }

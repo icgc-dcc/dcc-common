@@ -15,25 +15,27 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.model;
+package org.icgc.dcc.common.ega.archive;
 
-import java.util.List;
+import org.icgc.dcc.common.ega.archive.EGAMetadataArchiveReader;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
-import lombok.Value;
+@Slf4j
+@Ignore("For development only")
+public class EGAMetadataArchiveReaderTest {
 
-/**
- * Aggregate metadata from various EGA files.
- */
-@Value
-public class EGAMetadata {
+  @Test
+  public void testRead() {
+    val reader = new EGAMetadataArchiveReader();
 
-  String datasetId;
-  ObjectNode dataset;
-  List<String> projectCodes;
-  List<ObjectNode> files;
+    val datasetId = "EGAD00001001595";
+    val metadata = reader.read(datasetId);
 
-  EGAMetadataArchive metadata;
+    log.info("Finished: {}", metadata);
+  }
 
 }

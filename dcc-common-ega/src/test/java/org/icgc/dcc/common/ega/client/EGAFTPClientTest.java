@@ -17,7 +17,7 @@
  */
 package org.icgc.dcc.common.ega.client;
 
-import org.icgc.dcc.common.ega.reader.EGAMetadataArchiveReader;
+import org.icgc.dcc.common.ega.archive.EGAMetadataArchiveReader;
 import org.junit.Ignore;
 import org.junit.Test;
 

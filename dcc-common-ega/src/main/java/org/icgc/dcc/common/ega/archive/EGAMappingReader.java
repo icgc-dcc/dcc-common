@@ -15,10 +15,11 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.reader;
+package org.icgc.dcc.common.ega.archive;
 
 import static com.google.common.base.Preconditions.checkState;
 import static org.icgc.dcc.common.core.json.Jackson.DEFAULT;
+import static org.icgc.dcc.common.core.util.Splitters.SEMICOLON;
 import static org.icgc.dcc.common.core.util.Splitters.TAB;
 import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableList;
 
@@ -26,12 +27,12 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.icgc.dcc.common.core.io.ForwardingInputStream;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 
 import lombok.NonNull;
@@ -43,22 +44,27 @@ import lombok.val;
  */
 public class EGAMappingReader {
 
+  /**
+   * Constants.
+   */
+  private static final Splitter EQUALS = Splitter.on('=').trimResults().omitEmptyStrings();
+
   @SneakyThrows
   public List<ObjectNode> read(@NonNull String mappingId, @NonNull InputStream inputStream) {
-    val lines = readLines(inputStream);
-    val headers = getHeaders(mappingId);
     try {
-      return lines.map(line -> parseLine(headers, line))
-          .filter(fields -> fields.size() == headers.size()) // Run_Sample_meta_info can be formatted multiple ways
-          .map(toObjectNode(headers))
-          .collect(toImmutableList());
+      val lines = readLines(inputStream);
+      if (isSemiColonDelimited(mappingId)) {
+        return readSemiColonDelimited(lines);
+      } else {
+        return readTabDelimited(mappingId, lines);
+      }
     } catch (Exception e) {
       throw new IllegalStateException("Error processing " + mappingId, e);
     }
   }
 
-  private List<String> parseLine(List<String> headers, String line) {
-    return TAB.splitToList(line);
+  private static boolean isSemiColonDelimited(String mappingId) {
+    return mappingId.equals("Run_Sample_meta_info");
   }
 
   @SuppressWarnings("resource")
@@ -66,29 +72,45 @@ public class EGAMappingReader {
     return new BufferedReader(new InputStreamReader(new ForwardingInputStream(inputStream, false))).lines();
   }
 
-  private static Function<List<String>, ObjectNode> toObjectNode(List<String> headers) {
-    return fields -> {
-      ObjectNode record = DEFAULT.createObjectNode();
-      checkState(headers.size() == fields.size(), "Header size (%s) not equal to fields size (%s) for mapping",
-          headers.size(), fields.size());
+  private static List<ObjectNode> readSemiColonDelimited(Stream<String> lines) {
+    return lines
+        .map(SEMICOLON.trimResults().omitEmptyStrings()::splitToList)
+        .map(fields -> toObjectNode(fields))
+        .collect(toImmutableList());
+  }
 
-      for (int i = 0; i < headers.size(); i++) {
-        record.put(headers.get(i), fields.get(i));
-      }
+  private static List<ObjectNode> readTabDelimited(String mappingId, Stream<String> lines) {
+    val headers = getHeaders(mappingId);
 
-      return record;
-    };
+    return lines.map(TAB.trimResults()::splitToList)
+        .map(fields -> toObjectNode(headers, fields))
+        .collect(toImmutableList());
+  }
+
+  private static ObjectNode toObjectNode(List<String> fields) {
+    val record = DEFAULT.createObjectNode();
+    for (val field : fields) {
+      val parts = EQUALS.splitToList(field);
+      record.put(parts.get(0), parts.get(1));
+    }
+
+    return record;
+  }
+
+  private static ObjectNode toObjectNode(List<String> headers, List<String> fields) {
+    val record = DEFAULT.createObjectNode();
+    checkState(headers.size() == fields.size(), "Header size (%s) not equal to fields size (%s) for mapping",
+        headers.size(), fields.size());
+
+    for (int i = 0; i < headers.size(); i++) {
+      record.put(headers.get(i), fields.get(i));
+    }
+
+    return record;
   }
 
   private static List<String> getHeaders(String mappingId) {
-    if (mappingId.equals("Run_Sample_meta_info")) {
-      return ImmutableList.of(
-          "EGA_SAMPLE_ID",
-          "SAMPLE_ALIAS",
-          "BIOSAMPLE_ID",
-          "SAMPLE_TITLE",
-          "ATTRIBUTES");
-    } else if (mappingId.equals("Analysis_Sample_meta_info")) {
+    if (mappingId.equals("Analysis_Sample_meta_info")) {
       return ImmutableList.of(
           "EGA_SAMPLE_ID",
           "SAMPLE_ALIAS",

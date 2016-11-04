@@ -15,7 +15,7 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.reader;
+package org.icgc.dcc.common.ega.archive;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.icgc.dcc.common.core.util.Formats.formatCount;
@@ -136,6 +136,7 @@ public class EGAMetadataArchiveReader {
 
   private TarArchiveInputStream readTarball(URL url, String datasetId) throws IOException {
     int attempts = 0;
+    String lastError = null;
     while (++attempts <= MAX_ATTEMPTS) {
       try {
         val connection = url.openConnection();
@@ -145,15 +146,17 @@ public class EGAMetadataArchiveReader {
         val gzip = new GZIPInputStream(connection.getInputStream());
         return new TarArchiveInputStream(gzip);
       } catch (SocketTimeoutException e) {
-        log.warn("*** Attempt [{}/{}] failed: Socket timeout for {} after {} attempt(s)",
+        lastError = String.format("*** Attempt [%s/%s] failed: Socket timeout for %s after %s attempt(s)",
             attempts, MAX_ATTEMPTS, datasetId, attempts);
+        log.warn(lastError);
       } catch (IOException e) {
-        log.warn("*** Attempt [{}/{}] failed: Error reading tarball for dataset {} from {}: {}",
+        lastError = String.format("*** Attempt [%s/%s] failed: Error reading tarball for dataset %s from %s: %s",
             attempts, MAX_ATTEMPTS, datasetId, url, e.getMessage());
+        log.warn(lastError);
       }
     }
 
-    throw new IllegalStateException("Could not read " + datasetId + " from " + url);
+    throw new IllegalStateException("Could not read " + datasetId + " from " + url + ": " + lastError);
   }
 
   @SneakyThrows

@@ -15,27 +15,21 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.reader;
+package org.icgc.dcc.common.ega.core;
 
-import org.icgc.dcc.common.ega.reader.EGAMetadataArchiveReader;
-import org.junit.Ignore;
-import org.junit.Test;
+import static lombok.AccessLevel.PRIVATE;
 
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
+import lombok.NoArgsConstructor;
 
-@Slf4j
-@Ignore("For development only")
-public class EGAMetadataArchiveReaderTest {
+/**
+ * Data Access Compliance utilities.
+ */
+@NoArgsConstructor(access = PRIVATE)
+public final class EGADACs {
 
-  @Test
-  public void testRead() {
-    val reader = new EGAMetadataArchiveReader();
-
-    val datasetId = "EGAD00001001595";
-    val metadata = reader.read(datasetId);
-
-    log.info("Finished: {}", metadata);
-  }
+  /**
+   * ICGC DAC
+   */
+  public static final String ICGC_DAC = "EGAC00001000010";
 
 }

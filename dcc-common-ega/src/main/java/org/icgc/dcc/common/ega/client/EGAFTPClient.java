@@ -54,6 +54,9 @@ public class EGAFTPClient {
    */
   private final String url;
 
+  /**
+   * State.
+   */
   @Accessors(fluent = true)
   @Getter(lazy = true, value = PRIVATE)
   private final List<String> datasetIds = getListing().stream()
@@ -107,9 +110,7 @@ public class EGAFTPClient {
 
     String line = null;
     while ((line = reader.readLine()) != null) {
-      // Skip relative dirs
-      val relative = line.equals(".") || line.equals("..");
-      if (relative) {
+      if (isRelativeDir(line)) {
         continue;
       }
 
@@ -123,6 +124,10 @@ public class EGAFTPClient {
   private URL getURL(String fileName) {
     val fileUrl = String.format("%s/%s", url, fileName);
     return new URL(fileUrl);
+  }
+
+  private static boolean isRelativeDir(String line) {
+    return line.equals(".") || line.equals("..");
   }
 
 }

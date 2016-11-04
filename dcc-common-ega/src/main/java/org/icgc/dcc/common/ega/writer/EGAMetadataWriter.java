@@ -28,16 +28,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import org.icgc.dcc.common.ega.archive.EGAMetadataArchiveResolver;
+import org.icgc.dcc.common.ega.client.EGACatalogClient;
 import org.icgc.dcc.common.ega.client.EGAClient;
-import org.icgc.dcc.common.ega.client.EGAFTPClient;
 import org.icgc.dcc.common.ega.core.EGAProjectDatasets;
 import org.icgc.dcc.common.ega.model.EGAMetadata;
 import org.icgc.dcc.common.ega.model.EGAMetadataArchive;
-import org.icgc.dcc.common.ega.reader.EGAMetadataArchiveReader;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
@@ -61,16 +62,15 @@ public class EGAMetadataWriter {
    * Constants.
    */
   private static final ObjectMapper MAPPER = DEFAULT.configure(AUTO_CLOSE_TARGET, false);
-  private static final EGAMetadataArchiveReader ARCHIVE_READER = new EGAMetadataArchiveReader();
 
   /**
    * Dependencies.
    */
   private final EGAClient client;
-  private final EGAFTPClient ftp;
+  private final EGAMetadataArchiveResolver archiveResolver;
 
   public EGAMetadataWriter() {
-    this(createEGAClient(), createEGAFTPClient());
+    this(createEGAClient(), new EGAMetadataArchiveResolver());
   }
 
   @SneakyThrows
@@ -104,6 +104,8 @@ public class EGAMetadataWriter {
     log.info("Finished writing {} data sets in {} with {} client timeouts, {} client reconnects and {} client errors",
         i, watch, client.getTimeoutCount(), client.getReconnectCount(), client.getErrorCount());
 
+    log.info("\n\n");
+    log.info("Errors:");
     for (val error : errors) {
       log.error("- {}", error.getMessage());
     }
@@ -111,27 +113,34 @@ public class EGAMetadataWriter {
     checkState(errors.isEmpty(), "Error writing %s: %s", file, errors);
   }
 
-  protected List<String> getDatasetIds() {
+  private List<String> getDatasetIds() {
     return client.getDatasetIds();
   }
 
-  protected EGAMetadataArchive getMetadataArchive(String datasetId) {
-    if (ftp.hasDatasetId(datasetId)) {
-      val url = ftp.getMetadataURL(datasetId);
-      return ARCHIVE_READER.read(datasetId, url);
-    } else {
-      return ARCHIVE_READER.read(datasetId);
-    }
+  private ObjectNode getDataset(String datasetId) {
+    return (ObjectNode) new EGACatalogClient().getDataset(datasetId).getResponse().getResult().path(0);
+  }
+
+  private EGAMetadataArchive getMetadataArchive(String datasetId) {
+    return archiveResolver.resolveArchive(datasetId);
   }
 
   private void writeDataset(String datasetId, EGAClient client, FileWriter writer)
       throws IOException, JsonGenerationException, JsonMappingException {
-    val metadata = getMetadataArchive(datasetId);
-    val files = client.getDatasetFiles(datasetId);
     val projectCodes = EGAProjectDatasets.getDatasetProjectCodes(datasetId);
+    val files = client.getDatasetFiles(datasetId);
 
-    val record = new EGAMetadata(datasetId, projectCodes, files, metadata);
-    MAPPER.writeValue(writer, record);
+    try {
+      val metadata = getMetadataArchive(datasetId);
+      val dataset = getDataset(datasetId);
+      val record = new EGAMetadata(datasetId, dataset, projectCodes, files, metadata);
+      MAPPER.writeValue(writer, record);
+    } catch (Exception e) {
+      throw new RuntimeException(
+          "Could not read metadata archive for data set " + datasetId + " associated with project(s) " + projectCodes
+              + ": " + e.getMessage(),
+          e);
+    }
   }
 
   private static EGAClient createEGAClient() {
@@ -139,10 +148,6 @@ public class EGAMetadataWriter {
     client.login();
 
     return client;
-  }
-
-  private static EGAFTPClient createEGAFTPClient() {
-    return new EGAFTPClient();
   }
 
 }

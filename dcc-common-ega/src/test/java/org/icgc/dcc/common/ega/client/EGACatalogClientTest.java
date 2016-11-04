@@ -15,68 +15,38 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.reader;
+package org.icgc.dcc.common.ega.client;
 
-import static com.google.common.collect.Sets.newTreeSet;
-import static org.icgc.dcc.common.ega.core.EGAProjectDatasets.getDatasetProjectCodes;
+import static org.icgc.dcc.common.ega.core.EGADACs.ICGC_DAC;
 
-import java.util.stream.Stream;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import org.icgc.dcc.common.ega.archive.EGAMetadataArchiveResolver;
-import org.icgc.dcc.common.ega.client.EGAClient;
-import org.icgc.dcc.common.ega.model.EGAMetadata;
-import org.icgc.dcc.common.ega.model.EGAMetadataArchive;
-
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Lazily reads all metadata for ICGC associated projects into a stream.
- */
 @Slf4j
-@RequiredArgsConstructor
-public class EGAMetadataReader {
+@Ignore("For development only")
+public class EGACatalogClientTest {
 
-  /**
-   * Dependencies.
-   */
-  @NonNull
-  private final EGAClient client;
-  @NonNull
-  private final EGAMetadataArchiveResolver archiveResolver;
+  EGACatalogClient client = new EGACatalogClient();
 
-  public Stream<EGAMetadata> readMetadata() {
-    val datasetIds = client.getDatasetIds();
-    val effectiveDatasetIds = newTreeSet(datasetIds);
-    if (effectiveDatasetIds.size() != datasetIds.size()) {
-      log.warn("Data sets include duplicates: {}", datasetIds);
-    }
-
-    return effectiveDatasetIds.stream().map(this::readDataset).filter(this::isNonNull);
+  @Test
+  public void testGetDAC() throws Exception {
+    val response = client.getDAC(ICGC_DAC);
+    log.info("{}", response);
   }
 
-  public EGAMetadata readDataset(String datasetId) {
-    try {
-      val metadata = readArchive(datasetId);
-      val files = client.getDatasetFiles(datasetId);
-      val projectCodes = getDatasetProjectCodes(datasetId);
-
-      return new EGAMetadata(datasetId, null, projectCodes, files, metadata);
-    } catch (Exception e) {
-      log.error("Exception reading dataset " + datasetId, e);
-    }
-
-    return null;
+  @Test
+  public void testGetDataset() throws Exception {
+    val response = client.getDataset("EGAD00001000001");
+    log.info("{}", response);
   }
 
-  private EGAMetadataArchive readArchive(String datasetId) {
-    return archiveResolver.resolveArchive(datasetId);
-  }
-
-  private boolean isNonNull(EGAMetadata metadata) {
-    return metadata != null;
+  @Test
+  public void testGetFilesByDataset() throws Exception {
+    val response = client.getFilesByDataset("EGAD00001000001");
+    log.info("{}", response);
   }
 
 }
