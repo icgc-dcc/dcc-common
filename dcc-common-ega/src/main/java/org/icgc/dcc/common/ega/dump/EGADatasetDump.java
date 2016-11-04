@@ -15,7 +15,7 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.model;
+package org.icgc.dcc.common.ega.dump;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ import lombok.Value;
  * Aggregate metadata from various EGA files.
  */
 @Value
-public class EGADatasetMeta {
+public class EGADatasetDump {
 
   String datasetId;
   ObjectNode dataset;

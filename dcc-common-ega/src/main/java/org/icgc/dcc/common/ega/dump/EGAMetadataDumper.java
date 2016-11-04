@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 
 import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchiveResolver;
 import org.icgc.dcc.common.ega.client.EGAAPIClient;
-import org.icgc.dcc.common.ega.model.EGADatasetMeta;
 import org.icgc.dcc.common.ega.reader.EGADatasetMetaReader;
 
 import lombok.NonNull;
@@ -53,11 +52,11 @@ public class EGAMetadataDumper {
     write(file, datasets);
   }
 
-  protected Stream<EGADatasetMeta> read() {
+  protected Stream<EGADatasetDump> read() {
     return reader.readDatasets();
   }
 
-  protected void write(File file, Stream<EGADatasetMeta> datasets) {
+  protected void write(File file, Stream<EGADatasetDump> datasets) {
     new EGAMetadataDumpWriter().write(file, datasets);
   }
 

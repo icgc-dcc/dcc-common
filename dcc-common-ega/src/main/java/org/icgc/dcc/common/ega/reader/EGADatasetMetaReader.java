@@ -27,7 +27,7 @@ import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchive;
 import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchiveResolver;
 import org.icgc.dcc.common.ega.client.EGAAPIClient;
 import org.icgc.dcc.common.ega.client.EGACatalogClient;
-import org.icgc.dcc.common.ega.model.EGADatasetMeta;
+import org.icgc.dcc.common.ega.dump.EGADatasetDump;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -51,7 +51,7 @@ public class EGADatasetMetaReader {
   @NonNull
   private final EGADatasetMetaArchiveResolver archiveResolver;
 
-  public Stream<EGADatasetMeta> readDatasets() {
+  public Stream<EGADatasetDump> readDatasets() {
     val datasetIds = client.getDatasetIds();
     val effectiveDatasetIds = newTreeSet(datasetIds);
     if (effectiveDatasetIds.size() != datasetIds.size()) {
@@ -61,14 +61,14 @@ public class EGADatasetMetaReader {
     return effectiveDatasetIds.stream().map(this::readDataset).filter(isNotNull());
   }
 
-  public EGADatasetMeta readDataset(@NonNull String datasetId) {
+  public EGADatasetDump readDataset(@NonNull String datasetId) {
     try {
       val catalog = readCatalog(datasetId);
       val projectCodes = getDatasetProjectCodes(datasetId);
       val files = client.getDatasetFiles(datasetId);
       val archive = readArchive(datasetId);
 
-      return new EGADatasetMeta(datasetId, catalog, projectCodes, files, archive);
+      return new EGADatasetDump(datasetId, catalog, projectCodes, files, archive);
     } catch (Exception e) {
       log.error("Exception reading dataset " + datasetId, e);
     }

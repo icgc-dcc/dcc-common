@@ -24,9 +24,9 @@ import java.io.File;
 import java.util.stream.Stream;
 
 import org.icgc.dcc.common.core.util.stream.Streams;
-import org.icgc.dcc.common.ega.model.EGADatasetMeta;
 
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -43,10 +43,10 @@ public class EGAMetadataDumpReader {
   /**
    * Constants.
    */
-  private static final ObjectReader READER = DEFAULT.configure(AUTO_CLOSE_SOURCE, false).reader(EGADatasetMeta.class);
+  private static final ObjectReader READER = DEFAULT.configure(AUTO_CLOSE_SOURCE, false).reader(ObjectNode.class);
 
   @SneakyThrows
-  public Stream<EGADatasetMeta> read(@NonNull File file) {
+  public Stream<ObjectNode> read(@NonNull File file) {
     log.info("Reading: {}", file.getAbsolutePath());
     return Streams.stream(READER.readValues(file));
   }

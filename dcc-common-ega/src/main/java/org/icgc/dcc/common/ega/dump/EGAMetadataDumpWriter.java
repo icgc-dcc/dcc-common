@@ -25,8 +25,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.stream.Stream;
 
-import org.icgc.dcc.common.ega.model.EGADatasetMeta;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
@@ -53,7 +51,7 @@ public class EGAMetadataDumpWriter {
   private static final ObjectMapper MAPPER = DEFAULT.configure(AUTO_CLOSE_TARGET, false);
 
   @SneakyThrows
-  public void write(@NonNull File file, Stream<EGADatasetMeta> datasets) {
+  public void write(@NonNull File file, Stream<EGADatasetDump> datasets) {
     val watch = Stopwatch.createStarted();
 
     @Cleanup
@@ -85,7 +83,7 @@ public class EGAMetadataDumpWriter {
   }
 
   @SneakyThrows
-  private void writeDataset(EGADatasetMeta dataset, FileWriter writer) {
+  private void writeDataset(EGADatasetDump dataset, FileWriter writer) {
     try {
       MAPPER.writeValue(writer, dataset);
     } catch (Exception e) {
