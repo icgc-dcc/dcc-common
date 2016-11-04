@@ -20,12 +20,11 @@ package org.icgc.dcc.common.core.util;
 import static com.google.common.base.Joiner.on;
 import static com.google.common.collect.ImmutableSet.of;
 import static lombok.AccessLevel.PRIVATE;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 /**
  * Common joiners.
@@ -45,6 +44,7 @@ public final class Joiners {
   public static final Joiner COLON = on(Separators.COLON);
   public static final Joiner SEMICOLON = on(Separators.SEMICOLON);
   public static final Joiner HASHTAG = on(Separators.HASHTAG);
+  public static final Joiner PIPE = on(Separators.PIPE);
 
   // Combinations
   public static final Joiner DOUBLE_DASH = on(Separators.DOUBLE_DASH);
@@ -80,6 +80,8 @@ public final class Joiners {
       return Splitters.SEMICOLON;
     } else if (joiner.equals(HASHTAG)) {
       return Splitters.HASHTAG;
+    } else if (joiner.equals(PIPE)) {
+      return Splitters.PIPE;
     }
 
     // Combinations

@@ -18,7 +18,6 @@
 package org.icgc.dcc.common.core.util;
 
 import static com.google.common.collect.ImmutableSet.of;
-
 import lombok.NonNull;
 
 import com.google.common.base.Joiner;
@@ -44,6 +43,7 @@ public class Separators {
   public static final String SEMICOLON = ";";
   public static final String HASHTAG = "#";
   public static final String DOLLAR = "$";
+  public static final String PIPE = "|";
 
   // Combinations
   public static final String DOUBLE_DASH = DASH + DASH;
@@ -91,6 +91,8 @@ public class Separators {
       return (T) (splitter ? Splitters.SEMICOLON : Joiners.SEMICOLON);
     } else if (separator.equals(HASHTAG)) {
       return (T) (splitter ? Splitters.HASHTAG : Joiners.HASHTAG);
+    } else if (separator.equals(PIPE)) {
+      return (T) (splitter ? Splitters.PIPE : Joiners.PIPE);
     }
 
     // Combinations

@@ -19,7 +19,6 @@ package org.icgc.dcc.common.core.util;
 
 import static com.google.common.base.Splitter.on;
 import static com.google.common.collect.ImmutableSet.of;
-
 import lombok.NonNull;
 
 import com.google.common.base.Joiner;
@@ -41,6 +40,7 @@ public class Splitters {
   public static final Splitter COMMA = on(Separators.COMMA);
   public static final Splitter SEMICOLON = on(Separators.SEMICOLON);
   public static final Splitter HASHTAG = on(Separators.HASHTAG);
+  public static final Splitter PIPE = on(Separators.PIPE);
 
   // Combinations
   public static final Splitter DOUBLE_DASH = on(Separators.DOUBLE_DASH);
@@ -79,6 +79,8 @@ public class Splitters {
       return Joiners.DOT;
     } else if (splitter.equals(COLON)) {
       return Joiners.COLON;
+    } else if (splitter.equals(PIPE)) {
+      return Joiners.PIPE;
     }
 
     // Combinations
