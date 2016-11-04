@@ -29,7 +29,7 @@ import lombok.Value;
  * Metadata tarball in-memory representation.
  */
 @Value
-public class EGAMetadataArchive {
+public class EGADatasetMetaArchive {
 
   final String datasetId;
 

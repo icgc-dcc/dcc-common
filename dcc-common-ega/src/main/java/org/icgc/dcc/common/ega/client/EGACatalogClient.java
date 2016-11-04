@@ -118,8 +118,12 @@ public class EGACatalogClient {
 
     val header = response.getHeader();
 
+    if ("404".equals(header.getCode())) {
+      throw new EGAEntityNotFoundException("Not found %s: %s", path, header);
+    }
+
     if (!"200".equals(header.getCode())) {
-      throw new IllegalStateException("Error getting " + path + ": " + header);
+      throw new EGAClientException("Error getting %s: %s", path, header);
     }
 
     return response.getResponse().getResult();

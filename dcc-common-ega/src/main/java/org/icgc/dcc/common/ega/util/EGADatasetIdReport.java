@@ -15,34 +15,39 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.client;
+package org.icgc.dcc.common.ega.util;
 
-import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchiveReader;
-import org.junit.Ignore;
-import org.junit.Test;
+import static com.google.common.collect.Sets.newTreeSet;
+
+import org.icgc.dcc.common.ega.client.EGAAPIClient;
+import org.icgc.dcc.common.ega.client.EGAFTPClient;
+
+import com.google.common.collect.Sets;
 
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Ignore("For development only")
-public class EGAFTPClientTest {
+public class EGADatasetIdReport {
 
-  @Test
-  public void testGetDatasetIds() throws Exception {
-    val client = new EGAFTPClient();
+  public static void main(String[] args) {
+    val ftp = new EGAFTPClient();
+    val api = new EGAAPIClient().login();
 
-    val dataSetIds = client.getDatasetIds();
-    log.info("dataSetIds: {}", dataSetIds);
+    val ftpDatasetIds = newTreeSet(ftp.getDatasetIds());
+    val apiDatasetIds = newTreeSet(api.getDatasetIds());
 
-    for (val dataSetId : dataSetIds) {
-      log.info("Reading: {}", dataSetId);
-      val url = client.getMetadataURL(dataSetId);
-      log.info("URL: {}", url);
+    val onlyFtp = Sets.difference(ftpDatasetIds, apiDatasetIds);
+    val onlyApi = Sets.difference(apiDatasetIds, ftpDatasetIds);
 
-      val reader = new EGADatasetMetaArchiveReader();
-      val archive = reader.read(dataSetId, url);
-      log.info("Dataset: {}", archive);
+    log.info("Only in FTP:");
+    for (val entry : onlyFtp) {
+      log.info(" - {}", entry);
+    }
+
+    log.info("Only in API:");
+    for (val entry : onlyApi) {
+      log.info(" - {}", entry);
     }
   }
 

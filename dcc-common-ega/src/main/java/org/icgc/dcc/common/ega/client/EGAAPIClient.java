@@ -44,6 +44,8 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.icgc.dcc.common.ega.util.EGACertificates;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -58,7 +60,7 @@ import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Client for the EGA API.
+ * Client for the main EGA API.
  * <p>
  * Currently only covers metadata related endpoints.
  * 
@@ -66,7 +68,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class EGAClient {
+public class EGAAPIClient {
 
   /**
    * Constants - Defaults
@@ -86,19 +88,19 @@ public class EGAClient {
   private static final String METHOD_POST = "POST";
   private static final String APPLICATION_JSON = "application/json";
 
-  public EGAClient() {
+  public EGAAPIClient() {
     this(System.getProperty("ega.username"), System.getProperty("ega.password"));
   }
 
-  public EGAClient(String userName, String password) {
+  public EGAAPIClient(String userName, String password) {
     this(DEFAULT_API_URL, userName, password, DEFAULT_RECONNECT, DEFAULT_RETRY_NOT_AUTHORIZED);
   }
 
-  public EGAClient(String userName, String password, boolean reconnect) {
+  public EGAAPIClient(String userName, String password, boolean reconnect) {
     this(DEFAULT_API_URL, userName, password, reconnect, DEFAULT_RETRY_NOT_AUTHORIZED);
   }
 
-  public EGAClient(String userName, String password, boolean reconnect, boolean retryNotAuthorized) {
+  public EGAAPIClient(String userName, String password, boolean reconnect, boolean retryNotAuthorized) {
     this(DEFAULT_API_URL, userName, password, reconnect, retryNotAuthorized);
   }
 
@@ -128,7 +130,7 @@ public class EGAClient {
 
   @SneakyThrows
   @Synchronized
-  public void login() {
+  public EGAAPIClient login() {
     int attempts = 0;
     while (++attempts <= MAX_ATTEMPTS) {
       try {
@@ -147,7 +149,7 @@ public class EGAClient {
 
         this.sessionId = getSessionId(response);
 
-        return;
+        return this;
       } catch (IllegalStateException e) {
         log.warn("Invalid login after {} attempt(s): {}", attempts, e.getMessage());
       } catch (Exception e) {

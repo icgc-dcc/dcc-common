@@ -20,7 +20,7 @@ package org.icgc.dcc.common.ega.archive;
 import java.net.URL;
 
 import org.icgc.dcc.common.ega.client.EGAFTPClient;
-import org.icgc.dcc.common.ega.model.EGAMetadataArchive;
+import org.icgc.dcc.common.ega.model.EGADatasetMetaArchive;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +28,13 @@ import lombok.SneakyThrows;
 import lombok.val;
 
 @RequiredArgsConstructor
-public class EGAMetadataArchiveResolver {
+public class EGADatasetMetaArchiveResolver {
 
   /**
    * Constants.
    */
   public static final String DEFAULT_API_URL = "http://ega.ebi.ac.uk/ega/rest/download/v2";
-  private static final EGAMetadataArchiveReader ARCHIVE_READER = new EGAMetadataArchiveReader();
+  private static final EGADatasetMetaArchiveReader ARCHIVE_READER = new EGADatasetMetaArchiveReader();
 
   /**
    * Configuration.
@@ -48,19 +48,19 @@ public class EGAMetadataArchiveResolver {
   @NonNull
   private final EGAFTPClient ftp;
 
-  public EGAMetadataArchiveResolver() {
+  public EGADatasetMetaArchiveResolver() {
     this(DEFAULT_API_URL);
   }
 
-  public EGAMetadataArchiveResolver(EGAFTPClient ftp) {
+  public EGADatasetMetaArchiveResolver(EGAFTPClient ftp) {
     this(DEFAULT_API_URL, ftp);
   }
 
-  public EGAMetadataArchiveResolver(String apiUrl) {
+  public EGADatasetMetaArchiveResolver(String apiUrl) {
     this(apiUrl, new EGAFTPClient());
   }
 
-  public EGAMetadataArchive resolveArchive(@NonNull String datasetId) {
+  public EGADatasetMetaArchive resolveArchive(@NonNull String datasetId) {
     val url = resolveUrl(datasetId);
     return ARCHIVE_READER.read(datasetId, url);
   }

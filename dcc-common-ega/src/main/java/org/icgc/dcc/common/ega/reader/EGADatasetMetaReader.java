@@ -18,14 +18,18 @@
 package org.icgc.dcc.common.ega.reader;
 
 import static com.google.common.collect.Sets.newTreeSet;
+import static org.icgc.dcc.common.core.util.function.Predicates.isNotNull;
 import static org.icgc.dcc.common.ega.core.EGAProjectDatasets.getDatasetProjectCodes;
 
 import java.util.stream.Stream;
 
-import org.icgc.dcc.common.ega.archive.EGAMetadataArchiveResolver;
-import org.icgc.dcc.common.ega.client.EGAClient;
-import org.icgc.dcc.common.ega.model.EGAMetadata;
-import org.icgc.dcc.common.ega.model.EGAMetadataArchive;
+import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchiveResolver;
+import org.icgc.dcc.common.ega.client.EGACatalogClient;
+import org.icgc.dcc.common.ega.client.EGAAPIClient;
+import org.icgc.dcc.common.ega.model.EGADatasetMeta;
+import org.icgc.dcc.common.ega.model.EGADatasetMetaArchive;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -37,33 +41,34 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class EGAMetadataReader {
+public class EGADatasetMetaReader {
 
   /**
    * Dependencies.
    */
   @NonNull
-  private final EGAClient client;
+  private final EGAAPIClient client;
   @NonNull
-  private final EGAMetadataArchiveResolver archiveResolver;
+  private final EGADatasetMetaArchiveResolver archiveResolver;
 
-  public Stream<EGAMetadata> readMetadata() {
+  public Stream<EGADatasetMeta> readDatasets() {
     val datasetIds = client.getDatasetIds();
     val effectiveDatasetIds = newTreeSet(datasetIds);
     if (effectiveDatasetIds.size() != datasetIds.size()) {
       log.warn("Data sets include duplicates: {}", datasetIds);
     }
 
-    return effectiveDatasetIds.stream().map(this::readDataset).filter(this::isNonNull);
+    return effectiveDatasetIds.stream().map(this::readDataset).filter(isNotNull());
   }
 
-  public EGAMetadata readDataset(String datasetId) {
+  public EGADatasetMeta readDataset(@NonNull String datasetId) {
     try {
-      val metadata = readArchive(datasetId);
-      val files = client.getDatasetFiles(datasetId);
+      val catalog = readCatalog(datasetId);
       val projectCodes = getDatasetProjectCodes(datasetId);
+      val files = client.getDatasetFiles(datasetId);
+      val archive = readArchive(datasetId);
 
-      return new EGAMetadata(datasetId, null, projectCodes, files, metadata);
+      return new EGADatasetMeta(datasetId, catalog, projectCodes, files, archive);
     } catch (Exception e) {
       log.error("Exception reading dataset " + datasetId, e);
     }
@@ -71,12 +76,12 @@ public class EGAMetadataReader {
     return null;
   }
 
-  private EGAMetadataArchive readArchive(String datasetId) {
+  private EGADatasetMetaArchive readArchive(String datasetId) {
     return archiveResolver.resolveArchive(datasetId);
   }
 
-  private boolean isNonNull(EGAMetadata metadata) {
-    return metadata != null;
+  private ObjectNode readCatalog(String datasetId) {
+    return new EGACatalogClient().getDataset(datasetId);
   }
 
 }

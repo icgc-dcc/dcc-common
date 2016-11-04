@@ -28,12 +28,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import org.icgc.dcc.common.ega.archive.EGAMetadataArchiveResolver;
+import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchiveResolver;
 import org.icgc.dcc.common.ega.client.EGACatalogClient;
-import org.icgc.dcc.common.ega.client.EGAClient;
+import org.icgc.dcc.common.ega.client.EGAAPIClient;
 import org.icgc.dcc.common.ega.core.EGAProjectDatasets;
-import org.icgc.dcc.common.ega.model.EGAMetadata;
-import org.icgc.dcc.common.ega.model.EGAMetadataArchive;
+import org.icgc.dcc.common.ega.model.EGADatasetMeta;
+import org.icgc.dcc.common.ega.model.EGADatasetMetaArchive;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -66,11 +66,11 @@ public class EGAMetadataWriter {
   /**
    * Dependencies.
    */
-  private final EGAClient client;
-  private final EGAMetadataArchiveResolver archiveResolver;
+  private final EGAAPIClient client;
+  private final EGADatasetMetaArchiveResolver archiveResolver;
 
   public EGAMetadataWriter() {
-    this(createEGAClient(), new EGAMetadataArchiveResolver());
+    this(createEGAClient(), new EGADatasetMetaArchiveResolver());
   }
 
   @SneakyThrows
@@ -117,23 +117,24 @@ public class EGAMetadataWriter {
     return client.getDatasetIds();
   }
 
-  private ObjectNode getDataset(String datasetId) {
-    return (ObjectNode) new EGACatalogClient().getDataset(datasetId);
+  private ObjectNode getCatalog(String datasetId) {
+    return new EGACatalogClient().getDataset(datasetId);
   }
 
-  private EGAMetadataArchive getMetadataArchive(String datasetId) {
+  private EGADatasetMetaArchive getMetadataArchive(String datasetId) {
     return archiveResolver.resolveArchive(datasetId);
   }
 
-  private void writeDataset(String datasetId, EGAClient client, FileWriter writer)
+  private void writeDataset(String datasetId, EGAAPIClient client, FileWriter writer)
       throws IOException, JsonGenerationException, JsonMappingException {
     val projectCodes = EGAProjectDatasets.getDatasetProjectCodes(datasetId);
     val files = client.getDatasetFiles(datasetId);
 
     try {
       val metadata = getMetadataArchive(datasetId);
-      val dataset = getDataset(datasetId);
-      val record = new EGAMetadata(datasetId, dataset, projectCodes, files, metadata);
+      val catalog = getCatalog(datasetId);
+      val record = new EGADatasetMeta(datasetId, catalog, projectCodes, files, metadata);
+
       MAPPER.writeValue(writer, record);
     } catch (Exception e) {
       throw new RuntimeException(
@@ -143,8 +144,8 @@ public class EGAMetadataWriter {
     }
   }
 
-  private static EGAClient createEGAClient() {
-    val client = new EGAClient();
+  private static EGAAPIClient createEGAClient() {
+    val client = new EGAAPIClient();
     client.login();
 
     return client;

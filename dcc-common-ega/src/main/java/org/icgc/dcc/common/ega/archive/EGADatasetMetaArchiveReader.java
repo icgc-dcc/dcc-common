@@ -32,7 +32,7 @@ import java.util.zip.GZIPInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.icgc.dcc.common.core.io.ForwardingInputStream;
-import org.icgc.dcc.common.ega.model.EGAMetadataArchive;
+import org.icgc.dcc.common.ega.model.EGADatasetMetaArchive;
 import org.icgc.dcc.common.ega.util.XMLObjectNodeReader;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -45,11 +45,11 @@ import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Reads a remote EGA metadata tarball into a {@link EGAMetadataArchive}.
+ * Reads a remote EGA metadata tarball into a {@link EGADatasetMetaArchive}.
  */
 @Slf4j
 @RequiredArgsConstructor
-public class EGAMetadataArchiveReader {
+public class EGADatasetMetaArchiveReader {
 
   /**
    * Constants.
@@ -68,22 +68,22 @@ public class EGAMetadataArchiveReader {
   @NonNull
   private final String apiUrl;
 
-  public EGAMetadataArchiveReader() {
+  public EGADatasetMetaArchiveReader() {
     this(DEFAULT_API_URL);
   }
 
   @SneakyThrows
-  public EGAMetadataArchive read(@NonNull String datasetId) {
+  public EGADatasetMetaArchive read(@NonNull String datasetId) {
     return read(datasetId, getArchiveUrl(datasetId));
   }
 
   @SneakyThrows
-  public EGAMetadataArchive read(String datasetId, URL url) {
+  public EGADatasetMetaArchive read(String datasetId, URL url) {
     @Cleanup
     val tarball = readTarball(url, datasetId);
 
     TarArchiveEntry entry = null;
-    val archive = new EGAMetadataArchive(datasetId);
+    val archive = new EGADatasetMetaArchive(datasetId);
     while ((entry = tarball.getNextTarEntry()) != null) {
       try {
         if (isMappingFile(entry)) {
@@ -102,14 +102,14 @@ public class EGAMetadataArchiveReader {
   }
 
   private static void readMappingEntry(TarArchiveInputStream tarball, TarArchiveEntry entry,
-      EGAMetadataArchive archive) {
+      EGADatasetMetaArchive archive) {
     val mappingId = getMappingId(entry);
     val mapping = parseMapping(mappingId, tarball);
 
     archive.getMappings().put(mappingId, mapping);
   }
 
-  private static void readXmlEntry(TarArchiveInputStream tarball, TarArchiveEntry entry, EGAMetadataArchive archive) {
+  private static void readXmlEntry(TarArchiveInputStream tarball, TarArchiveEntry entry, EGADatasetMetaArchive archive) {
     val xml = parseXml(tarball);
 
     if (isStudy(entry)) {

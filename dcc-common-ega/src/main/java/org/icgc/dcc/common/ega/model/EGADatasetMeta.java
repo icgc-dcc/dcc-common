@@ -27,7 +27,7 @@ import lombok.Value;
  * Aggregate metadata from various EGA files.
  */
 @Value
-public class EGAMetadata {
+public class EGADatasetMeta {
 
   String datasetId;
   ObjectNode dataset;
@@ -35,6 +35,6 @@ public class EGAMetadata {
   List<String> projectCodes;
   List<ObjectNode> files;
 
-  EGAMetadataArchive metadata;
+  EGADatasetMetaArchive metadata;
 
 }

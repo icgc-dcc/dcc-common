@@ -25,11 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Ignore("For development only")
-public class EGAMetadataArchiveReaderTest {
+public class EGADatasetMetaArchiveReaderTest {
 
   @Test
   public void testRead() {
-    val reader = new EGAMetadataArchiveReader();
+    val reader = new EGADatasetMetaArchiveReader();
 
     val datasetId = "EGAD00001001595";
     val metadata = reader.read(datasetId);
