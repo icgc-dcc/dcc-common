@@ -15,28 +15,30 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.model;
+package org.icgc.dcc.common.ega.archive;
 
 import java.util.List;
-
-import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchive;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Maps;
 
 import lombok.Value;
 
 /**
- * Aggregate metadata from various EGA files.
+ * Metadata tarball in-memory representation.
  */
 @Value
-public class EGADatasetMeta {
+public class EGADatasetMetaArchive {
 
-  String datasetId;
-  ObjectNode dataset;
+  final String datasetId;
 
-  List<String> projectCodes;
-  List<ObjectNode> files;
+  final Map<String, List<ObjectNode>> mappings = Maps.newHashMap();
 
-  EGADatasetMetaArchive metadata;
+  final Map<String, ObjectNode> studies = Maps.newHashMap();
+  final Map<String, ObjectNode> samples = Maps.newHashMap();
+  final Map<String, ObjectNode> experiments = Maps.newHashMap();
+  final Map<String, ObjectNode> runs = Maps.newHashMap();
+  final Map<String, ObjectNode> analysis = Maps.newHashMap();
 
 }

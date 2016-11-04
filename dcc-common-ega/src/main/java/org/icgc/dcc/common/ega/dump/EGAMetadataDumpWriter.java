@@ -15,30 +15,19 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.writer;
+package org.icgc.dcc.common.ega.dump;
 
 import static com.fasterxml.jackson.core.JsonGenerator.Feature.AUTO_CLOSE_TARGET;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Sets.newTreeSet;
-import static java.lang.System.lineSeparator;
 import static org.icgc.dcc.common.core.json.Jackson.DEFAULT;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
+import java.util.stream.Stream;
 
-import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchiveResolver;
-import org.icgc.dcc.common.ega.client.EGACatalogClient;
-import org.icgc.dcc.common.ega.client.EGAAPIClient;
-import org.icgc.dcc.common.ega.core.EGAProjectDatasets;
 import org.icgc.dcc.common.ega.model.EGADatasetMeta;
-import org.icgc.dcc.common.ega.model.EGADatasetMetaArchive;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
@@ -56,53 +45,35 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class EGAMetadataWriter {
+public class EGAMetadataDumpWriter {
 
   /**
    * Constants.
    */
   private static final ObjectMapper MAPPER = DEFAULT.configure(AUTO_CLOSE_TARGET, false);
 
-  /**
-   * Dependencies.
-   */
-  private final EGAAPIClient client;
-  private final EGADatasetMetaArchiveResolver archiveResolver;
-
-  public EGAMetadataWriter() {
-    this(createEGAClient(), new EGADatasetMetaArchiveResolver());
-  }
-
   @SneakyThrows
-  public void write(@NonNull File file) {
+  public void write(@NonNull File file, Stream<EGADatasetMeta> datasets) {
     val watch = Stopwatch.createStarted();
 
     @Cleanup
     val writer = new FileWriter(file);
-    val datasetIds = getDatasetIds();
-    val effectiveDatasetIds = newTreeSet(datasetIds);
-    if (effectiveDatasetIds.size() != datasetIds.size()) {
-      log.warn("Data sets include duplicates: {}", datasetIds);
-    }
 
-    int i = 1;
-    val n = datasetIds.size();
     val errors = Lists.<Exception> newArrayList();
-
-    log.info("Writing {} data sets to {}...", n, file);
-    for (val datasetId : effectiveDatasetIds) {
+    datasets.forEach(dataset -> {
+      String datasetId = dataset.getDatasetId();
       try {
-        log.info("[{}/{}] Processing data set: {}", i++, n, datasetId);
-        writeDataset(datasetId, client, writer);
-        writer.write(lineSeparator());
+        log.info("Processing data set: {}", datasetId);
+        writeDataset(dataset, writer);
+
+        writer.write(System.lineSeparator());
       } catch (Exception e) {
         log.error("Error processing data set {}: {}", datasetId, e);
         errors.add(e);
       }
-    }
+    });
 
-    log.info("Finished writing {} data sets in {} with {} client timeouts, {} client reconnects and {} client errors",
-        i, watch, client.getTimeoutCount(), client.getReconnectCount(), client.getErrorCount());
+    log.info("Finished writing data sets in {}", watch);
 
     log.info("\n\n");
     log.info("Errors:");
@@ -113,42 +84,16 @@ public class EGAMetadataWriter {
     checkState(errors.isEmpty(), "Error writing %s: %s", file, errors);
   }
 
-  private List<String> getDatasetIds() {
-    return client.getDatasetIds();
-  }
-
-  private ObjectNode getCatalog(String datasetId) {
-    return new EGACatalogClient().getDataset(datasetId);
-  }
-
-  private EGADatasetMetaArchive getMetadataArchive(String datasetId) {
-    return archiveResolver.resolveArchive(datasetId);
-  }
-
-  private void writeDataset(String datasetId, EGAAPIClient client, FileWriter writer)
-      throws IOException, JsonGenerationException, JsonMappingException {
-    val projectCodes = EGAProjectDatasets.getDatasetProjectCodes(datasetId);
-    val files = client.getDatasetFiles(datasetId);
-
+  @SneakyThrows
+  private void writeDataset(EGADatasetMeta dataset, FileWriter writer) {
     try {
-      val metadata = getMetadataArchive(datasetId);
-      val catalog = getCatalog(datasetId);
-      val record = new EGADatasetMeta(datasetId, catalog, projectCodes, files, metadata);
-
-      MAPPER.writeValue(writer, record);
+      MAPPER.writeValue(writer, dataset);
     } catch (Exception e) {
       throw new RuntimeException(
-          "Could not read metadata archive for data set " + datasetId + " associated with project(s) " + projectCodes
-              + ": " + e.getMessage(),
+          "Could not read metadata archive for data set " + dataset.getDatasetId() + " associated with project(s) "
+              + dataset.getProjectCodes() + ": " + e.getMessage(),
           e);
     }
-  }
-
-  private static EGAAPIClient createEGAClient() {
-    val client = new EGAAPIClient();
-    client.login();
-
-    return client;
   }
 
 }

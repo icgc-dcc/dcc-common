@@ -15,30 +15,29 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.model;
+package org.icgc.dcc.common.ega.dump;
 
-import java.util.List;
-import java.util.Map;
+import static org.icgc.dcc.common.core.io.Files2.getHomeDir;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Maps;
+import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-import lombok.Value;
+import org.junit.Ignore;
+import org.junit.Test;
 
-/**
- * Metadata tarball in-memory representation.
- */
-@Value
-public class EGADatasetMetaArchive {
+import lombok.val;
 
-  final String datasetId;
+@Ignore("For development only")
+public class EGAMetadataDumpCreatorTest {
 
-  final Map<String, List<ObjectNode>> mappings = Maps.newHashMap();
+  @Test
+  public void testWrite() {
+    val date = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss").format(LocalDateTime.now());
+    val file = new File(getHomeDir(), "icgc-ega-datasets." + date + ".jsonl");
 
-  final Map<String, ObjectNode> studies = Maps.newHashMap();
-  final Map<String, ObjectNode> samples = Maps.newHashMap();
-  final Map<String, ObjectNode> experiments = Maps.newHashMap();
-  final Map<String, ObjectNode> runs = Maps.newHashMap();
-  final Map<String, ObjectNode> analysis = Maps.newHashMap();
+    val creator = new EGAMetadataDumper();
+    creator.create(file);
+  }
 
 }

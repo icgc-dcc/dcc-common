@@ -15,29 +15,54 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.writer;
-
-import static org.icgc.dcc.common.core.io.Files2.getHomeDir;
+package org.icgc.dcc.common.ega.dump;
 
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.stream.Stream;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchiveResolver;
+import org.icgc.dcc.common.ega.client.EGAAPIClient;
+import org.icgc.dcc.common.ega.model.EGADatasetMeta;
+import org.icgc.dcc.common.ega.reader.EGADatasetMetaReader;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.val;
 
-@Ignore("For development only")
-public class EGAMetadataWriterTest {
+/**
+ * Utility for creating a dump of all EGA metadata.
+ */
+@RequiredArgsConstructor
+public class EGAMetadataDumper {
 
-  @Test
-  public void testWrite() {
-    val date = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss").format(LocalDateTime.now());
-    val file = new File(getHomeDir(), "icgc-ega-datasets." + date + ".jsonl");
+  /**
+   * Dependencies.
+   */
+  @NonNull
+  private final EGADatasetMetaReader reader;
 
-    val writer = new EGAMetadataWriter();
-    writer.write(file);
+  public EGAMetadataDumper() {
+    this(createReader());
+  }
+
+  @SneakyThrows
+  public void create(@NonNull File file) {
+    val datasets = read();
+
+    write(file, datasets);
+  }
+
+  protected Stream<EGADatasetMeta> read() {
+    return reader.readDatasets();
+  }
+
+  protected void write(File file, Stream<EGADatasetMeta> datasets) {
+    new EGAMetadataDumpWriter().write(file, datasets);
+  }
+
+  protected static EGADatasetMetaReader createReader() {
+    return new EGADatasetMetaReader(new EGAAPIClient().login(), new EGADatasetMetaArchiveResolver());
   }
 
 }

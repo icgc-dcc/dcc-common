@@ -32,7 +32,6 @@ import java.util.zip.GZIPInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.icgc.dcc.common.core.io.ForwardingInputStream;
-import org.icgc.dcc.common.ega.model.EGADatasetMetaArchive;
 import org.icgc.dcc.common.ega.util.XMLObjectNodeReader;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;

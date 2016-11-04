@@ -15,73 +15,40 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.reader;
+package org.icgc.dcc.common.ega.dump;
 
-import static com.google.common.collect.Sets.newTreeSet;
-import static org.icgc.dcc.common.core.util.function.Predicates.isNotNull;
-import static org.icgc.dcc.common.ega.core.EGAProjectDatasets.getDatasetProjectCodes;
+import static com.fasterxml.jackson.core.JsonParser.Feature.AUTO_CLOSE_SOURCE;
+import static org.icgc.dcc.common.core.json.Jackson.DEFAULT;
 
+import java.io.File;
 import java.util.stream.Stream;
 
-import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchive;
-import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchiveResolver;
-import org.icgc.dcc.common.ega.client.EGAAPIClient;
-import org.icgc.dcc.common.ega.client.EGACatalogClient;
+import org.icgc.dcc.common.core.util.stream.Streams;
 import org.icgc.dcc.common.ega.model.EGADatasetMeta;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.ObjectReader;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Lazily reads all metadata for ICGC associated projects into a stream.
+ * Utility for reading EGA metadata dump
  */
 @Slf4j
 @RequiredArgsConstructor
-public class EGADatasetMetaReader {
+public class EGAMetadataDumpReader {
 
   /**
-   * Dependencies.
+   * Constants.
    */
-  @NonNull
-  private final EGAAPIClient client;
-  @NonNull
-  private final EGADatasetMetaArchiveResolver archiveResolver;
+  private static final ObjectReader READER = DEFAULT.configure(AUTO_CLOSE_SOURCE, false).reader(EGADatasetMeta.class);
 
-  public Stream<EGADatasetMeta> readDatasets() {
-    val datasetIds = client.getDatasetIds();
-    val effectiveDatasetIds = newTreeSet(datasetIds);
-    if (effectiveDatasetIds.size() != datasetIds.size()) {
-      log.warn("Data sets include duplicates: {}", datasetIds);
-    }
-
-    return effectiveDatasetIds.stream().map(this::readDataset).filter(isNotNull());
-  }
-
-  public EGADatasetMeta readDataset(@NonNull String datasetId) {
-    try {
-      val catalog = readCatalog(datasetId);
-      val projectCodes = getDatasetProjectCodes(datasetId);
-      val files = client.getDatasetFiles(datasetId);
-      val archive = readArchive(datasetId);
-
-      return new EGADatasetMeta(datasetId, catalog, projectCodes, files, archive);
-    } catch (Exception e) {
-      log.error("Exception reading dataset " + datasetId, e);
-    }
-
-    return null;
-  }
-
-  private EGADatasetMetaArchive readArchive(String datasetId) {
-    return archiveResolver.resolveArchive(datasetId);
-  }
-
-  private ObjectNode readCatalog(String datasetId) {
-    return new EGACatalogClient().getDataset(datasetId);
+  @SneakyThrows
+  public Stream<EGADatasetMeta> read(@NonNull File file) {
+    log.info("Reading: {}", file.getAbsolutePath());
+    return Streams.stream(READER.readValues(file));
   }
 
 }

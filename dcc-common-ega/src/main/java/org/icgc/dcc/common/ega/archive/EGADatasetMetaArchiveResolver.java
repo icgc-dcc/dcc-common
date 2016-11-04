@@ -20,7 +20,6 @@ package org.icgc.dcc.common.ega.archive;
 import java.net.URL;
 
 import org.icgc.dcc.common.ega.client.EGAFTPClient;
-import org.icgc.dcc.common.ega.model.EGADatasetMetaArchive;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
