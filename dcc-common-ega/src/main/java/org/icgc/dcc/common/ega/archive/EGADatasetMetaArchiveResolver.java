@@ -66,14 +66,14 @@ public class EGADatasetMetaArchiveResolver {
 
   protected URL resolveUrl(String datasetId) {
     if (ftp.hasDatasetId(datasetId)) {
-      return ftp.getMetadataURL(datasetId);
+      return ftp.getArchiveURL(datasetId);
     } else {
-      return getArchiveUrl(datasetId);
+      return getArchiveURL(datasetId);
     }
   }
 
   @SneakyThrows
-  private URL getArchiveUrl(String datasetId) {
+  private URL getArchiveURL(String datasetId) {
     return new URL(apiUrl + "/metadata/" + datasetId);
   }
 

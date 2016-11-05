@@ -17,18 +17,17 @@
  */
 package org.icgc.dcc.common.ega.client;
 
+import static com.google.common.io.Resources.readLines;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 import static lombok.AccessLevel.PRIVATE;
+import static org.icgc.dcc.common.core.util.function.Predicates.not;
+import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableList;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Lists;
-
-import lombok.Cleanup;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -59,7 +58,7 @@ public class EGAFTPClient {
    */
   @Accessors(fluent = true)
   @Getter(lazy = true, value = PRIVATE)
-  private final List<String> datasetIds = getListing().stream()
+  private final List<String> datasetIds = getListing(METADATA_DIR).stream()
       .map(this::parseDatasetId)
       .collect(toList());
 
@@ -75,16 +74,16 @@ public class EGAFTPClient {
     this.url = String.format("ftp://%s:%s@%s", user, password, host);
   }
 
-  public boolean hasDatasetId(@NonNull String datasetId) {
-    return getDatasetIds().contains(datasetId);
-  }
-
   public List<String> getDatasetIds() {
     return datasetIds();
   }
 
-  public URL getMetadataURL(String datasetId) {
-    return getURL(METADATA_DIR + "/" + datasetId + ".tar.gz");
+  public boolean hasDatasetId(@NonNull String datasetId) {
+    return datasetIds().contains(datasetId);
+  }
+
+  public URL getArchiveURL(@NonNull String datasetId) {
+    return getFileURL(METADATA_DIR + "/" + datasetId + ".tar.gz");
   }
 
   private String parseDatasetId(String fileName) {
@@ -92,41 +91,24 @@ public class EGAFTPClient {
     return matcher.find() ? matcher.group(1) : null;
   }
 
-  private List<String> getListing() {
-    return getListing(METADATA_DIR);
-  }
-
   @SneakyThrows
   private List<String> getListing(String dir) {
-    val dirUrl = String.format("%s/%s;type=d", url, dir);
+    val dirUrl = getDirURL(dir);
+    return readLines(dirUrl, UTF_8).stream()
+        .filter(not(this::isRelativeDir))
+        .collect(toImmutableList());
+  }
 
-    val listing = Lists.<String> newArrayList();
-    val url = new URL(dirUrl);
-    val connection = url.openConnection();
-
-    @Cleanup
-    val inputStream = connection.getInputStream();
-    val reader = new BufferedReader(new InputStreamReader(inputStream));
-
-    String line = null;
-    while ((line = reader.readLine()) != null) {
-      if (isRelativeDir(line)) {
-        continue;
-      }
-
-      listing.add(line);
-    }
-
-    return listing;
+  private URL getDirURL(String path) {
+    return getFileURL(path + ";type=d");
   }
 
   @SneakyThrows
-  private URL getURL(String fileName) {
-    val fileUrl = String.format("%s/%s", url, fileName);
-    return new URL(fileUrl);
+  private URL getFileURL(String path) {
+    return new URL(url + "/" + path);
   }
 
-  private static boolean isRelativeDir(String line) {
+  private boolean isRelativeDir(String line) {
     return line.equals(".") || line.equals("..");
   }
 

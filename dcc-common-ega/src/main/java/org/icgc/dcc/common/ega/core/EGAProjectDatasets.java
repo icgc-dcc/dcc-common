@@ -18,9 +18,10 @@
 package org.icgc.dcc.common.ega.core;
 
 import static lombok.AccessLevel.PRIVATE;
-import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableList;
+import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableSet;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
 
@@ -40,20 +41,22 @@ public final class EGAProjectDatasets {
       record("COCA-CN", "EGAS00001001088", null),
       record("COCA-CN", "EGAS00001001200", null),
       record("COCA-CN", "EGAS00001001309", null),
-      record("COCA-CN", "EGAS00001001310", null),
+      record("COCA-CN", "EGAS00001001310", "EGAD00001001439"),
       record("ESCA-CN", "EGAS00001000709", "EGAD00001000760"),
-      record("ESCA-CN", "EGAS00001001475", null),
+      record("ESCA-CN", "EGAS00001001475", "EGAD00001001926"),
       record("GACA-CN", "EGAS00001000675", null),
       record("LUSC-CN", "EGAS00001001087", null),
       record("RECA-CN", "EGAS00001000676", null),
       record("LAML-CN", "EGAS00001001742", null),
       record("LICA-CN", "EGAS00001001660", null),
+      record("BRCA-FR", "EGAS00001001431", "EGAD00010000886"),
       record("BRCA-FR", "EGAS00001001431", "EGAD00001001844"),
       record("LIAD-FR", "EGAS00001000679", "EGAD00001000737"),
       record("LICA-FR", "EGAS00001000217", "EGAD00001000131"),
       record("LICA-FR", "EGAS00001000679", "EGAD00001000737"),
       record("LICA-FR", "EGAS00001000706", "EGAD00001000749"),
       record("LICA-FR", "EGAS00001001002", "EGAD00001001096"),
+      record("LICA-FR", "EGAS00001001692", "EGAD00001002016"),
       record("LIHM-FR", "EGAS00001001002", "EGAD00001001096"),
       record("BOCA-FR", "EGAS00001000855", "EGAD00001001051"),
       record("BOCA-UK", "EGAS00001000038", "EGAD00001000358"),
@@ -180,7 +183,7 @@ public final class EGAProjectDatasets {
       record("PAEN-IT", "EGAS00001000154", "EGAD00001000660"),
       record("PAEN-IT", "EGAS00001000154", "EGAD00001000371"),
       record("THCA-SA", "EGAS00001001788", null),
-      record("SKCA-BR", "EGAS00001001052", null),
+      record("SKCA-BR", "EGAS00001001052", "EGAD00001001100"),
       record("BRCA-KR", "EGAS00001001908", "EGAD00001002256"),
       record("LAML-KR", "EGAS00001001082", null),
       record("LAML-KR", "EGAS00001001559", null),
@@ -210,18 +213,18 @@ public final class EGAProjectDatasets {
 
   }
 
-  public static List<String> getStudyProjectCodes(String studyId) {
+  public static Set<String> getStudyProjectCodes(String studyId) {
     return DATASETS.stream()
         .filter(r -> studyId.equals(r.getStudyId()))
         .map(Record::getProjectCode)
-        .collect(toImmutableList());
+        .collect(toImmutableSet());
   }
 
-  public static List<String> getDatasetProjectCodes(String datasetId) {
+  public static Set<String> getDatasetProjectCodes(String datasetId) {
     return DATASETS.stream()
         .filter(r -> datasetId.equals(r.getDatasetId()))
         .map(Record::getProjectCode)
-        .collect(toImmutableList());
+        .collect(toImmutableSet());
   }
 
   private static Record record(String projectCode, String studyId, String datasetId) {

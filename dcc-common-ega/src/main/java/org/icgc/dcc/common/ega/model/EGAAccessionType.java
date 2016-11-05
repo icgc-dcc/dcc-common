@@ -15,7 +15,6 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// @formatter:off
 package org.icgc.dcc.common.ega.model;
 
 import java.util.Optional;
@@ -36,16 +35,63 @@ import lombok.val;
 @RequiredArgsConstructor
 public enum EGAAccessionType {
 
-  SUBMISSION("EGA Submission", "EGA",  11),
-  SAMPLE    ("EGA Sample",     "EGAN", 11),
-  STUDY     ("EGA Study",      "EGAS", 11),
+  /**
+   * A submission contains submission actions to be performed by the archive. A submission can add more objects to the
+   * archive, update already submitted objects or make objects publicly available.
+   */
+  SUBMISSION("EGA Submission", "EGA", 11),
+
+  /**
+   * A sample contains information about the sequenced samples. Samples are associated with checklists, which define the
+   * attributes used to annotate the samples, and experiments or analysis objects.
+   */
+  SAMPLE("EGA Sample", "EGAN", 11),
+
+  /**
+   * Studies are experimental investigations of a particular phenomenon or trait.
+   */
+  STUDY("EGA Study", "EGAS", 11),
+
+  /**
+   * An experiment contains information about the sequencing experiments including library and instrument detail.
+   */
   EXPERIMENT("EGA Experiment", "EGAX", 11),
-  RUN       ("EGA Run",        "EGAR", 11),
-  ANALYSIS  ("EGA Analysis",   "EGAZ", 11),
-  DAC       ("EGA DAC",        "EGAC", 11),
-  POLICY    ("EGA Policy",     "EGAC", 11),
-  DATASET   ("EGA Data Set",   "EGAD", 11),
-  FILE      ("EGA File",       "EGAF", 11);
+
+  /**
+   * Runs are part of experiments and contain sequencing reads submitted in data files (e.g. BAM or CRAM). Each run can
+   * contain all or part of the results for a particular experiment.
+   */
+  RUN("EGA Run", "EGAR", 11),
+
+  /**
+   * An analysis contains secondary analysis results computed from the primary equencing reads. There are four types of
+   * analyses.
+   */
+  ANALYSIS("EGA Analysis", "EGAZ", 11),
+
+  /**
+   * Access to each dataset is determined by its corresponding Data Access Committee (DAC).
+   */
+  DAC("EGA DAC", "EGAC", 11),
+
+  /**
+   * An European Genome-phenome Archive (EGA) data access policy. Required for authorized access submissions.
+   */
+  POLICY("EGA Policy", "EGAC", 11),
+
+  /**
+   * Datasets are defined file collections, whose access is governed by a Data Access Committee (DAC).
+   */
+  DATASET("EGA Data Set", "EGAD", 11),
+
+  /**
+   * Providers may be involved in study creation, submission and designation of Data Access Committees (DACs).
+   * <p>
+   * Can also be {@literal EGAG00000000003}
+   */
+  PROVIDER("EGA Providers", "EGAO", 11),
+
+  FILE("EGA File", "EGAF", 11);
 
   /**
    * The object type to which the accession type applies.
@@ -69,11 +115,11 @@ public enum EGAAccessionType {
   public boolean isFile() {
     return this == FILE;
   }
-  
+
   public boolean matches(String accession) {
     return Pattern.matches(prefix + "\\d{" + digits + "}", accession);
   }
-  
+
   public static Optional<EGAAccessionType> from(@NonNull String accession) {
     for (EGAAccessionType value : values()) {
       val match = value.matches(accession);

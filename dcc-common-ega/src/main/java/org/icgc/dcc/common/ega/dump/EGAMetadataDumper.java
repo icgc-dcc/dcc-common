@@ -52,15 +52,15 @@ public class EGAMetadataDumper {
     write(file, datasets);
   }
 
-  protected Stream<EGADatasetDump> read() {
+  private Stream<EGADatasetDump> read() {
     return reader.readDatasets();
   }
 
-  protected void write(File file, Stream<EGADatasetDump> datasets) {
+  private void write(File file, Stream<EGADatasetDump> datasets) {
     new EGAMetadataDumpWriter().write(file, datasets);
   }
 
-  protected static EGADatasetMetaReader createReader() {
+  private static EGADatasetMetaReader createReader() {
     return new EGADatasetMetaReader(new EGAAPIClient().login(), new EGADatasetMetaArchiveResolver());
   }
 

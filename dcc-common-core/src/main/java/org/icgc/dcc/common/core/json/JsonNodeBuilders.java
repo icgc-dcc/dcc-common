@@ -19,6 +19,8 @@ package org.icgc.dcc.common.core.json;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.math.BigInteger;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -41,6 +43,10 @@ public final class JsonNodeBuilders {
 
   public static ObjectNodeBuilder object() {
     return object(JsonNodeFactory.instance);
+  }
+
+  public static ObjectNodeBuilder object(ObjectNode objectNode) {
+    return object().with(objectNode);
   }
 
   public static ObjectNodeBuilder object(@NonNull String k1, boolean v1) {
@@ -156,11 +162,20 @@ public final class JsonNodeBuilders {
       super(factory, factory.objectNode());
     }
 
+    public ObjectNodeBuilder with(@NonNull ObjectNode objectNode) {
+      node.putAll(objectNode);
+      return this;
+    }
+
     public ObjectNodeBuilder withNull(@NonNull String field) {
       return with(field, factory.nullNode());
     }
 
     public ObjectNodeBuilder with(@NonNull String field, int value) {
+      return with(field, factory.numberNode(value));
+    }
+
+    public ObjectNodeBuilder with(@NonNull String field, BigInteger value) {
       return with(field, factory.numberNode(value));
     }
 
@@ -174,6 +189,10 @@ public final class JsonNodeBuilders {
 
     public ObjectNodeBuilder with(@NonNull String field, String value) {
       return with(field, factory.textNode(value));
+    }
+
+    public ObjectNodeBuilder with(@NonNull String field, Iterable<String> values) {
+      return with(field, array(values));
     }
 
     public ObjectNodeBuilder with(@NonNull String field, JsonNode value) {

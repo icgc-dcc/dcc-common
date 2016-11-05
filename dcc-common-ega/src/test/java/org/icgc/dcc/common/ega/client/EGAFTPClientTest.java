@@ -28,16 +28,16 @@ import lombok.extern.slf4j.Slf4j;
 @Ignore("For development only")
 public class EGAFTPClientTest {
 
+  EGAFTPClient client = new EGAFTPClient();
+
   @Test
   public void testGetDatasetIds() throws Exception {
-    val client = new EGAFTPClient();
-
     val dataSetIds = client.getDatasetIds();
     log.info("dataSetIds: {}", dataSetIds);
 
     for (val dataSetId : dataSetIds) {
       log.info("Reading: {}", dataSetId);
-      val url = client.getMetadataURL(dataSetId);
+      val url = client.getArchiveURL(dataSetId);
       log.info("URL: {}", url);
 
       val reader = new EGADatasetMetaArchiveReader();

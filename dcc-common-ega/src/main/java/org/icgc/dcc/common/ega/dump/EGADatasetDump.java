@@ -18,6 +18,7 @@
 package org.icgc.dcc.common.ega.dump;
 
 import java.util.List;
+import java.util.Set;
 
 import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchive;
 
@@ -32,9 +33,9 @@ import lombok.Value;
 public class EGADatasetDump {
 
   String datasetId;
-  ObjectNode dataset;
+  ObjectNode catalog;
 
-  List<String> projectCodes;
+  Set<String> projectCodes;
   List<ObjectNode> files;
 
   EGADatasetMetaArchive metadata;

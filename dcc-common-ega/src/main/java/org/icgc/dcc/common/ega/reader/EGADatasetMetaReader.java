@@ -18,9 +18,11 @@
 package org.icgc.dcc.common.ega.reader;
 
 import static com.google.common.collect.Sets.newTreeSet;
+import static java.util.Collections.emptyList;
 import static org.icgc.dcc.common.core.util.function.Predicates.isNotNull;
 import static org.icgc.dcc.common.ega.core.EGAProjectDatasets.getDatasetProjectCodes;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchive;
@@ -65,15 +67,24 @@ public class EGADatasetMetaReader {
     try {
       val catalog = readCatalog(datasetId);
       val projectCodes = getDatasetProjectCodes(datasetId);
-      val files = client.getDatasetFiles(datasetId);
+      val files = readDatasetFiles(datasetId);
       val archive = readArchive(datasetId);
 
       return new EGADatasetDump(datasetId, catalog, projectCodes, files, archive);
     } catch (Exception e) {
-      log.error("Exception reading dataset " + datasetId, e);
+      log.error("Exception reading dataset " + datasetId + ": {}", e.getMessage());
     }
 
     return null;
+  }
+
+  public List<ObjectNode> readDatasetFiles(String datasetId) {
+    try {
+      return client.getDatasetFiles(datasetId);
+    } catch (Exception e) {
+      log.error("Exception reading dataset " + datasetId + " files: {}", e.getMessage());
+      return emptyList();
+    }
   }
 
   private EGADatasetMetaArchive readArchive(String datasetId) {

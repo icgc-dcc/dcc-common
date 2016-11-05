@@ -29,15 +29,16 @@ import org.junit.Test;
 import lombok.val;
 
 @Ignore("For development only")
-public class EGAMetadataDumpCreatorTest {
+public class EGAMetadataDumperTest {
+
+  EGAMetadataDumper dumper = new EGAMetadataDumper();
 
   @Test
   public void testWrite() {
     val date = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss").format(LocalDateTime.now());
     val file = new File(getHomeDir(), "icgc-ega-datasets." + date + ".jsonl");
 
-    val creator = new EGAMetadataDumper();
-    creator.create(file);
+    dumper.create(file);
   }
 
 }

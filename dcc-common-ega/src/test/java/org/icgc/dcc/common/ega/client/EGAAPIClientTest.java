@@ -29,11 +29,10 @@ import lombok.extern.slf4j.Slf4j;
 @Ignore("For development only")
 public class EGAAPIClientTest {
 
+  EGAAPIClient client = new EGAAPIClient().login();
+
   @Test
   public void testDatasetIds() {
-    val client = new EGAAPIClient();
-    client.login();
-
     val datasetIds = client.getDatasetIds();
     assertThat(datasetIds).isNotEmpty();
 

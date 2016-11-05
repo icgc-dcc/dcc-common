@@ -22,7 +22,8 @@ import static com.google.common.base.Preconditions.checkState;
 import static org.icgc.dcc.common.core.json.Jackson.DEFAULT;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,7 +56,7 @@ public class EGAMetadataDumpWriter {
     val watch = Stopwatch.createStarted();
 
     @Cleanup
-    val writer = new FileWriter(file);
+    val writer = new PrintWriter(file);
 
     val errors = Lists.<Exception> newArrayList();
     datasets.forEach(dataset -> {
@@ -63,8 +64,7 @@ public class EGAMetadataDumpWriter {
       try {
         log.info("Processing data set: {}", datasetId);
         writeDataset(dataset, writer);
-
-        writer.write(System.lineSeparator());
+        writer.println();
       } catch (Exception e) {
         log.error("Error processing data set {}: {}", datasetId, e);
         errors.add(e);
@@ -83,7 +83,7 @@ public class EGAMetadataDumpWriter {
   }
 
   @SneakyThrows
-  private void writeDataset(EGADatasetDump dataset, FileWriter writer) {
+  private void writeDataset(EGADatasetDump dataset, Writer writer) {
     try {
       MAPPER.writeValue(writer, dataset);
     } catch (Exception e) {

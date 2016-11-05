@@ -50,14 +50,17 @@ public class EGACatalogClient {
   /**
    * Constants.
    */
+
+  // Older version
+  private static final String OLD_API_URL = "https://ega.crg.eu/requesterportal/v1/";
   @SuppressWarnings("unused")
-  private static final String ALTERNATE_API_URL = "https://ega.crg.eu/requesterportal/v2/";
-  private static final String DEFAULT_API_URL = "https://egatest.crg.eu/metadata/v2/";
+  private static final String NEW_API_URL = "https://egatest.crg.eu/metadata/v2/";
+  private static final String DEFAULT_API_URL = OLD_API_URL;
 
   private static final int READ_TIMEOUT = (int) SECONDS.toMillis(30);
 
   /**
-   * Configuration
+   * Configuration.
    */
   @NonNull
   private final String url;
@@ -84,26 +87,19 @@ public class EGACatalogClient {
 
   private ArrayNode list(String path, Query.QueryBuilder builder) {
     val query = builder.build();
+
+    // Params
     val map = Maps.<String, Object> newLinkedHashMap();
-    if (query.getLimit() != null) {
-      map.put("limit", query.getLimit());
-    }
-    if (query.getSkip() != null) {
-      map.put("skip", query.getSkip());
-    }
-    if (query.getQueryBy() != null) {
-      map.put("queryBy", query.getQueryBy());
-    }
-    if (query.getQueryId() != null) {
-      map.put("queryId", query.getQueryId());
-    }
+    if (query.getSkip() != null) map.put("skip", query.getSkip());
+    if (query.getLimit() != null) map.put("limit", query.getLimit());
+    if (query.getQueryBy() != null) map.put("queryBy", query.getQueryBy());
+    if (query.getQueryId() != null) map.put("queryId", query.getQueryId());
     val params = Joiner.on('&').withKeyValueSeparator("=").join(map);
 
+    // URL
     val parts = Sets.<String> newLinkedHashSet();
     parts.add(path);
-    if (!isNullOrEmpty(params)) {
-      parts.add(params);
-    }
+    if (!isNullOrEmpty(params)) parts.add(params);
     val url = Joiner.on('?').join(parts);
 
     return read(url);
