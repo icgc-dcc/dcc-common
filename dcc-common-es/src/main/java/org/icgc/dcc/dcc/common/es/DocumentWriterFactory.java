@@ -19,29 +19,21 @@ package org.icgc.dcc.dcc.common.es;
 
 import static lombok.AccessLevel.PRIVATE;
 import static org.elasticsearch.action.bulk.BulkProcessor.builder;
+import static org.icgc.dcc.dcc.common.es.TransportClientFactory.createClient;
 
-import java.net.InetAddress;
-import java.net.URI;
 import java.util.Random;
+
+import lombok.NoArgsConstructor;
+import lombok.val;
 
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.icgc.dcc.dcc.common.es.core.DocumentWriter;
 import org.icgc.dcc.dcc.common.es.impl.BulkProcessorListener;
 import org.icgc.dcc.dcc.common.es.impl.ClusterStateVerifier;
 import org.icgc.dcc.dcc.common.es.impl.DefaultDocumentWriter;
 import org.icgc.dcc.dcc.common.es.impl.IndexingState;
 
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @NoArgsConstructor(access = PRIVATE)
 public final class DocumentWriterFactory {
 
@@ -49,57 +41,14 @@ public final class DocumentWriterFactory {
   private static final int BULK_ACTIONS = -1; // Unlimited
 
   public static DocumentWriter createDocumentWriter(DocumentWriterConfiguration configuration) {
-    val client = configuration.client() != null ? configuration.client() : newClient(configuration.esUrl(), true);
+    val sniff = true;
+    val client = configuration.client() != null ? configuration.client() : createClient(configuration.esUrl(), sniff);
     val writerId = createWriterId();
     val indexingState = new IndexingState(writerId);
     val clusterStateVerifier = new ClusterStateVerifier(client, configuration.indexName(), writerId, indexingState);
     val bulkProcessorListener = new BulkProcessorListener(clusterStateVerifier, indexingState, writerId);
     val bulkProcessor = createProcessor(client, bulkProcessorListener);
     return new DefaultDocumentWriter(client, configuration.indexName(), indexingState, bulkProcessor, writerId);
-  }
-
-  @SuppressWarnings("resource")
-  private static Client newClient(@NonNull String esUri, boolean sniff) {
-    val host = getHost(esUri);
-    val port = getPort(esUri);
-    val address = new InetSocketTransportAddress(host, port);
-
-    log.info("Creating ES transport client from URI '{}': host = '{}', port = {}", new Object[] { esUri, host, port });
-    return new PreBuiltTransportClient(createSettings(sniff)).addTransportAddress(address);
-  }
-
-  @SneakyThrows
-  private static InetAddress getHost(String esUri) {
-    val host = new URI(esUri).getHost();
-
-    return InetAddress.getByName(host);
-  }
-
-  @SneakyThrows
-  private static int getPort(String esUri) {
-    return new URI(esUri).getPort();
-  }
-
-  /**
-   * Creates the client settings.
-   * 
-   * @see http://www.elasticsearch.org/guide/en/elasticsearch/client/java-api/current/client.htmls
-   */
-  private static Settings createSettings(boolean sniff) {
-    return Settings.builder()
-
-        // Increase the ping timeout from the 5s (default) to something larger to prevent transient
-        // NoNodeAvailableExceptions
-        .put("client.transport.ping_timeout", "20s")
-
-        // The time to wait for a ping response from a node. Defaults to 5s.
-        .put("client.transport.nodes_sampler_interval", "10s")
-
-        // Enable / disable the client to sniff the rest of the cluster, and add those into its list of machines to use.
-        // In this case, note that the IP addresses used will be the ones that the other nodes were started with (the
-        // "publish" address)
-        .put("client.transport.sniff", sniff)
-        .build();
   }
 
   private static String createWriterId() {
