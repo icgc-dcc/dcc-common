@@ -20,15 +20,15 @@ package org.icgc.dcc.dcc.common.es;
 import static lombok.AccessLevel.PRIVATE;
 import static org.elasticsearch.action.bulk.BulkProcessor.builder;
 
+import java.net.InetAddress;
 import java.net.URI;
 import java.util.Random;
 
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.icgc.dcc.dcc.common.es.core.DocumentWriter;
 import org.icgc.dcc.dcc.common.es.impl.BulkProcessorListener;
 import org.icgc.dcc.dcc.common.es.impl.ClusterStateVerifier;
@@ -65,12 +65,14 @@ public final class DocumentWriterFactory {
     val address = new InetSocketTransportAddress(host, port);
 
     log.info("Creating ES transport client from URI '{}': host = '{}', port = {}", new Object[] { esUri, host, port });
-    return new TransportClient(createSettings(sniff)).addTransportAddress(address);
+    return new PreBuiltTransportClient(createSettings(sniff)).addTransportAddress(address);
   }
 
   @SneakyThrows
-  private static String getHost(String esUri) {
-    return new URI(esUri).getHost();
+  private static InetAddress getHost(String esUri) {
+    val host = new URI(esUri).getHost();
+
+    return InetAddress.getByName(host);
   }
 
   @SneakyThrows
@@ -83,8 +85,8 @@ public final class DocumentWriterFactory {
    * 
    * @see http://www.elasticsearch.org/guide/en/elasticsearch/client/java-api/current/client.htmls
    */
-  private static Builder createSettings(boolean sniff) {
-    return ImmutableSettings.settingsBuilder()
+  private static Settings createSettings(boolean sniff) {
+    return Settings.builder()
 
         // Increase the ping timeout from the 5s (default) to something larger to prevent transient
         // NoNodeAvailableExceptions
@@ -96,7 +98,8 @@ public final class DocumentWriterFactory {
         // Enable / disable the client to sniff the rest of the cluster, and add those into its list of machines to use.
         // In this case, note that the IP addresses used will be the ones that the other nodes were started with (the
         // "publish" address)
-        .put("client.transport.sniff", sniff);
+        .put("client.transport.sniff", sniff)
+        .build();
   }
 
   private static String createWriterId() {

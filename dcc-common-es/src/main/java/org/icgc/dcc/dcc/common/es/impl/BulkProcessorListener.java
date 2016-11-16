@@ -19,11 +19,6 @@ package org.icgc.dcc.dcc.common.es.impl;
 
 import static org.icgc.dcc.common.core.util.Formats.formatBytes;
 import static org.icgc.dcc.common.core.util.Formats.formatCount;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
 
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.bulk.BulkProcessor;
@@ -32,6 +27,12 @@ import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 
 import com.google.common.base.Throwables;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -121,7 +122,6 @@ public class BulkProcessorListener implements Listener {
     return message.length() > maxChars ? message.substring(0, maxChars) : message;
   }
 
-  @SuppressWarnings("rawtypes")
   private void reindexFailedRequests(BulkProcessor processor, BulkRequest bulkRequest, BulkResponse bulkResponse) {
     log.debug("[{}] Re-indexing failed requests", writerId);
 

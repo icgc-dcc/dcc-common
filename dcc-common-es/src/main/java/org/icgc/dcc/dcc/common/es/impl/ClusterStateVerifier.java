@@ -20,19 +20,19 @@ package org.icgc.dcc.dcc.common.es.impl;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Throwables.propagate;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus.GREEN;
+import static org.elasticsearch.cluster.health.ClusterHealthStatus.GREEN;
 
 import java.util.concurrent.TimeUnit;
+
+import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.cluster.health.ClusterHealthStatus;
+import org.icgc.dcc.dcc.common.es.core.ExhausedRetryException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
-
-import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
-import org.elasticsearch.client.Client;
-import org.icgc.dcc.dcc.common.es.core.ExhausedRetryException;
 
 @Slf4j
 @RequiredArgsConstructor
