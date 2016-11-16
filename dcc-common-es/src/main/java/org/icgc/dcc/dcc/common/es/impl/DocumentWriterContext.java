@@ -15,23 +15,22 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.dcc.common.es.model;
+package org.icgc.dcc.dcc.common.es.impl;
 
-import lombok.NonNull;
+import lombok.Builder;
 import lombok.Value;
 
-import org.icgc.dcc.dcc.common.es.impl.DocumentType;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.elasticsearch.action.bulk.BulkProcessor;
+import org.elasticsearch.client.Client;
 
 @Value
-public class Document {
+@Builder
+public class DocumentWriterContext {
 
-  @NonNull
-  String id;
-  @NonNull
-  ObjectNode source;
-  @NonNull
-  DocumentType type;
+  Client client;
+  String indexName;
+  IndexingState indexingState;
+  BulkProcessor bulkProcessor;
+  String writerId;
 
 }

@@ -39,10 +39,10 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 public final class TransportClientFactory {
 
   /**
-   * Creates a {@link TransportClient} with the {@code client.transport.sniff} set to {@code false}.
+   * Creates a {@link TransportClient} with the {@code client.transport.sniff} set to {@code true}.
    */
   public static Client createClient(@NonNull String esUri) {
-    return createClient(esUri, false);
+    return createClient(esUri, true);
   }
 
   /**
