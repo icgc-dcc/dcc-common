@@ -15,32 +15,10 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.dcc.common.es;
+package org.icgc.dcc.dcc.common.es.impl;
 
-import static lombok.AccessLevel.PRIVATE;
-import static org.icgc.dcc.dcc.common.es.TransportClientFactory.createClient;
-import static org.icgc.dcc.dcc.common.es.impl.DocumentWriterContextFactory.createContext;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
+public interface IndexDocumentType {
 
-import org.icgc.dcc.dcc.common.es.core.DocumentWriter;
-import org.icgc.dcc.dcc.common.es.impl.DefaultDocumentWriter;
-
-@NoArgsConstructor(access = PRIVATE)
-public final class DocumentWriterFactory {
-
-  public static DocumentWriter createDocumentWriter(@NonNull DocumentWriterConfiguration configuration) {
-    val client = configuration.client() != null ? configuration.client() : createClient(configuration.esUrl());
-    val writerContext = createContext(client, configuration.indexName());
-
-    return new DefaultDocumentWriter(writerContext);
-  }
-
-  public static DocumentWriter createDocumentWriter(@NonNull String indexName, @NonNull String esUri) {
-    val writerContext = createContext(indexName, esUri);
-
-    return new DefaultDocumentWriter(writerContext);
-  }
+  String getIndexType();
 
 }
