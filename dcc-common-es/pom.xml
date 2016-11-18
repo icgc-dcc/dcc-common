@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.icgc.dcc</groupId>
     <artifactId>dcc-common</artifactId>
-    <version>4.3.4-SNAPSHOT</version>
+    <version>4.3.5-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -87,6 +87,12 @@
   <properties>
     <elasticsearch.version>5.0.0</elasticsearch.version>
     <log4j.version>2.6.2</log4j.version>
+
+    <!-- Same as in Spark -->
+    <jackson.version>2.4.4</jackson.version>
+    <jackson-smile.version>${jackson.version}</jackson-smile.version>
+    <jackson-yaml.version>${jackson.version}</jackson-yaml.version>
+    <jackson-csv.version>${jackson.version}</jackson-csv.version>
   </properties>
 
 </project>
