@@ -34,7 +34,7 @@ public final class JacksonFactory {
     val factory = new SmileFactory();
     val mapper = new ObjectMapper(factory);
 
-    return mapper.writerFor(ObjectNode.class);
+    return mapper.writerWithType(ObjectNode.class);
   }
 
 }

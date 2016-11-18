@@ -22,17 +22,17 @@ import static lombok.AccessLevel.PRIVATE;
 import java.net.InetAddress;
 import java.net.URI;
 
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
-
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.SneakyThrows;
+import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
@@ -49,6 +49,7 @@ public final class TransportClientFactory {
    * Creates a {@link TransportClient}.
    */
   @SneakyThrows
+  @SuppressWarnings("resource")
   public static Client createClient(@NonNull String esUri, boolean sniff) {
     val uri = new URI(esUri);
     val host = InetAddress.getByName(uri.getHost());
