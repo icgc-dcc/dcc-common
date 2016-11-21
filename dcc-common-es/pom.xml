@@ -44,17 +44,6 @@
       <artifactId>elasticsearch-shaded</artifactId>
       <version>${elasticsearch.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.elasticsearch.client</groupId>
-      <artifactId>transport</artifactId>
-      <version>${elasticsearch.version}</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>elasticsearch</artifactId>
-          <groupId>org.elasticsearch</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
 
     <!-- JSON -->
     <dependency>
