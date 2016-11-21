@@ -18,14 +18,13 @@
 package org.icgc.dcc.dcc.common.es.json;
 
 import static lombok.AccessLevel.PRIVATE;
+import lombok.NoArgsConstructor;
+import lombok.val;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.smile.SmileFactory;
-
-import lombok.NoArgsConstructor;
-import lombok.val;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class JacksonFactory {

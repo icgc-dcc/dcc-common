@@ -15,23 +15,10 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.dcc.common.es.model;
+package org.icgc.dcc.dcc.common.es.impl;
 
-import lombok.NonNull;
-import lombok.Value;
+public interface DocumentType {
 
-import org.icgc.dcc.dcc.common.es.impl.IndexDocumentType;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-@Value
-public class IndexDocument {
-
-  @NonNull
-  String id;
-  @NonNull
-  ObjectNode source;
-  @NonNull
-  IndexDocumentType type;
+  String getIndexType();
 
 }

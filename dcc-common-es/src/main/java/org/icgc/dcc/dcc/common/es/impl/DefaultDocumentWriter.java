@@ -36,7 +36,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.icgc.dcc.dcc.common.es.core.DocumentWriter;
 import org.icgc.dcc.dcc.common.es.json.JacksonFactory;
-import org.icgc.dcc.dcc.common.es.model.IndexDocument;
+import org.icgc.dcc.dcc.common.es.model.Document;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -79,22 +79,23 @@ public class DefaultDocumentWriter implements DocumentWriter {
    */
   private int documentCount;
 
-  public DefaultDocumentWriter(DocumentWriterContext context) {
-    this.indexName = context.getIndexName();
-    this.writerId = context.getWriterId();
-    this.indexingState = context.getIndexingState();
-    this.processor = context.getBulkProcessor();
-    this.client = context.getClient();
+  public DefaultDocumentWriter(Client client, String indexName, IndexingState indexingState, BulkProcessor bulkProcessor,
+      String writerId) {
+    this.indexName = indexName;
+    this.writerId = writerId;
+    this.indexingState = indexingState;
+    this.processor = bulkProcessor;
+    this.client = client;
     log.info("[{}] Created ES document writer.", writerId);
   }
 
   @Override
-  public void write(@NonNull IndexDocument document) throws IOException {
+  public void write(@NonNull Document document) throws IOException {
     byte[] source = createSource(document.getSource());
     write(document.getId(), document.getType(), source);
   }
 
-  protected void write(String id, IndexDocumentType type, byte[] source) {
+  protected void write(String id, DocumentType type, byte[] source) {
     if (isBigDocument(source.length)) {
       processor.flush();
     }
@@ -124,7 +125,7 @@ public class DefaultDocumentWriter implements DocumentWriter {
     }
   }
 
-  private IndexRequest createRequest(String id, IndexDocumentType type, byte[] source) {
+  private IndexRequest createRequest(String id, DocumentType type, byte[] source) {
     return indexRequest(indexName).type(type.getIndexType()).id(id).contentType(SMILE).source(source);
   }
 
