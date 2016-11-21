@@ -48,6 +48,12 @@
       <groupId>org.elasticsearch.client</groupId>
       <artifactId>transport</artifactId>
       <version>${elasticsearch.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>elasticsearch</artifactId>
+          <groupId>org.elasticsearch</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- JSON -->
@@ -87,12 +93,6 @@
   <properties>
     <elasticsearch.version>5.0.0</elasticsearch.version>
     <log4j.version>2.6.2</log4j.version>
-
-    <!-- Same as in Spark -->
-    <jackson.version>2.4.4</jackson.version>
-    <jackson-smile.version>${jackson.version}</jackson-smile.version>
-    <jackson-yaml.version>${jackson.version}</jackson-yaml.version>
-    <jackson-csv.version>${jackson.version}</jackson-csv.version>
   </properties>
 
 </project>

@@ -22,13 +22,13 @@ import static org.elasticsearch.action.bulk.BulkProcessor.builder;
 
 import java.util.Random;
 
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.client.Client;
 import org.icgc.dcc.dcc.common.es.TransportClientFactory;
+
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.val;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class DocumentWriterContextFactory {
@@ -37,10 +37,10 @@ public final class DocumentWriterContextFactory {
   private static final int BULK_ACTIONS = -1; // Unlimited
 
   /**
-   * Creates {@link DocumentWriterContext} where {@link Client} has {@code sniffMode} enabled.
+   * Creates {@link DocumentWriterContext} where {@link Client} has {@code sniffMode} disabled.
    */
   public static DocumentWriterContext createContext(@NonNull String indexName, @NonNull String esUri) {
-    return createContext(indexName, esUri, true);
+    return createContext(indexName, esUri, false);
   }
 
   public static DocumentWriterContext createContext(@NonNull String indexName, @NonNull String esUri, boolean sniff) {

@@ -51,15 +51,15 @@ public class BulkProcessorListener implements Listener {
   @Override
   public void beforeBulk(long executionId, BulkRequest request) {
     clusterStateVerifier.ensureClusterState();
-    log.debug("{}", indexingState);
+    log.debug("Indexing state before load. {}", indexingState);
     indexingState.startIndexing();
     printRequestStats(executionId, request);
   }
 
   @Override
   public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
-    log.debug("[{}] Received successful response for request {}", writerId, executionId);
-    log.debug("{}", indexingState);
+    log.debug("[{}] Received response for request {}", writerId, executionId);
+    log.debug("Indexing state after load. {}", indexingState);
 
     // Unsuccessful bulk response. Re-index only failed requests.
     if (response.hasFailures()) {
@@ -72,7 +72,7 @@ public class BulkProcessorListener implements Listener {
     // Successful bulk response
     log.info("[{}] Successfully loaded bulk request '{}'.", writerId, executionId);
     indexingState.resetIndexState();
-    log.debug("{}", indexingState);
+    log.debug("Indexing state after load. {}", indexingState);
   }
 
   @Override

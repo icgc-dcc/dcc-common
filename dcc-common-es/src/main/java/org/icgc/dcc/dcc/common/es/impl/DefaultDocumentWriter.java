@@ -25,11 +25,6 @@ import static org.icgc.dcc.common.core.util.Formats.formatCount;
 
 import java.io.IOException;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
-
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Client;
@@ -40,6 +35,11 @@ import org.icgc.dcc.dcc.common.es.model.IndexDocument;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
+
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Output destination for {@link DefaultDocument} instances to be written.
@@ -106,6 +106,7 @@ public class DefaultDocumentWriter implements DocumentWriter {
 
   @Override
   public void close() throws IOException {
+    log.debug("Trying to close the document writer...");
     // Initiate an index request which will set the pendingBulkRequest
     processor.flush();
 
