@@ -27,7 +27,25 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>elasticsearch-plugins</artifactId>
+  <artifactId>elasticsearch-test-shaded</artifactId>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.elasticsearch.test</groupId>
+      <artifactId>framework</artifactId>
+      <version>${elasticsearch.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.elasticsearch</groupId>
+          <artifactId>securemock</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.elasticsearch</groupId>
+          <artifactId>elasticsearch</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -83,6 +101,14 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
                 <relocation>
                   <pattern>org.antlr</pattern>
                   <shadedPattern>${elasticsearch.package}.antlr</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.httpcomponents</pattern>
+                  <shadedPattern>${elasticsearch.package}.apache.httpcomponents</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>commons-codec</pattern>
+                  <shadedPattern>${elasticsearch.package}.commons-codec</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>

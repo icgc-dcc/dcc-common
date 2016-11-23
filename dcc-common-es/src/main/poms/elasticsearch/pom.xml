@@ -31,7 +31,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
   <inceptionYear>2016</inceptionYear>
 
   <modules>
-    <module>elasticsearch-plugins</module>
+    <module>elasticsearch-test-shaded</module>
     <module>elasticsearch-shaded</module>
   </modules>
 
@@ -57,7 +57,12 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
               <configuration>
                 <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
                 <transformers>
-                  <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer" />
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                    <manifestEntries>
+                      <Change>GIT commit ID</Change>
+                      <Build-Date>${maven.build.timestamp}</Build-Date>
+                    </manifestEntries>
+                  </transformer>
                 </transformers>
                 <filters>
                   <filter>

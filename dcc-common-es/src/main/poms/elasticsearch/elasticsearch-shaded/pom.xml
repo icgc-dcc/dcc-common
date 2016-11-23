@@ -68,14 +68,6 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
                   <shadedPattern>${elasticsearch.package}.jboss.netty</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>org.joda</pattern>
-                  <shadedPattern>${elasticsearch.package}.joda</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>joda-time</pattern>
-                  <shadedPattern>${elasticsearch.package}.joda-time</shadedPattern>
-                </relocation>
-                <relocation>
                   <pattern>org.yaml</pattern>
                   <shadedPattern>${elasticsearch.package}.yaml</shadedPattern>
                 </relocation>
@@ -96,8 +88,6 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
                   <include>com.fasterxml.jackson.core:*</include>
                   <include>com.fasterxml.jackson.dataformat:*</include>
                   <include>io.netty:*</include>
-                  <include>org.joda:*</include>
-                  <include>joda-time:*</include>
                   <include>org.yaml:*</include>
                   <include>org.apache.httpcomponents:*</include>
                   <include>commons-codec:*</include>
