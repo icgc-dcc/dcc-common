@@ -88,33 +88,6 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <configuration>
-              <relocations>
-                <relocation>
-                  <pattern>org.objectweb.asm</pattern>
-                  <shadedPattern>${elasticsearch.package}.objectweb.asm</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>org.antlr</pattern>
-                  <shadedPattern>${elasticsearch.package}.antlr</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>org.apache.httpcomponents</pattern>
-                  <shadedPattern>${elasticsearch.package}.apache.httpcomponents</shadedPattern>
-                </relocation>
-                <relocation>
-                  <pattern>commons-codec</pattern>
-                  <shadedPattern>${elasticsearch.package}.commons-codec</shadedPattern>
-                </relocation>
-              </relocations>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
