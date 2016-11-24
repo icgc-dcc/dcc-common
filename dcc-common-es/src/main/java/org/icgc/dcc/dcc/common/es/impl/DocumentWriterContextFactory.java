@@ -19,11 +19,15 @@ package org.icgc.dcc.dcc.common.es.impl;
 
 import static lombok.AccessLevel.PRIVATE;
 import static org.elasticsearch.action.bulk.BulkProcessor.builder;
+import static org.icgc.dcc.dcc.common.es.TransportClientFactory.createClient;
+import static org.icgc.dcc.dcc.common.es.util.BulkProcessorConfiguration.DEFAULT_BULK_SIZE_MB;
+import static org.icgc.dcc.dcc.common.es.util.BulkProcessorConfiguration.getBulkSize;
 
 import java.util.Random;
 
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.client.Client;
+import org.icgc.dcc.dcc.common.es.DocumentWriterConfiguration;
 import org.icgc.dcc.dcc.common.es.TransportClientFactory;
 
 import lombok.NoArgsConstructor;
@@ -49,12 +53,24 @@ public final class DocumentWriterContextFactory {
     return createContext(client, indexName);
   }
 
+  public static DocumentWriterContext createContext(@NonNull DocumentWriterConfiguration configuration) {
+    val client = configuration.client() != null ? configuration.client() : createClient(configuration.esUrl());
+    val indexName = configuration.indexName();
+
+    return createContext(client, indexName, configuration.bulkSizeMb());
+  }
+
   public static DocumentWriterContext createContext(@NonNull Client client, @NonNull String indexName) {
+    return createContext(client, indexName, DEFAULT_BULK_SIZE_MB);
+  }
+
+  public static DocumentWriterContext createContext(@NonNull Client client, @NonNull String indexName,
+      Integer bulkSizeMb) {
     val writerId = createWriterId();
     val indexingState = new IndexingState(writerId);
     val clusterStateVerifier = new ClusterStateVerifier(client, indexName, writerId, indexingState);
     val bulkProcessorListener = new BulkProcessorListener(clusterStateVerifier, indexingState, writerId);
-    val bulkProcessor = createProcessor(client, bulkProcessorListener);
+    val bulkProcessor = createProcessor(client, bulkProcessorListener, bulkSizeMb);
 
     return DocumentWriterContext.builder()
         .client(client)
@@ -71,10 +87,12 @@ public final class DocumentWriterContextFactory {
     return String.valueOf(Math.abs(id));
   }
 
-  private static BulkProcessor createProcessor(Client client, BulkProcessorListener listener) {
-    val bulkProcessor =
-        builder(client, listener).setBulkActions(BULK_ACTIONS).setBulkSize(DefaultDocumentWriter.BULK_SIZE)
-            .setConcurrentRequests(0).build();
+  private static BulkProcessor createProcessor(Client client, BulkProcessorListener listener, Integer bulkSizeMb) {
+    val bulkProcessor = builder(client, listener)
+        .setBulkActions(BULK_ACTIONS)
+        .setBulkSize(getBulkSize(bulkSizeMb))
+        .setConcurrentRequests(0)
+        .build();
 
     // Need to give back reference to bulkProcessor as it's reused for re-indexing of failed requests.
     listener.setProcessor(bulkProcessor);

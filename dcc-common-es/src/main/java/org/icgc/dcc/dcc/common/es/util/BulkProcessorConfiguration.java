@@ -15,35 +15,30 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.dcc.common.es;
+package org.icgc.dcc.dcc.common.es.util;
 
+import static java.util.Objects.isNull;
 import static lombok.AccessLevel.PRIVATE;
-import static org.icgc.dcc.dcc.common.es.impl.DocumentWriterContextFactory.createContext;
+import static org.elasticsearch.common.unit.ByteSizeUnit.MB;
 
-import org.elasticsearch.client.Client;
-import org.icgc.dcc.dcc.common.es.core.DocumentWriter;
-import org.icgc.dcc.dcc.common.es.impl.DefaultDocumentWriter;
+import org.elasticsearch.common.unit.ByteSizeValue;
 
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
 
 @NoArgsConstructor(access = PRIVATE)
-public final class DocumentWriterFactory {
+public final class BulkProcessorConfiguration {
 
-  public static DocumentWriter createDocumentWriter(@NonNull DocumentWriterConfiguration configuration) {
-    val writerContext = createContext(configuration);
+  public static final int DEFAULT_BULK_SIZE_MB = 36;
+  public static final ByteSizeValue DEFAULT_BULK_SIZE = new ByteSizeValue(DEFAULT_BULK_SIZE_MB, MB);
 
-    return new DefaultDocumentWriter(writerContext);
+  public static ByteSizeValue getBulkSize(Integer bulkSizeMb) {
+    int bulkSizeValue = isNull(bulkSizeMb) ? DEFAULT_BULK_SIZE_MB : bulkSizeMb;
+
+    return getBulkSize(bulkSizeValue);
   }
 
-  /**
-   * Creates document writer where the {@code sniffMode} is <strong>disabled</strong> for the {@link Client}.
-   */
-  public static DocumentWriter createDocumentWriter(@NonNull String indexName, @NonNull String esUri) {
-    val writerContext = createContext(indexName, esUri);
-
-    return new DefaultDocumentWriter(writerContext);
+  public static ByteSizeValue getBulkSize(int bulkSizeMb) {
+    return bulkSizeMb == DEFAULT_BULK_SIZE_MB ? DEFAULT_BULK_SIZE : new ByteSizeValue(bulkSizeMb, MB);
   }
 
 }

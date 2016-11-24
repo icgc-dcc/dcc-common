@@ -17,11 +17,11 @@
  */
 package org.icgc.dcc.dcc.common.es.impl;
 
-import lombok.Builder;
-import lombok.Value;
-
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.client.Client;
+
+import lombok.Builder;
+import lombok.Value;
 
 @Value
 @Builder
@@ -32,5 +32,6 @@ public class DocumentWriterContext {
   IndexingState indexingState;
   BulkProcessor bulkProcessor;
   String writerId;
+  Integer bulkSizeMb;
 
 }

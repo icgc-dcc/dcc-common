@@ -19,9 +19,9 @@ package org.icgc.dcc.dcc.common.es.impl;
 
 import static com.google.common.base.Throwables.propagate;
 import static org.elasticsearch.client.Requests.indexRequest;
-import static org.elasticsearch.common.unit.ByteSizeUnit.MB;
 import static org.elasticsearch.common.xcontent.XContentType.SMILE;
 import static org.icgc.dcc.common.core.util.Formats.formatCount;
+import static org.icgc.dcc.dcc.common.es.util.BulkProcessorConfiguration.getBulkSize;
 
 import java.io.IOException;
 
@@ -50,7 +50,6 @@ public class DefaultDocumentWriter implements DocumentWriter {
   /**
    * Constants.
    */
-  public static final ByteSizeValue BULK_SIZE = new ByteSizeValue(36, MB);
   private static final ObjectWriter BINARY_WRITER = JacksonFactory.getObjectWriter();
 
   /**
@@ -63,6 +62,7 @@ public class DefaultDocumentWriter implements DocumentWriter {
    * Helps to track log records related to this particular writer.
    */
   private final String writerId;
+  private final ByteSizeValue bulkSize;
 
   /**
    * Batching state.
@@ -85,6 +85,7 @@ public class DefaultDocumentWriter implements DocumentWriter {
     this.indexingState = context.getIndexingState();
     this.processor = context.getBulkProcessor();
     this.client = context.getClient();
+    this.bulkSize = getBulkSize(context.getBulkSizeMb());
     log.info("[{}] Created ES document writer.", writerId);
   }
 
@@ -129,8 +130,8 @@ public class DefaultDocumentWriter implements DocumentWriter {
     return indexRequest(indexName).type(type.getIndexType()).id(id).contentType(SMILE).source(source);
   }
 
-  private static boolean isBigDocument(int length) {
-    return length > BULK_SIZE.getBytes();
+  private boolean isBigDocument(int length) {
+    return length > bulkSize.getBytes();
   }
 
 }
