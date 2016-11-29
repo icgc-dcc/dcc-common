@@ -89,7 +89,7 @@ public enum DownloadDataType implements Identifiable {
   private static final String OPEN_SUFFIX = "_open";
 
   public static final Set<DownloadDataType> CLINICAL = ImmutableSet.of(DONOR, DONOR_FAMILY, DONOR_THERAPY,
-      DONOR_EXPOSURE, SPECIMEN, SAMPLE);
+      DONOR_EXPOSURE, SPECIMEN, SAMPLE, BIOMARKER, SURGERY);
 
   private static final Set<DownloadDataType> CLINICAL_SUBTYPES = CLINICAL.stream()
       .filter(dt -> dt != DONOR)
