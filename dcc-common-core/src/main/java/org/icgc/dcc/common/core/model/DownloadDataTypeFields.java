@@ -21,10 +21,10 @@ import static lombok.AccessLevel.PRIVATE;
 
 import java.util.Map;
 
-import lombok.NoArgsConstructor;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class DownloadDataTypeFields {
@@ -140,6 +140,29 @@ public final class DownloadDataTypeFields {
       .put("percentage_cellularity", "percentage_cellularity")
       .put("level_of_cellularity", "level_of_cellularity")
       .put("study", "study")
+      .build();
+
+  public static final Map<String, String> BIOMARKER_FIELDS = ImmutableMap.<String, String> builder()
+      .put("_donor_id", "icgc_donor_id")
+      .put("donor_id", "submitted_donor_id")
+      .put("_specimen_id", "icgc_specimen_id")
+      .put("specimen_id", "submitted_specimen_id")
+      .put("_project_id", "project_code")
+      .put("biomarker_name", "biomarker_name")
+      .put("biomarker_threshold", "biomarker_threshold")
+      .put("biomarker_positive", "biomarker_positive")
+      .build();
+
+  public static final Map<String, String> SURGERY_FIELDS = ImmutableMap.<String, String> builder()
+      .put("_donor_id", "icgc_donor_id")
+      .put("donor_id", "submitted_donor_id")
+      .put("_specimen_id", "icgc_specimen_id")
+      .put("specimen_id", "submitted_specimen_id")
+      .put("_project_id", "project_code")
+      .put("procedure_interval", "procedure_interval")
+      .put("procedure_type", "procedure_type")
+      .put("procedure_site", "procedure_site")
+      .put("resection_status", "resection_status")
       .build();
 
   public static final Map<String, String> CNSM_FIELDS = ImmutableMap.<String, String> builder()
