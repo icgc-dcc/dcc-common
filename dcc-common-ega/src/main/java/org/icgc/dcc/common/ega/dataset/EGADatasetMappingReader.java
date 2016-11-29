@@ -29,10 +29,10 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import org.icgc.dcc.common.core.io.ForwardingInputStream;
-import org.icgc.dcc.common.core.util.Splitters;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Splitter;
@@ -144,23 +144,20 @@ public class EGADatasetMappingReader {
     if (isNullOrEmpty(text)) {
       return attributes;
     }
-  
-    List<String> values = EQUALS.trimResults().omitEmptyStrings().splitToList(text);
-    for (int i = 0; i < values.size(); i += 2) {
-      val key = values.get(i);
-  
-      if (i + 1 >= values.size()) {
-        break;
-      }
-  
-      val attributeValue = values.get(i + 1);
-      if (attributeValue.contains(";")) {
-        attributes.putPOJO(key, Splitters.SEMICOLON.split(values.get(i + 1)));
+
+    val pattern = Pattern.compile("([^=]+)=([^=]+)(?:;|$)");
+    val matcher = pattern.matcher(text);
+    while (matcher.find()) {
+      val key = matcher.group(1);
+      val value = matcher.group(2);
+      val values = SEMICOLON.splitToList(value);
+      if (values.size() > 1) {
+        attributes.putPOJO(key, values);
       } else {
-        attributes.put(key, attributeValue);
+        attributes.put(key, values.get(0));
       }
     }
-  
+
     return attributes;
   }
 

@@ -81,6 +81,7 @@ public class EGADatasetMetaReader {
 
       return new EGADatasetDump(datasetId, catalog, projectCodes, files, archive);
     } catch (Exception e) {
+      errors.add(e);
       log.error("Exception reading dataset {}: {}", datasetId, e.getMessage());
     }
 
