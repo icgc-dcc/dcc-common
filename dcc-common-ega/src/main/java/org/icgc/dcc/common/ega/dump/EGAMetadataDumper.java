@@ -17,7 +17,12 @@
  */
 package org.icgc.dcc.common.ega.dump;
 
+import static com.google.common.base.Strings.repeat;
+import static org.icgc.dcc.common.core.io.Files2.getHomeDir;
+
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
 
 import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchiveResolver;
@@ -28,12 +33,23 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Utility for creating a dump of all EGA metadata.
  */
+@Slf4j
 @RequiredArgsConstructor
 public class EGAMetadataDumper {
+
+  public static void main(String[] args) {
+    val dumper = new EGAMetadataDumper();
+
+    val date = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss").format(LocalDateTime.now());
+    val file = new File(getHomeDir(), "icgc-ega-datasets." + date + ".jsonl");
+
+    dumper.create(file);
+  }
 
   /**
    * Dependencies.
@@ -48,8 +64,17 @@ public class EGAMetadataDumper {
   @SneakyThrows
   public void create(@NonNull File file) {
     val datasets = read();
-
     write(file, datasets);
+
+    report();
+  }
+
+  public void report() {
+    banner("Error report:");
+    int i = 1;
+    for (val error : reader.getErrors()) {
+      log.error("   [{}] Error: {}", i++, error.getMessage());
+    }
   }
 
   private Stream<EGADatasetDump> read() {
@@ -62,6 +87,13 @@ public class EGAMetadataDumper {
 
   private static EGADatasetMetaReader createReader() {
     return new EGADatasetMetaReader(new EGAAPIClient().login(), new EGADatasetMetaArchiveResolver());
+  }
+
+  private static void banner(String message) {
+    val line = repeat("-", 100);
+    log.info(line);
+    log.info(message);
+    log.info(line);
   }
 
 }

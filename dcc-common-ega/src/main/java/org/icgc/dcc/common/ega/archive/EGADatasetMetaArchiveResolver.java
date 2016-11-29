@@ -18,12 +18,14 @@
 package org.icgc.dcc.common.ega.archive;
 
 import java.net.URL;
+import java.util.Set;
+import java.util.TreeSet;
 
+import org.icgc.dcc.common.ega.client.EGAAPIClient;
 import org.icgc.dcc.common.ega.client.EGAFTPClient;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.val;
 
 @RequiredArgsConstructor
@@ -36,27 +38,23 @@ public class EGADatasetMetaArchiveResolver {
   private static final EGADatasetMetaArchiveReader ARCHIVE_READER = new EGADatasetMetaArchiveReader();
 
   /**
-   * Configuration.
-   */
-  @NonNull
-  private final String apiUrl;
-
-  /**
    * Dependencies.
    */
+  @NonNull
+  private final EGAAPIClient api;
   @NonNull
   private final EGAFTPClient ftp;
 
   public EGADatasetMetaArchiveResolver() {
-    this(DEFAULT_API_URL);
+    this(new EGAAPIClient().login(), new EGAFTPClient());
   }
 
-  public EGADatasetMetaArchiveResolver(EGAFTPClient ftp) {
-    this(DEFAULT_API_URL, ftp);
-  }
+  public Set<String> resolveDatasetIds() {
+    val datasetIds = new TreeSet<String>();
+    datasetIds.addAll(ftp.getDatasetIds());
+    datasetIds.addAll(api.getDatasetIds());
 
-  public EGADatasetMetaArchiveResolver(String apiUrl) {
-    this(apiUrl, new EGAFTPClient());
+    return datasetIds;
   }
 
   public EGADatasetMetaArchive resolveArchive(@NonNull String datasetId) {
@@ -68,13 +66,8 @@ public class EGADatasetMetaArchiveResolver {
     if (ftp.hasDatasetId(datasetId)) {
       return ftp.getArchiveURL(datasetId);
     } else {
-      return getArchiveURL(datasetId);
+      return api.getArchiveURL(datasetId);
     }
-  }
-
-  @SneakyThrows
-  private URL getArchiveURL(String datasetId) {
-    return new URL(apiUrl + "/metadata/" + datasetId);
   }
 
 }

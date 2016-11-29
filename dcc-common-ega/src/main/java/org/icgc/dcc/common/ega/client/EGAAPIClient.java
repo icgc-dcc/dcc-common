@@ -74,6 +74,7 @@ public class EGAAPIClient {
    * Constants - Defaults
    */
   private static final String DEFAULT_API_URL = "https://ega.ebi.ac.uk/ega/rest/access/v2";
+  private static final String DEFAULT_DOWNLOAD_API_URL = "http://ega.ebi.ac.uk/ega/rest/download/v2";
   private static final boolean DEFAULT_RECONNECT = true;
   private static final boolean DEFAULT_RETRY_NOT_AUTHORIZED = false;
 
@@ -174,6 +175,11 @@ public class EGAAPIClient {
   @Synchronized
   public ArrayNode getFile(@NonNull String fileId) {
     return get("/files/" + fileId, new TypeReference<ArrayNode>() {});
+  }
+
+  @SneakyThrows
+  public URL getArchiveURL(@NonNull String datasetId) {
+    return new URL(DEFAULT_DOWNLOAD_API_URL + "/metadata/" + datasetId);
   }
 
   private <T> T get(String path, TypeReference<T> responseType) {

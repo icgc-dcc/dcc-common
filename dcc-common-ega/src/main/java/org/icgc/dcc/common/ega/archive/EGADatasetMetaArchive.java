@@ -35,6 +35,7 @@ public class EGADatasetMetaArchive {
 
   final Map<String, List<ObjectNode>> mappings = Maps.newHashMap();
 
+  final Map<String, ObjectNode> datasets = Maps.newHashMap();
   final Map<String, ObjectNode> studies = Maps.newHashMap();
   final Map<String, ObjectNode> samples = Maps.newHashMap();
   final Map<String, ObjectNode> experiments = Maps.newHashMap();

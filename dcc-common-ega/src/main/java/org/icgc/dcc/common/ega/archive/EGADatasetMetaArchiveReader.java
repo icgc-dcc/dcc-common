@@ -108,10 +108,13 @@ public class EGADatasetMetaArchiveReader {
     archive.getMappings().put(mappingId, mapping);
   }
 
-  private static void readXmlEntry(TarArchiveInputStream tarball, TarArchiveEntry entry, EGADatasetMetaArchive archive) {
+  private static void readXmlEntry(TarArchiveInputStream tarball, TarArchiveEntry entry,
+      EGADatasetMetaArchive archive) {
     val xml = parseXml(tarball);
 
-    if (isStudy(entry)) {
+    if (isDataset(entry)) {
+      archive.getDatasets().put(entry.getName(), xml);
+    } else if (isStudy(entry)) {
       archive.getStudies().put(getStudyId(entry), xml);
     } else if (isSample(entry)) {
       archive.getSamples().put(getSampleId(entry), xml);
@@ -121,6 +124,8 @@ public class EGADatasetMetaArchiveReader {
       archive.getRuns().put(getRunId(entry), xml);
     } else if (isAnalysis(entry)) {
       archive.getAnalysis().put(getAnalysisId(entry), xml);
+    } else {
+      log.warn("Unknown file: {}", entry.getName());
     }
   }
 
@@ -160,6 +165,7 @@ public class EGADatasetMetaArchiveReader {
 
   @SneakyThrows
   private URL getArchiveUrl(String datasetId) {
+    // TODO: Is this needed?
     return new URL(apiUrl + "/metadata/" + datasetId);
   }
 
@@ -195,8 +201,12 @@ public class EGADatasetMetaArchiveReader {
     return entry.isFile() && entry.getName().toLowerCase().endsWith(".map");
   }
 
+  private static boolean isDataset(TarArchiveEntry entry) {
+    return is(entry, "/xmls/dataset");
+  }
+
   private static boolean isStudy(TarArchiveEntry entry) {
-    return is(entry, "/xmls/study/");
+    return is(entry, "/xmls/study/") || is(entry, "/xmls/studies/");
   }
 
   private static boolean isSample(TarArchiveEntry entry) {
@@ -212,15 +222,20 @@ public class EGADatasetMetaArchiveReader {
   }
 
   private static boolean isAnalysis(TarArchiveEntry entry) {
-    return is(entry, "/xmls/analysis/");
+    return is(entry, "/xmls/analysis/") || is(entry, "/xmls/analyses/");
   }
 
   private static boolean is(TarArchiveEntry entry, String path) {
-    return entry.getName().contains(path);
+    // Normalize to avoid non-standard naming issues (e.g. /xmls vs /XMLs)
+    val normalizedPath = path.toLowerCase();
+    val normalizedName = entry.getName().toLowerCase();
+
+    return normalizedName.contains(normalizedPath);
   }
 
   private static boolean isXmlFile(TarArchiveEntry entry) {
-    return entry.isFile() && entry.getName().toLowerCase().endsWith(".xml");
+    val normalizedName = entry.getName().toLowerCase();
+    return entry.isFile() && normalizedName.endsWith(".xml");
   }
 
 }

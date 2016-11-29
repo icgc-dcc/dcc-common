@@ -53,6 +53,7 @@ public class EGAMetadataDumpWriter {
 
   @SneakyThrows
   public void write(@NonNull File file, Stream<EGADatasetDump> datasets) {
+    log.info("Writing dump file to {}", file);
     val watch = Stopwatch.createStarted();
 
     @Cleanup
@@ -62,7 +63,7 @@ public class EGAMetadataDumpWriter {
     datasets.forEach(dataset -> {
       String datasetId = dataset.getDatasetId();
       try {
-        log.info("Processing data set: {}", datasetId);
+        log.info("Writing data set: {}", datasetId);
         writeDataset(dataset, writer);
         writer.println();
       } catch (Exception e) {

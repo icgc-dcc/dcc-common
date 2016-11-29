@@ -17,12 +17,14 @@
  */
 package org.icgc.dcc.common.ega.reader;
 
-import static com.google.common.collect.Sets.newTreeSet;
 import static java.util.Collections.emptyList;
+import static org.icgc.dcc.common.core.util.Formats.formatCount;
 import static org.icgc.dcc.common.core.util.function.Predicates.isNotNull;
 import static org.icgc.dcc.common.ega.core.EGAProjectDatasets.getDatasetProjectCodes;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchive;
@@ -32,7 +34,9 @@ import org.icgc.dcc.common.ega.client.EGACatalogClient;
 import org.icgc.dcc.common.ega.dump.EGADatasetDump;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
 
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -48,19 +52,26 @@ public class EGADatasetMetaReader {
   /**
    * Dependencies.
    */
+  private final EGACatalogClient catalog = new EGACatalogClient();
   @NonNull
-  private final EGAAPIClient client;
+  private final EGAAPIClient api;
   @NonNull
   private final EGADatasetMetaArchiveResolver archiveResolver;
 
-  public Stream<EGADatasetDump> readDatasets() {
-    val datasetIds = client.getDatasetIds();
-    val effectiveDatasetIds = newTreeSet(datasetIds);
-    if (effectiveDatasetIds.size() != datasetIds.size()) {
-      log.warn("Data sets include duplicates: {}", datasetIds);
-    }
+  /**
+   * State.
+   */
+  @Getter
+  private final List<Exception> errors = Lists.newArrayList();
 
-    return effectiveDatasetIds.stream().map(this::readDataset).filter(isNotNull());
+  public Stream<EGADatasetDump> readDatasets() {
+    val datasetIds = resolveDatasetIds();
+    log.info("Resolved {} datasets", formatCount(datasetIds));
+
+    val counter = new AtomicInteger();
+    return datasetIds.stream().peek(datasetId -> {
+      log.info("[{}/{}] Processing dataset {}...", counter.incrementAndGet(), datasetIds.size(), datasetId);
+    }).map(this::readDataset).filter(isNotNull());
   }
 
   public EGADatasetDump readDataset(@NonNull String datasetId) {
@@ -72,7 +83,7 @@ public class EGADatasetMetaReader {
 
       return new EGADatasetDump(datasetId, catalog, projectCodes, files, archive);
     } catch (Exception e) {
-      log.error("Exception reading dataset " + datasetId + ": {}", e.getMessage());
+      log.error("Exception reading dataset {}: {}", datasetId, e.getMessage());
     }
 
     return null;
@@ -80,11 +91,16 @@ public class EGADatasetMetaReader {
 
   public List<ObjectNode> readDatasetFiles(String datasetId) {
     try {
-      return client.getDatasetFiles(datasetId);
+      return api.getDatasetFiles(datasetId);
     } catch (Exception e) {
-      log.error("Exception reading dataset " + datasetId + " files: {}", e.getMessage());
+      log.error("Exception reading dataset {} files: {}", datasetId, e.getMessage());
+      errors.add(e);
       return emptyList();
     }
+  }
+
+  private Set<String> resolveDatasetIds() {
+    return archiveResolver.resolveDatasetIds();
   }
 
   private EGADatasetMetaArchive readArchive(String datasetId) {
@@ -92,7 +108,13 @@ public class EGADatasetMetaReader {
   }
 
   private ObjectNode readCatalog(String datasetId) {
-    return new EGACatalogClient().getDataset(datasetId);
+    try {
+      return catalog.getDataset(datasetId);
+    } catch (Exception e) {
+      log.error("Exception reading dataset {} catalog: {}", datasetId, e.getMessage());
+      errors.add(e);
+      return null;
+    }
   }
 
 }

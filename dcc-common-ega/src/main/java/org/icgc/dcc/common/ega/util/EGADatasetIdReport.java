@@ -46,28 +46,32 @@ public class EGADatasetIdReport {
 
     val catDatasetIds = getCatalogDatasetIds(cat, datasetIds);
 
-    val missingFtp = Sets.difference(datasetIds, apiDatasetIds);
-    val missingApi = Sets.difference(datasetIds, ftpDatasetIds);
-    val missingCat = Sets.difference(datasetIds, catDatasetIds);
-
-    log.info("Missing in Catalog:");
-    for (val entry : missingCat) {
-      log.info(" - {}", entry);
-    }
-
-    log.info("Missing in API:");
-    for (val entry : missingApi) {
-      log.info(" - {}", entry);
-    }
-
-    log.info("Missing in FTP:");
-    for (val entry : missingFtp) {
-      log.info(" - {}", entry);
-    }
-
+    report(datasetIds, catDatasetIds, ftpDatasetIds, apiDatasetIds);
   }
 
-  public static Set<String> combineDatasetIds(Set<String> ftpDatasetIds, Set<String> apiDatasetIds) {
+  private static void report(Set<String> datasetIds, Set<String> catDatasetIds, Set<String> ftpDatasetIds,
+      Set<String> apiDatasetIds) {
+    val missingApi = Sets.difference(datasetIds, apiDatasetIds);
+    val missingFtp = Sets.difference(datasetIds, ftpDatasetIds);
+    val missingCat = Sets.difference(datasetIds, catDatasetIds);
+
+    System.out.println("Missing in Catalog:");
+    for (val entry : missingCat) {
+      System.out.println(entry);
+    }
+
+    System.out.println("Missing in API:");
+    for (val entry : missingApi) {
+      System.out.println(entry);
+    }
+
+    System.out.println("Missing in FTP:");
+    for (val entry : missingFtp) {
+      System.out.println(entry);
+    }
+  }
+
+  private static Set<String> combineDatasetIds(Set<String> ftpDatasetIds, Set<String> apiDatasetIds) {
     val datasetIds = new TreeSet<String>();
     datasetIds.addAll(ftpDatasetIds);
     datasetIds.addAll(apiDatasetIds);
@@ -75,7 +79,7 @@ public class EGADatasetIdReport {
     return datasetIds;
   }
 
-  public static Set<String> getCatalogDatasetIds(EGACatalogClient cat, Set<String> datasetIds) {
+  private static Set<String> getCatalogDatasetIds(EGACatalogClient cat, Set<String> datasetIds) {
     log.info("EGA Box mapping:");
     val catDatasetIds = new TreeSet<String>();
 
