@@ -45,7 +45,9 @@ import lombok.RequiredArgsConstructor;
  * @see java.util.UUID
  * @see java.security.MessageDigest
  * 
- * benefit from this code.
+ * @author Luther Tychonievich. Released into the public domain. I would
+ *         consider it a courtesy if you cite me if you benefit from this code.
+ * @link https://github.com/rootsdev/polygenea/blob/master/java/src/org/rootsdev/polygenea/UUID5.java
  */
 @RequiredArgsConstructor(access = PRIVATE)
 public final class UUID5 {
