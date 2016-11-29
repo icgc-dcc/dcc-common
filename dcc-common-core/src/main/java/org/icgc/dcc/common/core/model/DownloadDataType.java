@@ -19,6 +19,7 @@ package org.icgc.dcc.common.core.model;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Collections.emptyMap;
+import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.BIOMARKER_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.CNSM_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.DONOR_EXPOSURE_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.DONOR_FAMILY_FIELDS;
@@ -36,6 +37,7 @@ import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SGV_CONTROLL
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SPECIMEN_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SSM_CONTROLLED_FIELDS;
 import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.STSM_FIELDS;
+import static org.icgc.dcc.common.core.model.DownloadDataTypeFields.SURGERY_FIELDS;
 import static org.icgc.dcc.common.core.util.Separators.EMPTY_STRING;
 import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableList;
 import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableMap;
@@ -46,12 +48,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
 /**
  * Data type requested by the portal users.
@@ -60,13 +62,14 @@ import com.google.common.collect.Sets;
 public enum DownloadDataType implements Identifiable {
 
   // The order of fields is important as it will be used in the output file.
-
   DONOR(DONOR_FIELDS),
   DONOR_FAMILY(DONOR_FAMILY_FIELDS),
   DONOR_THERAPY(DONOR_THERAPY_FIELDS),
   DONOR_EXPOSURE(DONOR_EXPOSURE_FIELDS),
   SPECIMEN(SPECIMEN_FIELDS),
   SAMPLE(SAMPLE_FIELDS),
+  BIOMARKER(BIOMARKER_FIELDS),
+  SURGERY(SURGERY_FIELDS),
 
   CNSM(CNSM_FIELDS, true),
   JCN(JCN_FIELDS),
