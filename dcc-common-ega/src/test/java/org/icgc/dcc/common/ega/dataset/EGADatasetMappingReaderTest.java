@@ -15,35 +15,35 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.client;
+package org.icgc.dcc.common.ega.dataset;
 
-import org.icgc.dcc.common.ega.dataset.EGADatasetMetaArchiveReader;
-import org.junit.Ignore;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.junit.Test;
+
+import com.google.common.io.Resources;
 
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Ignore("For development only")
-public class EGAFTPClientTest {
+public class EGADatasetMappingReaderTest {
 
-  EGAFTPClient client = new EGAFTPClient();
+  EGADatasetMappingReader reader = new EGADatasetMappingReader();
 
   @Test
-  public void testGetDatasetIds() throws Exception {
-    val dataSetIds = client.getDatasetIds();
-    log.info("dataSetIds: {}", dataSetIds);
-
-    for (val dataSetId : dataSetIds) {
-      log.info("Reading: {}", dataSetId);
-      val url = client.getArchiveURL(dataSetId);
-      log.info("URL: {}", url);
-
-      val reader = new EGADatasetMetaArchiveReader();
-      val archive = reader.read(dataSetId, url);
-      log.info("Dataset: {}", archive);
+  public void testRead() throws Exception {
+    val fileName = "Analysis_Sample.txt";
+    val inputStream = readMapping(fileName);
+    val mappings = reader.read(fileName, inputStream);
+    for (val record : mappings) {
+      log.info("{}", record);
     }
+  }
+
+  InputStream readMapping(String fileName) throws IOException {
+    return Resources.getResource("fixtures/mappings/" + fileName).openStream();
   }
 
 }

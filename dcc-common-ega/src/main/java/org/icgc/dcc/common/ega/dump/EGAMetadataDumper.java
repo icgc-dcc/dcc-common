@@ -25,9 +25,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
 
-import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchiveResolver;
 import org.icgc.dcc.common.ega.client.EGAAPIClient;
-import org.icgc.dcc.common.ega.reader.EGADatasetMetaReader;
+import org.icgc.dcc.common.ega.dataset.EGADatasetMetaArchiveResolver;
+import org.icgc.dcc.common.ega.dataset.EGADatasetMetaReader;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

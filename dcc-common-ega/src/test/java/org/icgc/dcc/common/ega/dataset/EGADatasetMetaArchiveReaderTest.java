@@ -15,59 +15,27 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.archive;
+package org.icgc.dcc.common.ega.dataset;
 
-import java.net.URL;
-import java.util.Set;
-import java.util.TreeSet;
+import org.icgc.dcc.common.ega.dataset.EGADatasetMetaArchiveReader;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import org.icgc.dcc.common.ega.client.EGAAPIClient;
-import org.icgc.dcc.common.ega.client.EGAFTPClient;
-
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
-@RequiredArgsConstructor
-public class EGADatasetMetaArchiveResolver {
+@Slf4j
+@Ignore("For development only")
+public class EGADatasetMetaArchiveReaderTest {
 
-  /**
-   * Constants.
-   */
-  public static final String DEFAULT_API_URL = "http://ega.ebi.ac.uk/ega/rest/download/v2";
-  private static final EGADatasetMetaArchiveReader ARCHIVE_READER = new EGADatasetMetaArchiveReader();
+  EGADatasetMetaArchiveReader reader = new EGADatasetMetaArchiveReader();
 
-  /**
-   * Dependencies.
-   */
-  @NonNull
-  private final EGAAPIClient api;
-  @NonNull
-  private final EGAFTPClient ftp;
+  @Test
+  public void testRead() {
+    val datasetId = "EGAD00001001595";
+    val metadata = reader.read(datasetId);
 
-  public EGADatasetMetaArchiveResolver() {
-    this(new EGAAPIClient().login(), new EGAFTPClient());
-  }
-
-  public Set<String> resolveDatasetIds() {
-    val datasetIds = new TreeSet<String>();
-    datasetIds.addAll(ftp.getDatasetIds());
-    datasetIds.addAll(api.getDatasetIds());
-
-    return datasetIds;
-  }
-
-  public EGADatasetMetaArchive resolveArchive(@NonNull String datasetId) {
-    val url = resolveUrl(datasetId);
-    return ARCHIVE_READER.read(datasetId, url);
-  }
-
-  protected URL resolveUrl(String datasetId) {
-    if (ftp.hasDatasetId(datasetId)) {
-      return ftp.getArchiveURL(datasetId);
-    } else {
-      return api.getArchiveURL(datasetId);
-    }
+    log.info("Finished: {}", metadata);
   }
 
 }

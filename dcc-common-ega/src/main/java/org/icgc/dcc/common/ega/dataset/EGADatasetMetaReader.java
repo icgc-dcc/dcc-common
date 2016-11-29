@@ -15,7 +15,7 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.reader;
+package org.icgc.dcc.common.ega.dataset;
 
 import static java.util.Collections.emptyList;
 import static org.icgc.dcc.common.core.util.Formats.formatCount;
@@ -27,8 +27,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchive;
-import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchiveResolver;
 import org.icgc.dcc.common.ega.client.EGAAPIClient;
 import org.icgc.dcc.common.ega.client.EGACatalogClient;
 import org.icgc.dcc.common.ega.dump.EGADatasetDump;

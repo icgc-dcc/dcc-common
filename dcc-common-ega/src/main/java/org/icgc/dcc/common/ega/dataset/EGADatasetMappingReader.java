@@ -15,10 +15,12 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.archive;
+package org.icgc.dcc.common.ega.dataset;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.icgc.dcc.common.core.json.Jackson.DEFAULT;
+import static org.icgc.dcc.common.core.util.Splitters.PIPE;
 import static org.icgc.dcc.common.core.util.Splitters.SEMICOLON;
 import static org.icgc.dcc.common.core.util.Splitters.TAB;
 import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableList;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.icgc.dcc.common.core.io.ForwardingInputStream;
+import org.icgc.dcc.common.core.util.Splitters;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Splitter;
@@ -42,7 +45,7 @@ import lombok.val;
 /**
  * Reads an EGA mapping file into an in-memory representation.
  */
-public class EGAMappingReader {
+public class EGADatasetMappingReader {
 
   /**
    * Constants.
@@ -50,21 +53,30 @@ public class EGAMappingReader {
   private static final Splitter EQUALS = Splitter.on('=').trimResults().omitEmptyStrings();
 
   @SneakyThrows
-  public List<ObjectNode> read(@NonNull String mappingId, @NonNull InputStream inputStream) {
+  public List<ObjectNode> read(@NonNull String fileName, @NonNull InputStream inputStream) {
     try {
       val lines = readLines(inputStream);
-      if (isSemiColonDelimited(mappingId)) {
+      if (isSemiColonDelimited(fileName)) {
         return readSemiColonDelimited(lines);
+      } else if (isPipeDelimited(fileName)) {
+        return readPipeDelimited(fileName, lines);
       } else {
-        return readTabDelimited(mappingId, lines);
+        return readTabDelimited(fileName, lines);
       }
     } catch (Exception e) {
-      throw new IllegalStateException("Error processing " + mappingId, e);
+      throw new IllegalStateException("Error processing " + fileName, e);
     }
   }
 
-  private static boolean isSemiColonDelimited(String mappingId) {
-    return mappingId.equals("Run_Sample_meta_info");
+  private static boolean isPipeDelimited(String fileName) {
+    return fileName.endsWith("Sample_File.txt") ||
+        fileName.endsWith("Run_Sample.txt") ||
+        fileName.endsWith("Analysis_Sample.txt") ||
+        fileName.endsWith("Study_Analysis_Sample.txt");
+  }
+
+  private static boolean isSemiColonDelimited(String fileName) {
+    return fileName.equals("Run_Sample_meta_info.map");
   }
 
   @SuppressWarnings("resource")
@@ -79,8 +91,24 @@ public class EGAMappingReader {
         .collect(toImmutableList());
   }
 
-  private static List<ObjectNode> readTabDelimited(String mappingId, Stream<String> lines) {
-    val headers = getHeaders(mappingId);
+  private static List<ObjectNode> readPipeDelimited(String fileName, Stream<String> lines) {
+    val headers = getHeaders(fileName);
+
+    return lines.map(PIPE.trimResults()::splitToList)
+        .map(fields -> toObjectNode(headers, fields))
+        .map(record -> {
+          if (record.has("ATTRIBUTES")) {
+            String text = record.get("ATTRIBUTES").textValue();
+            record.put("ATTRIBUTES", parseAttributes(text));
+          }
+
+          return record;
+        })
+        .collect(toImmutableList());
+  }
+
+  private static List<ObjectNode> readTabDelimited(String fileName, Stream<String> lines) {
+    val headers = getHeaders(fileName);
 
     return lines.map(TAB.trimResults()::splitToList)
         .map(fields -> toObjectNode(headers, fields))
@@ -89,6 +117,8 @@ public class EGAMappingReader {
 
   private static ObjectNode toObjectNode(List<String> fields) {
     val record = DEFAULT.createObjectNode();
+    checkState(!fields.isEmpty(), "No fields present");
+
     for (val field : fields) {
       val parts = EQUALS.splitToList(field);
       record.put(parts.get(0), parts.get(1));
@@ -109,13 +139,39 @@ public class EGAMappingReader {
     return record;
   }
 
-  private static List<String> getHeaders(String mappingId) {
-    if (mappingId.equals("Analysis_Sample_meta_info")) {
+  private static ObjectNode parseAttributes(String text) {
+    val attributes = DEFAULT.createObjectNode();
+    if (isNullOrEmpty(text)) {
+      return attributes;
+    }
+  
+    List<String> values = EQUALS.trimResults().omitEmptyStrings().splitToList(text);
+    for (int i = 0; i < values.size(); i += 2) {
+      val key = values.get(i);
+  
+      if (i + 1 >= values.size()) {
+        break;
+      }
+  
+      val attributeValue = values.get(i + 1);
+      if (attributeValue.contains(";")) {
+        attributes.putPOJO(key, Splitters.SEMICOLON.split(values.get(i + 1)));
+      } else {
+        attributes.put(key, attributeValue);
+      }
+    }
+  
+    return attributes;
+  }
+
+  private static List<String> getHeaders(String fileName) {
+    // *.map
+    if (fileName.equals("Analysis_Sample_meta_info.map")) {
       return ImmutableList.of(
           "EGA_SAMPLE_ID",
           "SAMPLE_ALIAS",
           "BIOSAMPLE_ID");
-    } else if (mappingId.equals("Study_Experiment_Run_sample")) {
+    } else if (fileName.equals("Study_Experiment_Run_sample.map")) {
       return ImmutableList.of(
           "STUDY_EGA_ID",
           "STUDY_TITLE",
@@ -132,7 +188,7 @@ public class EGAMappingReader {
           "SUBMISSION_CENTER_NAME",
           "RUN_CENTER_NAME",
           "EGA_SAMPLE_ID");
-    } else if (mappingId.equals("Study_analysis_sample")) {
+    } else if (fileName.equals("Study_analysis_sample.map")) {
       return ImmutableList.of(
           "STUDY EGA_ID",
           "STUDY_TITLE",
@@ -143,7 +199,13 @@ public class EGAMappingReader {
           "EGA_SAMPLE_ID",
           "x",
           "y");
-    } else if (mappingId.equals("Sample_File")) {
+    } else if (fileName.equals("Sample_File.map")) {
+      return ImmutableList.of(
+          "SAMPLE_ALIAS",
+          "SAMPLE_ACCESSION",
+          "FILE_NAME",
+          "FILE_ACCESSION");
+    } else if (fileName.equals("Run_Sample.map")) {
       return ImmutableList.of(
           "SAMPLE_ALIAS",
           "SAMPLE_ACCESSION",
@@ -151,7 +213,53 @@ public class EGAMappingReader {
           "FILE_ACCESSION");
     }
 
-    throw new IllegalArgumentException("Unsupported mapping id: " + mappingId);
+    // *.txt
+    if (fileName.equals("Run_Sample.txt") || fileName.equals("Analysis_Sample.txt")) {
+      return ImmutableList.of(
+          "EGA_SAMPLE_ID",
+          "SAMPLE_ALIAS",
+          "BIOSAMPLE_ID",
+          "SAMPLE_TITLE",
+          "ATTRIBUTES");
+    } else if (fileName.equals("Study_Experiment_Run_Sample.txt")) {
+      return ImmutableList.of(
+          "STUDY_EGA_ID",
+          "STUDY_TITLE",
+          "STUDY_TYPE",
+          "INSTRUMENT_PLATFORM",
+          "INSTRUMENT_MODEL",
+          "LIBRARY_LAYOUT",
+          "LIBRARY_NAME",
+          "LIBRARY_STRATEGY",
+          "LIBRARY_SOURCE",
+          "LIBRARY_SELECTION",
+          "EXPERIMENT EGA_ID",
+          "RUN EGA_ID",
+          "SUBMISSION CENTER_NAME",
+          "RUN_CENTER_NAME",
+          "EGA_SAMPLE_ID",
+          "SAMPLE_ALIAS",
+          "BIOSAMPLE_ID");
+    } else if (fileName.equals("Study_Analysis_Sample.txt")) {
+      return ImmutableList.of(
+          "STUDY_EGA_ID",
+          "STUDY_TITLE",
+          "STUDY_TYPE",
+          "ANALYSIS_EGA_ID",
+          "ANALYSIS_TYPE",
+          "ANALYSIS_TITLE",
+          "EGA_SAMPLE_ID",
+          "SAMPLE_ALIAS",
+          "BIOSAMPLE_ID");
+    } else if (fileName.equals("Sample_File.txt")) {
+      return ImmutableList.of(
+          "SAMPLE_ALIAS",
+          "SAMPLE_ACCESSION",
+          "FILE_NAME",
+          "FILE_ACCESSION");
+    }
+
+    throw new IllegalArgumentException("Unsupported mapping file name: " + fileName);
   }
 
 }

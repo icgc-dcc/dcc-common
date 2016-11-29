@@ -15,7 +15,7 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.common.ega.archive;
+package org.icgc.dcc.common.ega.dataset;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.icgc.dcc.common.core.util.Formats.formatCount;
@@ -59,7 +59,7 @@ public class EGADatasetMetaArchiveReader {
   private static final int READ_TIMEOUT = (int) SECONDS.toMillis(5);
 
   private static final XMLObjectNodeReader XML_READER = new XMLObjectNodeReader();
-  private static final EGAMappingReader MAPPING_READER = new EGAMappingReader();
+  private static final EGADatasetMappingReader MAPPING_READER = new EGADatasetMappingReader();
 
   /**
    * Configuration.
@@ -85,14 +85,21 @@ public class EGADatasetMetaArchiveReader {
     val archive = new EGADatasetMetaArchive(datasetId);
     while ((entry = tarball.getNextTarEntry()) != null) {
       try {
+        if (isReadme(entry)) {
+          // Not interesting
+          continue;
+        }
+
         if (isMappingFile(entry)) {
           readMappingEntry(tarball, entry, archive);
         } else if (isXmlFile(entry)) {
           readXmlEntry(tarball, entry, archive);
+        } else if (entry.isFile()) {
+          log.warn("Unknown file: {}", entry.getName());
         }
       } catch (Exception e) {
-        val message = MessageFormat.format("Error processing entry {0} from {1} after reading {2} bytes",
-            entry.getName(), getArchiveUrl(datasetId), formatCount(tarball.getBytesRead()));
+        val message = MessageFormat.format("Error processing entry {0} from {1} after reading {2} bytes: {3}",
+            entry.getName(), getArchiveUrl(datasetId), formatCount(tarball.getBytesRead()), e.getMessage());
         throw new IllegalStateException(message, e);
       }
     }
@@ -102,8 +109,9 @@ public class EGADatasetMetaArchiveReader {
 
   private static void readMappingEntry(TarArchiveInputStream tarball, TarArchiveEntry entry,
       EGADatasetMetaArchive archive) {
+    val fileName = getFileName(entry);
     val mappingId = getMappingId(entry);
-    val mapping = parseMapping(mappingId, tarball);
+    val mapping = parseMapping(fileName, tarball);
 
     archive.getMappings().put(mappingId, mapping);
   }
@@ -133,9 +141,9 @@ public class EGADatasetMetaArchiveReader {
     return XML_READER.read(new ForwardingInputStream(inputStream, false));
   }
 
-  private static List<ObjectNode> parseMapping(String mappingId, InputStream inputStream) {
+  private static List<ObjectNode> parseMapping(String fileName, InputStream inputStream) {
     // Prevent close by wrapping with non-closing forwarding stream
-    return MAPPING_READER.read(mappingId, new ForwardingInputStream(inputStream, false));
+    return MAPPING_READER.read(fileName, new ForwardingInputStream(inputStream, false));
   }
 
   private TarArchiveInputStream readTarball(URL url, String datasetId) throws IOException {
@@ -170,7 +178,7 @@ public class EGADatasetMetaArchiveReader {
   }
 
   private static String getMappingId(TarArchiveEntry entry) {
-    return getId(entry, ".map");
+    return getFileName(entry).replace(".map", "").replace(".txt", "");
   }
 
   private static String getStudyId(TarArchiveEntry entry) {
@@ -194,11 +202,19 @@ public class EGADatasetMetaArchiveReader {
   }
 
   private static String getId(TarArchiveEntry entry, String suffix) {
-    return new File(entry.getName()).getName().replace(suffix, "");
+    return getFileName(entry).replace(suffix, "");
+  }
+
+  private static boolean isReadme(TarArchiveEntry entry) {
+    return is(entry, "README.txt") || is(entry, "README");
   }
 
   private static boolean isMappingFile(TarArchiveEntry entry) {
-    return entry.isFile() && entry.getName().toLowerCase().endsWith(".map");
+    return entry.isFile() && entry.getName().toLowerCase().endsWith(".map")
+        || entry.getName().endsWith("Sample_File.txt")
+        || entry.getName().endsWith("Run_Sample.txt")
+        || entry.getName().endsWith("Analysis_Sample.txt")
+        || entry.getName().endsWith("Study_Analysis_Sample.txt");
   }
 
   private static boolean isDataset(TarArchiveEntry entry) {
@@ -236,6 +252,10 @@ public class EGADatasetMetaArchiveReader {
   private static boolean isXmlFile(TarArchiveEntry entry) {
     val normalizedName = entry.getName().toLowerCase();
     return entry.isFile() && normalizedName.endsWith(".xml");
+  }
+
+  private static String getFileName(TarArchiveEntry entry) {
+    return new File(entry.getName()).getName();
   }
 
 }

@@ -20,7 +20,7 @@ package org.icgc.dcc.common.ega.dump;
 import java.util.List;
 import java.util.Set;
 
-import org.icgc.dcc.common.ega.archive.EGADatasetMetaArchive;
+import org.icgc.dcc.common.ega.dataset.EGADatasetMetaArchive;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
