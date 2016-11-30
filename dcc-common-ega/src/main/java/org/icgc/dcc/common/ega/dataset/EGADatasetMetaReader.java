@@ -17,7 +17,9 @@
  */
 package org.icgc.dcc.common.ega.dataset;
 
+import static com.google.common.base.Throwables.getCausalChain;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.joining;
 import static org.icgc.dcc.common.core.util.Formats.formatCount;
 import static org.icgc.dcc.common.core.util.function.Predicates.isNotNull;
 import static org.icgc.dcc.common.ega.core.EGAProjectDatasets.getDatasetProjectCodes;
@@ -82,18 +84,19 @@ public class EGADatasetMetaReader {
       return new EGADatasetDump(datasetId, catalog, projectCodes, files, archive);
     } catch (Exception e) {
       errors.add(e);
-      log.error("Exception reading dataset {}: {}", datasetId, e.getMessage());
-    }
+      log.error("Exception reading dataset {}: {}", datasetId, getErrorMessage(e));
 
-    return null;
+      return null;
+    }
   }
 
   public List<ObjectNode> readDatasetFiles(String datasetId) {
     try {
       return api.getDatasetFiles(datasetId);
     } catch (Exception e) {
-      log.error("Exception reading dataset {} files: {}", datasetId, e.getMessage());
       errors.add(e);
+      log.error("Exception reading dataset files {}: {}", datasetId, getErrorMessage(e));
+
       return emptyList();
     }
   }
@@ -110,10 +113,15 @@ public class EGADatasetMetaReader {
     try {
       return catalog.getDataset(datasetId);
     } catch (Exception e) {
-      log.error("Exception reading dataset {} catalog: {}", datasetId, e.getMessage());
+      log.error("Exception reading dataset {} catalog: {}", datasetId, getErrorMessage(e));
       errors.add(e);
+
       return null;
     }
+  }
+
+  private static String getErrorMessage(Exception e) {
+    return getCausalChain(e).stream().map(Throwable::getMessage).collect(joining(": "));
   }
 
 }

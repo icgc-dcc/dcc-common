@@ -55,7 +55,7 @@ public class EGADatasetMetaArchiveReader {
    */
   public static final String DEFAULT_API_URL = "http://ega.ebi.ac.uk/ega/rest/download/v2";
 
-  private static final int MAX_ATTEMPTS = 20;
+  private static final int MAX_ATTEMPTS = 10;
   private static final int READ_TIMEOUT = (int) SECONDS.toMillis(5);
 
   private static final XMLObjectNodeReader XML_READER = new XMLObjectNodeReader();

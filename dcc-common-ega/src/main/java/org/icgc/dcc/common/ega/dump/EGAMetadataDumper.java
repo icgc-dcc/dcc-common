@@ -18,6 +18,8 @@
 package org.icgc.dcc.common.ega.dump;
 
 import static com.google.common.base.Strings.repeat;
+import static com.google.common.base.Throwables.getCausalChain;
+import static java.util.stream.Collectors.joining;
 import static org.icgc.dcc.common.core.io.Files2.getHomeDir;
 
 import java.io.File;
@@ -73,7 +75,7 @@ public class EGAMetadataDumper {
     banner("Error report:");
     int i = 1;
     for (val error : reader.getErrors()) {
-      log.error("   [{}] Error: {}", i++, error.getMessage());
+      log.error("   [{}] Error: {}", i++, getErrorMessage(error));
     }
   }
 
@@ -94,6 +96,10 @@ public class EGAMetadataDumper {
     log.info(line);
     log.info(message);
     log.info(line);
+  }
+
+  private static String getErrorMessage(Exception e) {
+    return getCausalChain(e).stream().map(Throwable::getMessage).collect(joining(": "));
   }
 
 }

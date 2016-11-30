@@ -56,6 +56,7 @@ public class EGADatasetMappingReader {
   public List<ObjectNode> read(@NonNull String fileName, @NonNull InputStream inputStream) {
     try {
       val lines = readLines(inputStream);
+
       if (isSemiColonDelimited(fileName)) {
         return readSemiColonDelimited(lines);
       } else if (isPipeDelimited(fileName)) {
@@ -69,10 +70,11 @@ public class EGADatasetMappingReader {
   }
 
   private static boolean isPipeDelimited(String fileName) {
-    return fileName.endsWith("Sample_File.txt") ||
-        fileName.endsWith("Run_Sample.txt") ||
-        fileName.endsWith("Analysis_Sample.txt") ||
-        fileName.endsWith("Study_Analysis_Sample.txt");
+    return fileName.equals("Sample_File.txt") ||
+        fileName.equals("Run_Sample.txt") ||
+        fileName.equals("Analysis_Sample.txt") ||
+        fileName.equals("Study_Analysis_Sample.txt") ||
+        fileName.equals("Study_Experiment_Run_Sample.txt");
   }
 
   private static boolean isSemiColonDelimited(String fileName) {
@@ -87,7 +89,7 @@ public class EGADatasetMappingReader {
   private static List<ObjectNode> readSemiColonDelimited(Stream<String> lines) {
     return lines
         .map(SEMICOLON.trimResults().omitEmptyStrings()::splitToList)
-        .map(fields -> toObjectNode(fields))
+        .map(fields -> createRecord(fields))
         .collect(toImmutableList());
   }
 
@@ -95,11 +97,12 @@ public class EGADatasetMappingReader {
     val headers = getHeaders(fileName);
 
     return lines.map(PIPE.trimResults()::splitToList)
-        .map(fields -> toObjectNode(headers, fields))
+        .map(fields -> createRecord(headers, fields))
         .map(record -> {
-          if (record.has("ATTRIBUTES")) {
-            String text = record.get("ATTRIBUTES").textValue();
-            record.put("ATTRIBUTES", parseAttributes(text));
+          String fieldName = "ATTRIBUTES";
+          if (record.has(fieldName)) {
+            String text = record.get(fieldName).textValue();
+            record.put(fieldName, parseAttributes(text));
           }
 
           return record;
@@ -111,11 +114,11 @@ public class EGADatasetMappingReader {
     val headers = getHeaders(fileName);
 
     return lines.map(TAB.trimResults()::splitToList)
-        .map(fields -> toObjectNode(headers, fields))
+        .map(fields -> createRecord(headers, fields))
         .collect(toImmutableList());
   }
 
-  private static ObjectNode toObjectNode(List<String> fields) {
+  private static ObjectNode createRecord(List<String> fields) {
     val record = DEFAULT.createObjectNode();
     checkState(!fields.isEmpty(), "No fields present");
 
@@ -127,7 +130,7 @@ public class EGADatasetMappingReader {
     return record;
   }
 
-  private static ObjectNode toObjectNode(List<String> headers, List<String> fields) {
+  private static ObjectNode createRecord(List<String> headers, List<String> fields) {
     val record = DEFAULT.createObjectNode();
     checkState(headers.size() == fields.size(), "Header size (%s) not equal to fields size (%s) for mapping",
         headers.size(), fields.size());
