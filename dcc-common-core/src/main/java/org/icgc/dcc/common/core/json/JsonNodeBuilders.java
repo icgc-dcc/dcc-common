@@ -282,6 +282,12 @@ public final class JsonNodeBuilders {
       return this;
     }
 
+    public ArrayNodeBuilder withNodes(@NonNull Iterable<? extends JsonNode> values) {
+      for (val value : values)
+        with(value);
+      return this;
+    }
+
     public ArrayNodeBuilder with(JsonNodeBuilder<?> value) {
       return with(value.end());
     }

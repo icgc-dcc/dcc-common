@@ -24,6 +24,7 @@ import static com.google.common.collect.Iterables.getFirst;
 import static com.google.common.collect.Sets.difference;
 import static com.google.common.collect.Sets.newTreeSet;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.icgc.dcc.common.core.json.JsonNodeBuilders.array;
 import static org.icgc.dcc.common.core.json.JsonNodeBuilders.object;
@@ -58,6 +59,21 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Analyzer that reads a dump produced by {@link EGAMetadataDumper} to project JSONL report(s).
+ * 
+ * Bob: So it is quite possible that the exact same file (same md5) is submitted twice across 2 different runs for a
+ * study, but then assigned a new EGAF id?
+ * 
+ * Audald: It is possible. This should not be the case, though. We have a sufficiently flexible submission (analysis)
+ * pipeline for linking the file to all the relevant samples using a single object. The ideal situation would be that
+ * each file (unique md5) is submitted only once. Actually, that is one of the reasons why runs and analysis can be then
+ * reused for as many datasets as needed. However, it is physically impossible to check individually all the submissions
+ * in order to ensure that data-metadata linkage is correct. Some files can be indeed submitted several times and linked
+ * to several objects.
+ *
+ * Bob: Is it possible to reuse a previous run’s file and thus share the EGAF id?
+ * 
+ * Audald: Do you mean replacing a file (EGAF) by the same one (EGAF’) within a run? I am quite positive this is
+ * technically possible. Definitely not a regular procedure.
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -104,7 +120,6 @@ public class EGAMetadataDumpAnalyzer {
 
   private List<ObjectNode> analyzeDatasets(Stream<ObjectNode> datasets) {
     return datasets
-        // .filter(dataset -> dataset.get("datasetId").textValue().equals("EGAD00001002697"))
         .map(this::analyzeDataset)
         .flatMap(Collection::stream)
         .collect(toList());
@@ -150,13 +165,14 @@ public class EGAMetadataDumpAnalyzer {
   }
 
   private List<ObjectNode> combineFiles(List<ObjectNode> files) {
-    val grouped = Multimaps.index(files, file -> {
-      String fileId = file.path("fileId").textValue();
-      if (!isNullOrEmpty(fileId)) return fileId;
+    val grouped = files.stream()
+        .filter(file -> file.has("fileId")) // Some are unknown and can't be grouped reliably
+        .collect(groupingBy(file -> {
+          String fileId = file.path("fileId").textValue();
+          if (!isNullOrEmpty(fileId)) return fileId;
 
-      String fileName = file.get("fileName").textValue();
-      return fileName;
-    }).asMap();
+          return "unknown";
+        }));
 
     return grouped.values().stream().map(group -> {
       Set<String> datasetIds = newTreeSet();
@@ -181,7 +197,7 @@ public class EGAMetadataDumpAnalyzer {
         });
       });
 
-      return object(getFirst(group, null))
+      return object(resolveFile(group))
           .with("datasetId", array(datasetIds))
           .with("projectId", array(projectIds))
           .with("runIds", array(runIds))
@@ -189,6 +205,16 @@ public class EGAMetadataDumpAnalyzer {
           .with("studyIds", array(studyIds))
           .end();
     }).collect(toList());
+  }
+
+  private ObjectNode resolveFile(Collection<ObjectNode> group) {
+    // Merge all
+    val representative = getFirst(group, null).deepCopy();
+    for (val file : group) {
+      representative.putAll(file);
+    }
+
+    return representative;
   }
 
   private void report(List<ObjectNode> files) {
@@ -284,7 +310,7 @@ public class EGAMetadataDumpAnalyzer {
     val experimentIds = Sets.<String> newTreeSet();
     val studyIds = Sets.<String> newTreeSet();
 
-    val samples = array();
+    val samples = Sets.<ObjectNode> newHashSet();
     for (val sampleMapping : sampleFiles) {
       val sampleId = sampleMapping.get("sampleId").textValue();
       val sampleTags = sampleTagsMappings.get(sampleId);
@@ -301,7 +327,7 @@ public class EGAMetadataDumpAnalyzer {
       val sampleDonors = sampleDonorMappings.get(sampleAlias);
 
       // First try from mapping
-      String sampleDonorId = sampleDonors != null ? getFirst(sampleDonors, null).get("donorId").textValue() : null;
+      String sampleDonorId = sampleDonors != null ? resolveFile(sampleDonors).get("donorId").textValue() : null;
       if (sampleDonorId == null) {
         // Try to find in tags
         if (tags.has("Donor ID")) {
@@ -360,15 +386,15 @@ public class EGAMetadataDumpAnalyzer {
         });
       }
 
-      samples.with(object()
+      samples.add(object()
           .with("sampleId", sampleId)
           .with("submitterSampleId", submitterSampleId)
           .with("sampleType", sampleType)
           .with("donorId", sampleDonorId)
-          .with("tags", tags));
+          .with("tags", tags).end());
     }
 
-    merged.put("samples", samples.end());
+    merged.put("samples", array().withNodes(samples).end());
     merged.put("runIds", array(runIds).end());
     merged.put("experimentIds", array(experimentIds).end());
     merged.put("studyIds", array(studyIds).end());
