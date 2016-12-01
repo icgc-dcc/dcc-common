@@ -25,12 +25,17 @@ import static org.icgc.dcc.common.core.util.function.Predicates.not;
 import static org.icgc.dcc.common.core.util.stream.Collectors.toImmutableList;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import lombok.Value;
 import lombok.val;
 import lombok.experimental.Accessors;
 
@@ -47,6 +52,21 @@ public class EGAFTPClient {
 
   private static final String METADATA_DIR = "ICGC_metadata";
   private static final Pattern DATASET_ID_PATTERN = Pattern.compile("(EGAD\\d+)");
+
+  // @formatter:off
+  private static final Pattern LISTING_PATTERN = Pattern.compile(
+          "(\\d+)        # File size           \n" +
+          "\\s+          # Whitespace          \n" +
+          "(\\w{3}       # Month (3 letters)   \n" +
+          "\\s+          # Whitespace          \n" +
+          "\\d{1,2}      # Day (1 or 2 digits) \n" +
+          "\\s+          # Whitespace          \n" +
+          "[\\d:]{4,5})  # Time or year        \n" +
+          "\\s+          # Whitespace          \n" +
+          "(.*)          # Filename            \n" +
+          "$             # End of line",
+      Pattern.MULTILINE | Pattern.COMMENTS);
+  // @formatter:on
 
   /**
    * Configuration.
@@ -76,6 +96,14 @@ public class EGAFTPClient {
 
   public List<String> getDatasetIds() {
     return datasetIds();
+  }
+
+  @SneakyThrows
+  public List<Item> getListing() {
+    val dirUrl = getFileURL(METADATA_DIR);
+    return readLines(dirUrl, UTF_8).stream()
+        .map(this::parseItem)
+        .collect(toImmutableList());
   }
 
   public boolean hasDatasetId(@NonNull String datasetId) {
@@ -110,6 +138,30 @@ public class EGAFTPClient {
 
   private boolean isRelativeDir(String line) {
     return line.equals(".") || line.equals("..");
+  }
+
+  private Item parseItem(String line) {
+    val m = LISTING_PATTERN.matcher(line);
+    m.find();
+    return new Item(Long.parseLong(m.group(1)), parseDate(m.group(2)), m.group(3));
+  }
+
+  @SneakyThrows
+  private static Date parseDate(String date) {
+    val dateFormat = new SimpleDateFormat("MMM dd HH:mm yyyy");
+    dateFormat.setTimeZone(TimeZone.getTimeZone("CET"));
+
+    val fullDate = date + " " + Calendar.getInstance().get(Calendar.YEAR);
+    return dateFormat.parse(fullDate);
+  }
+
+  @Value
+  public static class Item {
+
+    long size;
+    Date updated;
+    String fileName;
+
   }
 
 }

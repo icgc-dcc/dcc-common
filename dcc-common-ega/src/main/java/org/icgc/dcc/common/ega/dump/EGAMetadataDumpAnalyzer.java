@@ -104,7 +104,7 @@ public class EGAMetadataDumpAnalyzer {
 
   public void analyze(File dumpFile) {
     val watch = Stopwatch.createStarted();
-    val datasets = read(dumpFile);
+    val datasets = read(dumpFile);// .filter(dataset -> dataset.get("datasetId").textValue().equals("EGAD00001001100"));
 
     log.info("Analyzing data sets...");
     val files = analyzeDatasets(datasets);

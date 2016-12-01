@@ -58,11 +58,11 @@ public class EGADatasetMetaArchiveResolver {
   }
 
   public EGADatasetMetaArchive resolveArchive(@NonNull String datasetId) {
-    val url = resolveUrl(datasetId);
+    val url = resolveArchiveUrl(datasetId);
     return ARCHIVE_READER.read(datasetId, url);
   }
 
-  protected URL resolveUrl(String datasetId) {
+  public URL resolveArchiveUrl(String datasetId) {
     if (ftp.hasDatasetId(datasetId)) {
       return ftp.getArchiveURL(datasetId);
     } else {

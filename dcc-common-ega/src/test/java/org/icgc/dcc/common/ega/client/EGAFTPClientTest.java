@@ -46,4 +46,14 @@ public class EGAFTPClientTest {
     }
   }
 
+  @Test
+  public void testGetListing() throws Exception {
+    val items = client.getListing();
+    log.info("Listing:");
+
+    for (val item : items) {
+      log.info("Item: {}", item);
+    }
+  }
+
 }
