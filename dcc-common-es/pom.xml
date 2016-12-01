@@ -80,7 +80,7 @@
   </dependencies>
 
   <properties>
-    <elasticsearch.version>5.0.0</elasticsearch.version>
+    <elasticsearch.version>5.0.2</elasticsearch.version>
     <log4j.version>2.6.2</log4j.version>
   </properties>
 
