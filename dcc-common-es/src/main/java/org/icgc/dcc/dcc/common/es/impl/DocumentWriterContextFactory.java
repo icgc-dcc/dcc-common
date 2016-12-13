@@ -19,6 +19,7 @@ package org.icgc.dcc.dcc.common.es.impl;
 
 import static lombok.AccessLevel.PRIVATE;
 import static org.elasticsearch.action.bulk.BulkProcessor.builder;
+import static org.icgc.dcc.dcc.common.es.DocumentWriterConfiguration.DEFAULT_THREADS_NUM;
 import static org.icgc.dcc.dcc.common.es.TransportClientFactory.createClient;
 import static org.icgc.dcc.dcc.common.es.util.BulkProcessorConfiguration.DEFAULT_BULK_SIZE_MB;
 import static org.icgc.dcc.dcc.common.es.util.BulkProcessorConfiguration.getBulkSize;
@@ -57,20 +58,20 @@ public final class DocumentWriterContextFactory {
     val client = configuration.client() != null ? configuration.client() : createClient(configuration.esUrl());
     val indexName = configuration.indexName();
 
-    return createContext(client, indexName, configuration.bulkSizeMb());
+    return createContext(client, indexName, configuration.bulkSizeMb(), configuration.threadsNum());
   }
 
   public static DocumentWriterContext createContext(@NonNull Client client, @NonNull String indexName) {
-    return createContext(client, indexName, DEFAULT_BULK_SIZE_MB);
+    return createContext(client, indexName, DEFAULT_BULK_SIZE_MB, DEFAULT_THREADS_NUM);
   }
 
   public static DocumentWriterContext createContext(@NonNull Client client, @NonNull String indexName,
-      Integer bulkSizeMb) {
+      Integer bulkSizeMb, int threadsNum) {
     val writerId = createWriterId();
     val indexingState = new IndexingState(writerId);
     val clusterStateVerifier = new ClusterStateVerifier(client, indexName, writerId, indexingState);
     val bulkProcessorListener = new BulkProcessorListener(clusterStateVerifier, indexingState, writerId);
-    val bulkProcessor = createProcessor(client, bulkProcessorListener, bulkSizeMb);
+    val bulkProcessor = createProcessor(client, bulkProcessorListener, bulkSizeMb, threadsNum);
 
     return DocumentWriterContext.builder()
         .client(client)
@@ -87,11 +88,12 @@ public final class DocumentWriterContextFactory {
     return String.valueOf(Math.abs(id));
   }
 
-  private static BulkProcessor createProcessor(Client client, BulkProcessorListener listener, Integer bulkSizeMb) {
+  private static BulkProcessor createProcessor(Client client, BulkProcessorListener listener, Integer bulkSizeMb,
+      int concurrentRequests) {
     val bulkProcessor = builder(client, listener)
         .setBulkActions(BULK_ACTIONS)
         .setBulkSize(getBulkSize(bulkSizeMb))
-        .setConcurrentRequests(0)
+        .setConcurrentRequests(concurrentRequests)
         .build();
 
     // Need to give back reference to bulkProcessor as it's reused for re-indexing of failed requests.
