@@ -17,6 +17,7 @@
  */
 package org.icgc.dcc.dcc.common.es.impl;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Throwables.propagate;
 import static org.elasticsearch.client.Requests.indexRequest;
 import static org.elasticsearch.common.xcontent.XContentType.SMILE;
@@ -24,6 +25,11 @@ import static org.icgc.dcc.common.core.util.Formats.formatCount;
 import static org.icgc.dcc.dcc.common.es.util.BulkProcessorConfiguration.getBulkSize;
 
 import java.io.IOException;
+
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
@@ -35,11 +41,6 @@ import org.icgc.dcc.dcc.common.es.model.IndexDocument;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
-
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Output destination for {@link DefaultDocument} instances to be written.
@@ -92,15 +93,19 @@ public class DefaultDocumentWriter implements DocumentWriter {
   @Override
   public void write(@NonNull IndexDocument document) throws IOException {
     byte[] source = createSource(document.getSource());
-    write(document.getId(), document.getType(), source);
+    write(document.getId(), document.getParentId(), document.getType(), source);
   }
 
   protected void write(String id, IndexDocumentType type, byte[] source) {
+    write(id, null, type, source);
+  }
+
+  protected void write(String id, String parentId, IndexDocumentType type, byte[] source) {
     if (isBigDocument(source.length)) {
       processor.flush();
     }
 
-    val request = createRequest(id, type, source);
+    val request = createRequest(id, parentId, type, source);
     processor.add(request);
     documentCount++;
   }
@@ -126,8 +131,14 @@ public class DefaultDocumentWriter implements DocumentWriter {
     }
   }
 
-  private IndexRequest createRequest(String id, IndexDocumentType type, byte[] source) {
-    return indexRequest(indexName).type(type.getIndexType()).id(id).contentType(SMILE).source(source);
+  private IndexRequest createRequest(String id, String parentId, IndexDocumentType type, byte[] source) {
+    val request = indexRequest(indexName)
+        .type(type.getIndexType())
+        .id(id)
+        .contentType(SMILE)
+        .source(source);
+
+    return isNullOrEmpty(parentId) ? request : request.parent(parentId);
   }
 
   private boolean isBigDocument(int length) {

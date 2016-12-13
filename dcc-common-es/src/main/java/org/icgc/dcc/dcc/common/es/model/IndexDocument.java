@@ -17,6 +17,7 @@
  */
 package org.icgc.dcc.dcc.common.es.model;
 
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
 
@@ -25,6 +26,7 @@ import org.icgc.dcc.dcc.common.es.impl.IndexDocumentType;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Value
+@AllArgsConstructor
 public class IndexDocument {
 
   @NonNull
@@ -33,5 +35,10 @@ public class IndexDocument {
   ObjectNode source;
   @NonNull
   IndexDocumentType type;
+  String parentId;
+
+  public IndexDocument(String id, ObjectNode source, IndexDocumentType type) {
+    this(id, source, type, null);
+  }
 
 }
