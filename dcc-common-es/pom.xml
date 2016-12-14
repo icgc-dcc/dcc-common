@@ -40,9 +40,8 @@
 
     <!-- Search -->
     <dependency>
-      <groupId>org.icgc.dcc</groupId>
-      <artifactId>elasticsearch-shaded</artifactId>
-      <version>${elasticsearch.version}</version>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
     </dependency>
 
     <!-- JSON -->
@@ -80,7 +79,7 @@
   </dependencies>
 
   <properties>
-    <elasticsearch.version>5.0.2</elasticsearch.version>
+    <elasticsearch.version>2.4.1</elasticsearch.version>
     <log4j.version>2.6.2</log4j.version>
   </properties>
 
