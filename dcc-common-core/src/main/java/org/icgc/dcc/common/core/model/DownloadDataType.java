@@ -68,8 +68,8 @@ public enum DownloadDataType implements Identifiable {
   DONOR_EXPOSURE(DONOR_EXPOSURE_FIELDS),
   SPECIMEN(SPECIMEN_FIELDS),
   SAMPLE(SAMPLE_FIELDS),
-  BIOMARKER(BIOMARKER_FIELDS),
-  SURGERY(SURGERY_FIELDS),
+  DONOR_BIOMARKER(BIOMARKER_FIELDS),
+  DONOR_SURGERY(SURGERY_FIELDS),
 
   CNSM(CNSM_FIELDS, true),
   JCN(JCN_FIELDS),
@@ -89,7 +89,7 @@ public enum DownloadDataType implements Identifiable {
   private static final String OPEN_SUFFIX = "_open";
 
   public static final Set<DownloadDataType> CLINICAL = ImmutableSet.of(DONOR, DONOR_FAMILY, DONOR_THERAPY,
-      DONOR_EXPOSURE, SPECIMEN, SAMPLE, BIOMARKER, SURGERY);
+      DONOR_EXPOSURE, SPECIMEN, SAMPLE, DONOR_BIOMARKER, DONOR_SURGERY);
 
   private static final Set<DownloadDataType> CLINICAL_SUBTYPES = CLINICAL.stream()
       .filter(dt -> dt != DONOR)
