@@ -97,7 +97,7 @@ public class BulkProcessorListener implements Listener {
   }
 
   private static void reindexBulkRequest(BulkProcessor processor, BulkRequest bulkRequest) {
-    for (ActionRequest<?> request : bulkRequest.requests()) {
+    for (ActionRequest request : bulkRequest.requests()) {
       processor.add(request);
     }
     processor.flush();
