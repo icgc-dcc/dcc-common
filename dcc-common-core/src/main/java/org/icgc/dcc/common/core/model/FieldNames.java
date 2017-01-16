@@ -275,7 +275,7 @@ public final class FieldNames {
   public static final String OBSERVATION_TYPE = LoaderFieldNames.OBSERVATION_TYPE;
   public static final String OBSERVATION_DONOR = "donor";
   public static final String OBSERVATION_DONOR_ID = IdentifierFieldNames.SURROGATE_DONOR_ID;
-  public static final String OBSERVATION_PROJECT = "project";
+  public static final String OBSERVATION_PROJECT = "observation_project";
   public static final String OBSERVATION_CONSEQUENCE_TYPES = "consequence_type";
   public static final String OBSERVATION_FUNCTIONAL_IMPACT_PREDICTION_SUMMARY = "functional_impact_prediction_summary";
   public static final String OBSERVATION_CONSEQUENCES = "consequence";

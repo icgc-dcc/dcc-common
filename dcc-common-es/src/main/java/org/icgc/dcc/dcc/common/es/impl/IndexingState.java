@@ -23,12 +23,12 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.icgc.dcc.dcc.common.es.core.ExhausedRetryException;
+
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
-
-import org.icgc.dcc.dcc.common.es.core.ExhausedRetryException;
 
 @Slf4j
 public class IndexingState {
@@ -38,6 +38,7 @@ public class IndexingState {
    */
   private static final int MAX_FAILED_RETRIES = 10;
   private static final int MAX_CONSEQUENT_SUCCESSFUL_LOADS = 5;
+  private static final int MAX_PENDING_REQUESTS = 10;
 
   /**
    * State.
@@ -111,7 +112,7 @@ public class IndexingState {
   }
 
   public boolean hasPendingRequests() {
-    return pendingBulkRequest.get() != 0;
+    return getPendingRequestsCount() != 0;
   }
 
   public int getPendingRequestsCount() {
@@ -123,6 +124,13 @@ public class IndexingState {
   }
 
   public void startIndexing() {
+    val pendingRequestsCount = getPendingRequestsCount();
+    if (pendingRequestsCount >= MAX_PENDING_REQUESTS) {
+      log.error("[{}] Pending requests count {} exceeds the maximum allowed pending requests number {}. Exiting...",
+          id, pendingRequestsCount, MAX_PENDING_REQUESTS);
+      throw new ExhausedRetryException();
+    }
+
     pendingBulkRequest.incrementAndGet();
   }
 

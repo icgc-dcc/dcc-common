@@ -17,17 +17,21 @@
  */
 package org.icgc.dcc.dcc.common.es;
 
-import org.elasticsearch.client.Client;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import org.elasticsearch.client.Client;
 
 @Data
 @Accessors(fluent = true)
 public class DocumentWriterConfiguration {
 
+  public static final int DEFAULT_THREADS_NUM = 0;
+
   String esUrl;
   String indexName;
   Client client;
+  Integer bulkSizeMb;
+  int threadsNum = DEFAULT_THREADS_NUM;
 
 }

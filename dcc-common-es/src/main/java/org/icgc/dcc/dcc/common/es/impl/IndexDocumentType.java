@@ -15,35 +15,10 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.dcc.common.es;
+package org.icgc.dcc.dcc.common.es.impl;
 
-import static lombok.AccessLevel.PRIVATE;
-import static org.icgc.dcc.dcc.common.es.impl.DocumentWriterContextFactory.createContext;
+public interface IndexDocumentType {
 
-import org.elasticsearch.client.Client;
-import org.icgc.dcc.dcc.common.es.core.DocumentWriter;
-import org.icgc.dcc.dcc.common.es.impl.DefaultDocumentWriter;
-
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-
-@NoArgsConstructor(access = PRIVATE)
-public final class DocumentWriterFactory {
-
-  public static DocumentWriter createDocumentWriter(@NonNull DocumentWriterConfiguration configuration) {
-    val writerContext = createContext(configuration);
-
-    return new DefaultDocumentWriter(writerContext);
-  }
-
-  /**
-   * Creates document writer where the {@code sniffMode} is <strong>disabled</strong> for the {@link Client}.
-   */
-  public static DocumentWriter createDocumentWriter(@NonNull String indexName, @NonNull String esUri) {
-    val writerContext = createContext(indexName, esUri);
-
-    return new DefaultDocumentWriter(writerContext);
-  }
+  String getIndexType();
 
 }

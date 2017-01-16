@@ -20,10 +20,10 @@ package org.icgc.dcc.dcc.common.es.core;
 import java.io.Closeable;
 import java.io.IOException;
 
-import org.icgc.dcc.dcc.common.es.model.Document;
+import org.icgc.dcc.dcc.common.es.model.IndexDocument;
 
 public interface DocumentWriter extends Closeable {
 
-  void write(Document document) throws IOException;
+  void write(IndexDocument document) throws IOException;
 
 }
