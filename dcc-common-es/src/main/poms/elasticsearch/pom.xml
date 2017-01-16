@@ -22,7 +22,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 
   <groupId>org.icgc.dcc</groupId>
   <artifactId>elasticsearch</artifactId>
-  <version>5.0.2</version>
+  <version>5.1.2</version>
   <packaging>pom</packaging>
 
   <name>ICGC DCC Elasticsearch POM</name>
@@ -84,7 +84,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
                   <pattern>org.yaml</pattern>
                   <shadedPattern>${elasticsearch.package}.yaml</shadedPattern>
                 </relocation>
-                
+
                 <!-- elasticsearch-test-shade relocations -->
                 <relocation>
                   <pattern>org.objectweb.asm</pattern>
@@ -94,7 +94,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
                   <pattern>org.antlr</pattern>
                   <shadedPattern>${elasticsearch.package}.antlr</shadedPattern>
                 </relocation>
-                  
+
                 <!-- common relocations -->
                 <relocation>
                   <pattern>org.apache.http</pattern>
@@ -105,7 +105,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
                   <shadedPattern>${elasticsearch.package}.apache.commons.codec</shadedPattern>
                 </relocation>
               </relocations>
-              
+
               <!-- Include only Elasticsearch and relocated dependencies. Promote everything else as transitive dependencies -->
               <artifactSet>
                 <includes>
@@ -136,7 +136,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
                     <exclude>build.properties</exclude>
                   </excludes>
                 </filter>
-                
+
                 <!-- Ensure the custom JarHell is included -->
                 <filter>
                   <artifact>org.elasticsearch:elasticsearch</artifact>
@@ -160,13 +160,13 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 
   <properties>
     <!-- Versions -->
-    <elasticsearch.version>5.0.2</elasticsearch.version>
+    <elasticsearch.version>5.1.2</elasticsearch.version>
     <shade-plugin.version>2.4.3</shade-plugin.version>
 
     <!-- Configuration -->
     <elasticsearch.package>org.elasticsearch.shaded</elasticsearch.package>
     <install.dir>${project.build.directory}/distribution</install.dir>
-    
+
     <!-- Encoding -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
