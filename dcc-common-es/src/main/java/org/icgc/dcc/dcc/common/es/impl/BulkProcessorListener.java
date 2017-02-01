@@ -19,11 +19,6 @@ package org.icgc.dcc.dcc.common.es.impl;
 
 import static org.icgc.dcc.common.core.util.Formats.formatBytes;
 import static org.icgc.dcc.common.core.util.Formats.formatCount;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
 
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.bulk.BulkProcessor;
@@ -32,6 +27,12 @@ import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 
 import com.google.common.base.Throwables;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,15 +51,15 @@ public class BulkProcessorListener implements Listener {
   @Override
   public void beforeBulk(long executionId, BulkRequest request) {
     clusterStateVerifier.ensureClusterState();
-    log.debug("{}", indexingState);
+    log.debug("Indexing state before load. {}", indexingState);
     indexingState.startIndexing();
     printRequestStats(executionId, request);
   }
 
   @Override
   public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
-    log.debug("[{}] Received successful response for request {}", writerId, executionId);
-    log.debug("{}", indexingState);
+    log.debug("[{}] Received response for request {}", writerId, executionId);
+    log.debug("Indexing state after load. {}", indexingState);
 
     // Unsuccessful bulk response. Re-index only failed requests.
     if (response.hasFailures()) {
@@ -71,7 +72,7 @@ public class BulkProcessorListener implements Listener {
     // Successful bulk response
     log.info("[{}] Successfully loaded bulk request '{}'.", writerId, executionId);
     indexingState.resetIndexState();
-    log.debug("{}", indexingState);
+    log.debug("Indexing state after load. {}", indexingState);
   }
 
   @Override
@@ -96,7 +97,7 @@ public class BulkProcessorListener implements Listener {
   }
 
   private static void reindexBulkRequest(BulkProcessor processor, BulkRequest bulkRequest) {
-    for (ActionRequest<?> request : bulkRequest.requests()) {
+    for (ActionRequest request : bulkRequest.requests()) {
       processor.add(request);
     }
     processor.flush();
@@ -121,7 +122,6 @@ public class BulkProcessorListener implements Listener {
     return message.length() > maxChars ? message.substring(0, maxChars) : message;
   }
 
-  @SuppressWarnings("rawtypes")
   private void reindexFailedRequests(BulkProcessor processor, BulkRequest bulkRequest, BulkResponse bulkResponse) {
     log.debug("[{}] Re-indexing failed requests", writerId);
 

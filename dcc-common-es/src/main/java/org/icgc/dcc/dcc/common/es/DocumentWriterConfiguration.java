@@ -29,5 +29,6 @@ public class DocumentWriterConfiguration {
   String esUrl;
   String indexName;
   Client client;
+  Integer bulkSizeMb;
 
 }

@@ -19,16 +19,11 @@ package org.icgc.dcc.dcc.common.es.impl;
 
 import static com.google.common.base.Throwables.propagate;
 import static org.elasticsearch.client.Requests.indexRequest;
-import static org.elasticsearch.common.unit.ByteSizeUnit.MB;
 import static org.elasticsearch.common.xcontent.XContentType.SMILE;
 import static org.icgc.dcc.common.core.util.Formats.formatCount;
+import static org.icgc.dcc.dcc.common.es.util.BulkProcessorConfiguration.getBulkSize;
 
 import java.io.IOException;
-
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.val;
-import lombok.extern.slf4j.Slf4j;
 
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
@@ -36,10 +31,15 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.icgc.dcc.dcc.common.es.core.DocumentWriter;
 import org.icgc.dcc.dcc.common.es.json.JacksonFactory;
-import org.icgc.dcc.dcc.common.es.model.Document;
+import org.icgc.dcc.dcc.common.es.model.IndexDocument;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
+
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Output destination for {@link DefaultDocument} instances to be written.
@@ -50,7 +50,6 @@ public class DefaultDocumentWriter implements DocumentWriter {
   /**
    * Constants.
    */
-  public static final ByteSizeValue BULK_SIZE = new ByteSizeValue(36, MB);
   private static final ObjectWriter BINARY_WRITER = JacksonFactory.getObjectWriter();
 
   /**
@@ -63,6 +62,7 @@ public class DefaultDocumentWriter implements DocumentWriter {
    * Helps to track log records related to this particular writer.
    */
   private final String writerId;
+  private final ByteSizeValue bulkSize;
 
   /**
    * Batching state.
@@ -79,23 +79,23 @@ public class DefaultDocumentWriter implements DocumentWriter {
    */
   private int documentCount;
 
-  public DefaultDocumentWriter(Client client, String indexName, IndexingState indexingState, BulkProcessor bulkProcessor,
-      String writerId) {
-    this.indexName = indexName;
-    this.writerId = writerId;
-    this.indexingState = indexingState;
-    this.processor = bulkProcessor;
-    this.client = client;
+  public DefaultDocumentWriter(DocumentWriterContext context) {
+    this.indexName = context.getIndexName();
+    this.writerId = context.getWriterId();
+    this.indexingState = context.getIndexingState();
+    this.processor = context.getBulkProcessor();
+    this.client = context.getClient();
+    this.bulkSize = getBulkSize(context.getBulkSizeMb());
     log.info("[{}] Created ES document writer.", writerId);
   }
 
   @Override
-  public void write(@NonNull Document document) throws IOException {
+  public void write(@NonNull IndexDocument document) throws IOException {
     byte[] source = createSource(document.getSource());
     write(document.getId(), document.getType(), source);
   }
 
-  protected void write(String id, DocumentType type, byte[] source) {
+  protected void write(String id, IndexDocumentType type, byte[] source) {
     if (isBigDocument(source.length)) {
       processor.flush();
     }
@@ -107,6 +107,7 @@ public class DefaultDocumentWriter implements DocumentWriter {
 
   @Override
   public void close() throws IOException {
+    log.debug("Trying to close the document writer...");
     // Initiate an index request which will set the pendingBulkRequest
     processor.flush();
 
@@ -125,12 +126,12 @@ public class DefaultDocumentWriter implements DocumentWriter {
     }
   }
 
-  private IndexRequest createRequest(String id, DocumentType type, byte[] source) {
+  private IndexRequest createRequest(String id, IndexDocumentType type, byte[] source) {
     return indexRequest(indexName).type(type.getIndexType()).id(id).contentType(SMILE).source(source);
   }
 
-  private static boolean isBigDocument(int length) {
-    return length > BULK_SIZE.getBytes();
+  private boolean isBigDocument(int length) {
+    return length > bulkSize.getBytes();
   }
 
 }

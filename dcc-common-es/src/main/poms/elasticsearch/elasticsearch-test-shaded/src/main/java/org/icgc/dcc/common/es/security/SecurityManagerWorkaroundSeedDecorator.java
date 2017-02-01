@@ -15,35 +15,27 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.dcc.common.es;
+package org.icgc.dcc.common.es.security;
 
-import static lombok.AccessLevel.PRIVATE;
-import static org.icgc.dcc.dcc.common.es.impl.DocumentWriterContextFactory.createContext;
+import com.carrotsearch.randomizedtesting.SeedDecorator;
 
-import org.elasticsearch.client.Client;
-import org.icgc.dcc.dcc.common.es.core.DocumentWriter;
-import org.icgc.dcc.dcc.common.es.impl.DefaultDocumentWriter;
+/**
+ * Very ugly workaround to disable the SecurityManager that Elasticsearch now injects in Tests, it is cumbersome to set
+ * up the security policy everywhere and causes lots of test-failures and strange side-effects, e.g.
+ * https://issues.gradle.org/browse/GRADLE-2170, which hangs junit test runs in Gradle as a result
+ * 
+ * @see https://github.com/Dynatrace/Dynatrace-Elasticsearch-Plugin/blob/master/testsrcES5/org/elasticsearch/test/SecurityManagerWorkaroundSeedDecorator.java
+ */
+public class SecurityManagerWorkaroundSeedDecorator implements SeedDecorator {
 
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.val;
-
-@NoArgsConstructor(access = PRIVATE)
-public final class DocumentWriterFactory {
-
-  public static DocumentWriter createDocumentWriter(@NonNull DocumentWriterConfiguration configuration) {
-    val writerContext = createContext(configuration);
-
-    return new DefaultDocumentWriter(writerContext);
+  @Override
+  public void initialize(Class<?> suiteClass) {
+    System.setProperty("tests.security.manager", "false");
   }
 
-  /**
-   * Creates document writer where the {@code sniffMode} is <strong>disabled</strong> for the {@link Client}.
-   */
-  public static DocumentWriter createDocumentWriter(@NonNull String indexName, @NonNull String esUri) {
-    val writerContext = createContext(indexName, esUri);
-
-    return new DefaultDocumentWriter(writerContext);
+  @Override
+  public long decorate(long seed) {
+    return seed;
   }
 
 }
