@@ -54,7 +54,7 @@ public class LoggedReport extends BaseReport {
   }
 
   @Override
-  public void addException(Exception e) {
+  public void addException(Throwable e) {
     super.addException(e);
     log.error("Exception: {}", e);
   }

@@ -27,7 +27,7 @@ public interface Report {
 
   void addError(String error, Object... args);
 
-  void addException(Exception e);
+  void addException(Throwable e);
 
   void addTimer(Stopwatch timer);
 

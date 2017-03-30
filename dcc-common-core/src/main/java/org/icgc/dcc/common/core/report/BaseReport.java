@@ -46,7 +46,7 @@ public abstract class BaseReport implements Report {
   }
 
   @Override
-  public void addException(Exception e) {
+  public void addException(Throwable e) {
     exceptionCount++;
   }
 
