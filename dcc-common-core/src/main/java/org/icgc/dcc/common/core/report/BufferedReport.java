@@ -49,7 +49,7 @@ public class BufferedReport extends BaseReport {
   private final List<String> infos = Lists.newArrayList();
   private final List<String> warnings = Lists.newArrayList();
   private final List<String> errors = Lists.newArrayList();
-  private final List<Exception> exceptions = Lists.newArrayList();
+  private final List<Throwable> exceptions = Lists.newArrayList();
   private final Map<String, Stopwatch> timers = Maps.newLinkedHashMap();
 
   public BufferedReport() {
@@ -84,7 +84,7 @@ public class BufferedReport extends BaseReport {
   }
 
   @Override
-  public void addException(Exception e) {
+  public void addException(Throwable e) {
     super.addException(e);
 
     if (exceptionCount < maxEntries) {

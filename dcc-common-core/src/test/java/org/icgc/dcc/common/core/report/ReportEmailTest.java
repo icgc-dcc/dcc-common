@@ -17,7 +17,7 @@
  */
 package org.icgc.dcc.common.core.report;
 
-import lombok.val;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.icgc.dcc.common.core.mail.Mailer;
 import org.icgc.dcc.common.core.mail.Mailer.Email;
@@ -26,8 +26,19 @@ import org.junit.Test;
 
 import com.google.common.base.Stopwatch;
 
+import lombok.val;
+
 @Ignore("For development only")
 public class ReportEmailTest {
+
+  @Test
+  public void testReportError() {
+    val report = new BufferedReport();
+    report.addTimer(Stopwatch.createStarted());
+    report.addException(new Error("Computer chose to explode rather than run this code."));
+    val message = new ReportEmail("My Report", report);
+    assertThat(message != null);
+  }
 
   @Test
   public void testReportEmail() {
