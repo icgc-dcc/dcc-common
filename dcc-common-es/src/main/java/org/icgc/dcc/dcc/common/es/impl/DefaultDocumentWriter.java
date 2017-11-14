@@ -42,7 +42,7 @@ import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Output destination for {@link DefaultDocument} instances to be written.
+ * Output destination for {@link IndexDocument} instances to be written.
  */
 @Slf4j
 public class DefaultDocumentWriter implements DocumentWriter {
@@ -127,7 +127,7 @@ public class DefaultDocumentWriter implements DocumentWriter {
   }
 
   private IndexRequest createRequest(String id, IndexDocumentType type, byte[] source) {
-    return indexRequest(indexName).type(type.getIndexType()).id(id).contentType(SMILE).source(source);
+    return indexRequest(indexName).type(type.getIndexType()).id(id).source(SMILE, source);
   }
 
   private boolean isBigDocument(int length) {

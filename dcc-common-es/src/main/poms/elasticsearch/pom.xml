@@ -22,7 +22,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 
   <groupId>org.icgc.dcc</groupId>
   <artifactId>elasticsearch</artifactId>
-  <version>5.1.2</version>
+  <version>5.6.4</version>
   <packaging>pom</packaging>
 
   <name>ICGC DCC Elasticsearch POM</name>
@@ -160,7 +160,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 
   <properties>
     <!-- Versions -->
-    <elasticsearch.version>5.1.2</elasticsearch.version>
+    <elasticsearch.version>5.6.4</elasticsearch.version>
     <shade-plugin.version>2.4.3</shade-plugin.version>
 
     <!-- Configuration -->
