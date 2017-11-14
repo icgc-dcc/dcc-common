@@ -17,14 +17,13 @@
  */
 package org.icgc.dcc.common.test.es;
 
-import static org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -64,7 +63,7 @@ public class EmbeddedElasticSearch implements TestRule {
 
   private void start() {
     // Build settings
-    Settings settings = settingsBuilder()//
+    Settings settings = Settings.builder()//
         // .put("node.local", true)//
         .put("node.name", "node-test")//
         .put("node.data", true)//
@@ -79,7 +78,7 @@ public class EmbeddedElasticSearch implements TestRule {
         .put("cluster.routing.schedule", "50ms") //
         .build();
 
-    node = NodeBuilder.nodeBuilder().settings(settings).node();
+    node = new Node(settings);
     client = node.client();
 
     // Wait for Yellow status
@@ -91,8 +90,9 @@ public class EmbeddedElasticSearch implements TestRule {
         .actionGet(); //
   }
 
+  @SneakyThrows
   private void stop() {
-    node.stop();
+    node.close();
   }
 
 }
