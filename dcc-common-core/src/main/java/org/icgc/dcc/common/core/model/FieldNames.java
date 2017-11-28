@@ -436,4 +436,11 @@ public final class FieldNames {
     return SYNTHETIC_PREFIX + featureType.getId() + TESTED_DONOR_COUNT_SUFFIX;
   }
 
+
+  /**
+   * Variant field names.
+   */
+  public static final String CIVIC_ID = "variantID";
+  public static final String CLINVAR_ID = "variationID";
+
 }
