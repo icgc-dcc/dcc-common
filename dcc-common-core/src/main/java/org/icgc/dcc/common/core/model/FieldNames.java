@@ -440,7 +440,8 @@ public final class FieldNames {
   /**
    * Variant field names.
    */
-  public static final String CIVIC_ID = "variantID";
-  public static final String CLINVAR_ID = "variationID";
+  public static final String CIVIC_VARIANT_ID = "variantID";
+  public static final String CLINVAR_ALLELE_ID = "alleleID";
+  public static final String CLINVAR_ASSEMBLY = "assembly";
 
 }

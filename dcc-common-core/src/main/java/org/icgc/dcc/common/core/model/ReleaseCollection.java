@@ -57,8 +57,8 @@ public enum ReleaseCollection implements Identifiable {
   DIAGRAM_COLLECTION(UNDETERMINED, "Diagram", newArrayList(DIAGRAM_ID)),
   FILE_COLLECTION(UNDETERMINED, "File", newArrayList(FILE_ID)),
   DRUG_COLLECTION(UNDETERMINED, "Drug", newArrayList(DRUG_ID)),
-  CIVIC_COLLECTION(UNDETERMINED, "Civic", newArrayList(CIVIC_ID)),
-  CLINVAR_COLLECTION(UNDETERMINED, "Clinvar", newArrayList(CLINVAR_ID));
+  CIVIC_COLLECTION(UNDETERMINED, "Civic", newArrayList(CIVIC_VARIANT_ID)),
+  CLINVAR_COLLECTION(UNDETERMINED, "Clinvar", newArrayList(CLINVAR_ALLELE_ID, CLINVAR_ASSEMBLY));
 
   private final ReleaseDatabase parentDatabase;
 
