@@ -28,6 +28,8 @@ import static org.icgc.dcc.common.core.model.FieldNames.GENE_SET_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.MONGO_INTERNAL_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.PATHWAY_REACTOME_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.RELEASE_ID;
+import static org.icgc.dcc.common.core.model.FieldNames.CLINVAR_ID;
+import static org.icgc.dcc.common.core.model.FieldNames.CIVIC_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.IdentifierFieldNames.SURROGATE_DONOR_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.IdentifierFieldNames.SURROGATE_MUTATION_ID;
 import static org.icgc.dcc.common.core.model.FieldNames.ImporterFieldNames.CGC_ID;
@@ -62,7 +64,9 @@ public enum ReleaseCollection implements Identifiable {
   GENE_SET_COLLECTION(UNDETERMINED, "GeneSet", newArrayList(GENE_SET_ID)),
   DIAGRAM_COLLECTION(UNDETERMINED, "Diagram", newArrayList(DIAGRAM_ID)),
   FILE_COLLECTION(UNDETERMINED, "File", newArrayList(FILE_ID)),
-  DRUG_COLLECTION(UNDETERMINED, "Drug", newArrayList(DRUG_ID));
+  DRUG_COLLECTION(UNDETERMINED, "Drug", newArrayList(DRUG_ID)),
+  CLINVAR_COLLECTION(UNDETERMINED, "Clinvar", newArrayList(CLINVAR_ID)),
+  CIVIC_COLLECTION(UNDETERMINED, "Civic", newArrayList(CIVIC_ID));
 
   private final ReleaseDatabase parentDatabase;
 

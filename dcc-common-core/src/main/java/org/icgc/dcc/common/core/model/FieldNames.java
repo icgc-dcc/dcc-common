@@ -393,6 +393,16 @@ public final class FieldNames {
   public static final String TRIALS = "trials";
 
   /**
+   * Clinvar field names
+   */
+  public static final String CLINVAR_ID = "variationID";
+
+  /**
+   * Civic field names
+   */
+  public static final String CIVIC_ID = "variantID";
+
+  /**
    * File field names
    */
   public static final String FILE_ID = "file_id";
@@ -435,5 +445,4 @@ public final class FieldNames {
   public static String getTestedTypeCountFieldName(FeatureType featureType) {
     return SYNTHETIC_PREFIX + featureType.getId() + TESTED_DONOR_COUNT_SUFFIX;
   }
-
 }
