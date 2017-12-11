@@ -395,12 +395,12 @@ public final class FieldNames {
   /**
    * Clinvar field names
    */
-  public static final String CLINVAR_ID = "variationID";
+  public static final String CLINVAR_ID = "clinvarID";
 
   /**
    * Civic field names
    */
-  public static final String CIVIC_ID = "variantID";
+  public static final String CIVIC_ID = "civicID";
 
   /**
    * File field names
