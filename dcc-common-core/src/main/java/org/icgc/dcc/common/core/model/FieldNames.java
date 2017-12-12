@@ -305,6 +305,10 @@ public final class FieldNames {
    * Mutation field names.
    */
   public static final String MUTATION_ID = IdentifierFieldNames.SURROGATE_MUTATION_ID;
+  public static final String MUTATION_EXTERNAL_DB_IDS = "external_db_ids";
+  public static final String MUTATION_DESCRIPTION = "description";
+  public static final String MUTATION_CLINICAL_SIGNIFICANCE = "clinical_significance";
+  public static final String MUTATION_CLINICAL_EVIDENCE = "clinical_evidence";
   public static final String MUTATION_CHROMOSOME = "chromosome";
   public static final String MUTATION_CHROMOSOME_START = "chromosome_start";
   public static final String MUTATION_CHROMOSOME_END = "chromosome_end";
