@@ -312,6 +312,7 @@ public final class FieldNames {
   public static final String MUTATION_CHROMOSOME = "chromosome";
   public static final String MUTATION_CHROMOSOME_START = "chromosome_start";
   public static final String MUTATION_CHROMOSOME_END = "chromosome_end";
+  public static final String MUTATION_MUTATION = "mutation";
   public static final String MUTATION_OBSERVATIONS = "observation";
   public static final String MUTATION_OCCURRENCES = "ssm_occurrence";
   public static final String MUTATION_OBSERVATION_DONOR = "donor";
@@ -400,11 +401,22 @@ public final class FieldNames {
    * Clinvar field names
    */
   public static final String CLINVAR_ID = "clinvarID";
+  public static final String CLINVAR_CHROMOSOME = "chromosome";
+  public static final String CLINVAR_CHROMOSOME_START = "chromosomeStart";
+  public static final String CLINVAR_CHROMOSOME_END = "chromosomeEnd";
+  public static final String CLINVAR_MUTATION = "mutation";
+  public static final String CLINVAR_CLNICAL_SIGNIFICANCE = "clinicalSignificance";
 
   /**
    * Civic field names
    */
   public static final String CIVIC_ID = "civicID";
+  public static final String CIVIC_CHROMOSOME = "chromosome";
+  public static final String CIVIC_CHROMOSOME_START = "chromosomeStart";
+  public static final String CIVIC_CHROMOSOME_END = "chromosomeEnd";
+  public static final String CIVIC_MUTATION = "mutation";
+  public static final String CIVIC_VARIANT_SUMMARY = "variantSummary";
+  public static final String CIVIC_CLINICAL_IMPACT = "clinicalImpact";
 
   /**
    * File field names
