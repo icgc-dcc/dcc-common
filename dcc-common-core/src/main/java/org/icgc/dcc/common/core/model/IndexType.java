@@ -62,6 +62,12 @@ public enum IndexType {
   DONOR_CENTRIC_TYPE(Entity.DONOR, "donor-centric", Classifier.CENTRIC),
 
   /**
+   * Annotation type(s).
+   */
+  CLINVAR_TYPE(Entity.CLINVAR, "clinvar", Classifier.BASIC),
+  CIVIC_TYPE(Entity.CIVIC, "civic", Classifier.BASIC),
+
+  /**
    * Gene type(s).
    */
   GENE_TYPE(Entity.GENE, "gene", Classifier.BASIC),
