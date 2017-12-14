@@ -30,8 +30,6 @@ public enum Entity implements Identifiable {
   CONSEQUENCE,
   PATHWAY,
   DIAGRAM,
-  CLINVAR,
-  CIVIC,
   FILE,
   DRUG;
 
