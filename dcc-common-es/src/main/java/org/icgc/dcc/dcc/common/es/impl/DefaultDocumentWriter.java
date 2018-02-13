@@ -127,7 +127,7 @@ public class DefaultDocumentWriter implements DocumentWriter {
   }
 
   private IndexRequest createRequest(String id, IndexDocumentType type, byte[] source) {
-    return indexRequest(indexName).type(type.getIndexType()).id(id).source(SMILE, source);
+    return indexRequest(indexName).type(type.getIndexType()).id(id).source(source, SMILE);
   }
 
   private boolean isBigDocument(int length) {
