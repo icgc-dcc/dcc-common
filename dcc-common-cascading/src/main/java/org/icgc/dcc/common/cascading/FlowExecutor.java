@@ -239,7 +239,7 @@ public class FlowExecutor extends ThreadPoolExecutor {
   private void writeJob(FlowExecutorJob job, JobConf jobConf) throws IOException {
     // Hadoop 20.2 doesn't like dist cache when using local mode
     val executorState = serializeBase64(job, jobConf, true);
-    val maxSize = Short.MAX_VALUE;
+    int maxSize = Short.MAX_VALUE * 2; // We hit 33k and triggered dist cache which catches fire spectacularly.
 
     jobConf.set(CASCADING_SERIALIZER_PROPERTY, JavaObjectSerializer.class.getName());
     jobConf.set(JOB_NAME_PROPERTY, job.getClass().getName());
